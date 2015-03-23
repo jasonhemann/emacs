@@ -151,7 +151,12 @@
 	     (unless tt-project-find-file
 	       (setq compile-command (concat "make -C " tt-root-directory)))
 	     (setq default-directory tt-root-directory))))))
- '(scheme-program-name "/usr/bin/petite")
+
+ (cond
+  ((file-exists-p "/usr/bin/scheme") '(scheme-program-name "/usr/bin/scheme"))
+  ((file-exists-p "/usr/bin/petite") '(scheme-program-name "/usr/bin/petite"))
+  (else '()))
+
  '(vc-follow-symlinks 't))
 
 (fset 'make-k-ri
