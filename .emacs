@@ -11,13 +11,6 @@
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-;; superceded by helm 
-;; (ido-mode t)
-;; (setq ido-enable-flex-matching t
-;;       ido-use-virtual-buffers t
-;;       ido-everywhere t
-;;       ido-create-new-buffer 'always)
-
 (show-paren-mode 1)
 (setq show-paren-delay 0)
 
@@ -35,14 +28,15 @@
 (unless package-archive-contents
    (package-refresh-contents))
 
-(install-if-missing '(async auto-complete auto-complete-pcmp auto-package-update 
-		      autopair color-theme cyberpunk-theme dash 
-		      elscreen elscreen-separate-buffer-list exec-path-from-shell faceup 
-		      flyspell-lazy hc-zenburn-theme helm helm-idris 
-		      helm-j-cheatsheet highlight ido-better-flex idris-mode 
-		      j-mode log4e org-ac org-beautify-theme 
-		      paredit popup racket-mode region-list-edit 
-		      s sml-mode sml-modeline yaxception zjl-hl))
+(install-if-missing
+  '(async auto-complete auto-complete-pcmp auto-package-update 
+    autopair color-theme cyberpunk-theme dash 
+    elscreen elscreen-separate-buffer-list exec-path-from-shell faceup 
+    flyspell-lazy hc-zenburn-theme helm helm-idris 
+    helm-j-cheatsheet highlight ido-better-flex idris-mode 
+    j-mode log4e org-ac org-beautify-theme 
+    paredit popup racket-mode region-list-edit 
+    s sml-mode sml-modeline yaxception zjl-hl))
 
 (setq flyspell-issue-welcome-flag nil)
 
@@ -149,7 +143,8 @@
 	       (setq compile-command
 		     (concat "make -C " tt-root-directory)))
 	     (setq default-directory tt-root-directory))))))
- '(scheme-program-name "/usr/bin/petite"))
+ '(scheme-program-name "/usr/bin/petite")
+ '(vc-follow-symlinks 't))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
