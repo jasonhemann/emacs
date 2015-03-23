@@ -120,37 +120,39 @@
  ;; If there is more than one, they won't work right.
  '(ac-modes
    (quote
-    (emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode agda-mode agda2-mode haskell-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode racket-mode Racket-mode idris-mode racket-repl-mode idris-repl-mode ciao-mode)))
+    (emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode
+     c-mode cc-mode c++-mode go-mode
+     java-mode malabar-mode clojure-mode clojurescript-mode
+     scala-mode scheme-mode ocaml-mode tuareg-mode
+     coq-mode agda-mode agda2-mode haskell-mode
+     perl-mode cperl-mode python-mode ruby-mode
+     lua-mode tcl-mode ecmascript-mode javascript-mode
+     js-mode js2-mode php-mode css-mode
+     less-css-mode makefile-mode sh-mode fortran-mode
+     f90-mode ada-mode xml-mode sgml-mode
+     web-mode ts-mode sclang-mode verilog-mode
+     qml-mode racket-mode Racket-mode idris-mode
+     racket-repl-mode idris-repl-mode ciao-mode)))
  '(custom-safe-themes
    (quote
-    ("f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "a507b9ca4a605d5256716da70961741b9ef9ec3246041a4eb776102e8df18418" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" default)))
+    ("f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b"
+     "a507b9ca4a605d5256716da70961741b9ef9ec3246041a4eb776102e8df18418"
+     "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6"
+     "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365"
+     default)))
  '(helm-M-x-fuzzy-match (quote (quote t)))
  '(safe-local-variable-values
    (quote
     ((eval progn
-	   (let
-	       ((tt-root-directory
-		 (when buffer-file-name
-		   (locate-dominating-file buffer-file-name ".dir-locals.el")))
-		(tt-project-find-file
-		 (and
-		  (boundp
-		   (quote tt-project-find-file))
-		  tt-project-find-file)))
-	     (setq tags-file-name
-		   (concat tt-root-directory "TAGS"))
+	   (let ((tt-root-directory (when buffer-file-name
+				      (locate-dominating-file buffer-file-name ".dir-locals.el")))
+ 		 (tt-project-find-file (and (boundp (quote tt-project-find-file)) tt-project-find-file)))
+	     (setq tags-file-name (concat tt-root-directory "TAGS"))
 	     (unless tt-project-find-file
-	       (setq compile-command
-		     (concat "make -C " tt-root-directory)))
+	       (setq compile-command (concat "make -C " tt-root-directory)))
 	     (setq default-directory tt-root-directory))))))
  '(scheme-program-name "/usr/bin/petite")
  '(vc-follow-symlinks 't))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
 
 (fset 'make-k-ri
    (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([134217749 134217749 134217749 134217734 134217732 134217732 134217732 134217749 201326624 134217847 134217749 134217730 134217734 25 134217730 134217730 201326624 134217847 134217732 25 32 134217749 201326624 134217765 32 return 32 44 return 33 134217749 96 2 201326624 23 134217732 134217734 134217734 return 25 134217732 25 201326624 201326624 23 134217749 134217730 134217734 201326624 23 134217749 134217749 201326624 tab 134217730 134217734 134217748 2 2 2 134217730 134217730 134217734 25 134217749 201326624 tab 134217734 134217730 134217734 2 134217730 134217730 134217734] 0 "%d")) arg)))
