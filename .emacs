@@ -42,7 +42,7 @@
 
 (if (eq system-type 'darwin)
     (setq-default ispell-program-name "/usr/local/bin/aspell")
-    (setq-default ispell-program-name "/usr/bin/aspell"))
+    (setq-default ispell-program-name "/usr/bin/aspell")) ;; What about Windows?
 
 (setq-default ispell-list-command "list")
 
