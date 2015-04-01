@@ -33,10 +33,10 @@
     autopair color-theme cyberpunk-theme dash 
     elscreen elscreen-separate-buffer-list exec-path-from-shell faceup 
     flyspell-lazy hc-zenburn-theme helm helm-idris 
-    helm-j-cheatsheet highlight ido-better-flex idris-mode 
-    j-mode log4e org-ac org-beautify-theme 
-    paredit popup racket-mode region-list-edit 
-    s sml-mode sml-modeline yaxception zjl-hl))
+    helm-j-cheatsheet highlight idris-mode j-mode
+    log4e org-ac org-beautify-theme paredit
+    popup racket-mode region-list-edit s
+    sml-mode sml-modeline yaxception zjl-hl))
 
 (setq flyspell-issue-welcome-flag nil)
 
