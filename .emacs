@@ -3,9 +3,8 @@
 			 ("melpa" . "http://melpa.milkbox.net/packages/")))
 
 (setq inhibit-splash-screen t
-      initial-scratch-message nil)
-
-(setq ring-bell-function 'ignore)
+      initial-scratch-message nil
+      ring-bell-function 'ignore)
 
 (tool-bar-mode -1)
 
@@ -15,7 +14,7 @@
 (setq show-paren-delay 0)
 
 (if (file-exists-p "/usr/local/lib/ciao/ciao-mode-init.el")
-  (load-file "/usr/local/lib/ciao/ciao-mode-init.el"))
+    (load-file "/usr/local/lib/ciao/ciao-mode-init.el"))
 
 (package-initialize)
 
@@ -30,13 +29,15 @@
 
 (install-if-missing
   '(async auto-complete auto-complete-pcmp auto-package-update 
+    ac-math ace-isearch
+    ace-jump-buffer ace-window ace-flyspell
     autopair color-theme cyberpunk-theme dash 
     elscreen elscreen-separate-buffer-list exec-path-from-shell faceup 
     flyspell-lazy hc-zenburn-theme helm helm-idris 
     helm-j-cheatsheet highlight idris-mode j-mode
     log4e org-ac org-beautify-theme paredit
-    popup racket-mode region-list-edit s
-    sml-mode sml-modeline yaxception zjl-hl))
+    popup racket-mode s
+    sml-mode sml-modeline yaxception))
 
 (setq flyspell-issue-welcome-flag nil)
 
@@ -71,8 +72,10 @@
 (helm-mode 1)
 
 (global-linum-mode t)
-;; (setq linum-format " %d ") ;; doesn't work
 
+;; These don't work. 
+;; (add-hook 'auto-package-update-minor-mode-hook #'package-menu-mark-obsolete-for-deletion)
+;; (add-hook 'auto-package-update-minor-mode-hook #'package-menu-execute)
 (auto-package-update-maybe)
 
 (require 'auto-complete-config)
@@ -84,6 +87,7 @@
 
 (setq auto-mode-alist (cons '("\\.v$" . coq-mode) auto-mode-alist))
 (autoload 'coq-mode "coq" "Major mode for editing Coq vernacular." t)
+(global-set-key (kbd "C-x b") 'ace-jump-buffer)
 
 (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
 (global-set-key (kbd "{") 'paredit-open-curly)
@@ -154,10 +158,13 @@
 
  (cond
   ((file-exists-p "/usr/bin/scheme") '(scheme-program-name "/usr/bin/scheme"))
-  ((file-exists-p "/usr/bin/petite") '(scheme-program-name "/usr/bin/petite"))
-  (else '()))
+  ((file-exists-p "/usr/bin/petite") '(scheme-program-name "/usr/bin/petite")))
 
  '(vc-follow-symlinks 't))
+
+;; For 311, to make continuations RI.
+;; Assumes k has some formal parameters
+;; Leave mark at end of last match line in apply-k.
 
 (fset 'make-k-ri
    (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([134217749 134217749 134217749 134217734 134217732 134217732 134217732 134217749 201326624 134217847 134217749 134217730 134217734 25 134217730 134217730 201326624 134217847 134217732 25 32 134217749 201326624 134217765 32 return 32 44 return 33 134217749 96 2 201326624 23 134217732 134217734 134217734 return 25 134217732 25 201326624 201326624 23 134217749 134217730 134217734 201326624 23 134217749 134217749 201326624 tab 134217730 134217734 134217748 2 2 2 134217730 134217730 134217734 25 134217749 201326624 tab 134217734 134217730 134217734 2 134217730 134217730 134217734] 0 "%d")) arg)))
@@ -169,3 +176,12 @@
   (load-file (let ((coding-system-for-read 'utf-8))
 	       (shell-command-to-string "agda-mode locate"))))
 
+
+;; Emacs desiderata
+;; Have width of linum buffer scale as font-size increases.
+;; Set a higher default font size (point size).
+;; Make it Windows 7/8/10 appropriate. --- see Keep
+;; Automatically remove obsolete packages
+;; Get code to color parens again. 
+;; Setup package-pinned-packages, so as to draw from the correct package repo. 
+;; Spacing with parens in various non-lisp modes that you use w/paredit mode.
