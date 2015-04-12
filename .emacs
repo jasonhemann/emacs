@@ -109,12 +109,10 @@
 (when (memq window-system '(mac ns))
   (exec-path-from-shell-initialize))
 
+(setq window-themes-list '(wheatgrass manoj-dark cyberpunk tango-dark deeper-blue))
+
 (if window-system
-    (pcase (cl-random 4)
-      (0 (load-theme 'wheatgrass t))
-      (1 (load-theme 'manoj-dark t))
-      (2 (load-theme 'cyberpunk t))
-      (3 (load-theme 'tango-dark t)))
+  (load-theme (nth (cl-random (length window-themes-list)) window-themes-list))
   (load-theme 'wombat t))
 
 (custom-set-variables
@@ -175,7 +173,6 @@
 (when (eq system-type 'darwin)
   (load-file (let ((coding-system-for-read 'utf-8))
 	       (shell-command-to-string "agda-mode locate"))))
-
 
 ;; Emacs desiderata
 ;; Have width of linum buffer scale as font-size increases.
