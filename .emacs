@@ -28,9 +28,9 @@
    (package-refresh-contents))
 
 (install-if-missing
-  '(async auto-complete auto-complete-pcmp auto-package-update 
-    ac-math autopair avy color-theme cyberpunk-theme dash 
-    elscreen elscreen-separate-buffer-list exec-path-from-shell faceup 
+  '(ace-jump-mode async auto-complete auto-complete-pcmp 
+    auto-package-update ac-math autopair avy color-theme cyberpunk-theme 
+    dash elscreen elscreen-separate-buffer-list exec-path-from-shell faceup 
     flyspell-lazy hc-zenburn-theme helm helm-idris 
     helm-j-cheatsheet highlight idris-mode j-mode
     log4e org-ac org-beautify-theme paredit
