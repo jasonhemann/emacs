@@ -29,9 +29,7 @@
 
 (install-if-missing
   '(async auto-complete auto-complete-pcmp auto-package-update 
-    ac-math ace-isearch
-    ace-jump-buffer ace-window ace-flyspell
-    autopair color-theme cyberpunk-theme dash 
+    ac-math autopair avy color-theme cyberpunk-theme dash 
     elscreen elscreen-separate-buffer-list exec-path-from-shell faceup 
     flyspell-lazy hc-zenburn-theme helm helm-idris 
     helm-j-cheatsheet highlight idris-mode j-mode
@@ -87,7 +85,6 @@
 
 (setq auto-mode-alist (cons '("\\.v$" . coq-mode) auto-mode-alist))
 (autoload 'coq-mode "coq" "Major mode for editing Coq vernacular." t)
-(global-set-key (kbd "C-x b") 'ace-jump-buffer)
 
 (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
 (global-set-key (kbd "{") 'paredit-open-curly)
@@ -122,43 +119,31 @@
  ;; If there is more than one, they won't work right.
  '(ac-modes
    (quote
-    (emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode
-     c-mode cc-mode c++-mode go-mode
-     java-mode malabar-mode clojure-mode clojurescript-mode
-     scala-mode scheme-mode ocaml-mode tuareg-mode
-     coq-mode agda-mode agda2-mode haskell-mode
-     perl-mode cperl-mode python-mode ruby-mode
-     lua-mode tcl-mode ecmascript-mode javascript-mode
-     js-mode js2-mode php-mode css-mode
-     less-css-mode makefile-mode sh-mode fortran-mode
-     f90-mode ada-mode xml-mode sgml-mode
-     web-mode ts-mode sclang-mode verilog-mode
-     qml-mode racket-mode Racket-mode idris-mode
-     racket-repl-mode idris-repl-mode ciao-mode)))
+    (emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode agda-mode agda2-mode haskell-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode racket-mode Racket-mode idris-mode racket-repl-mode idris-repl-mode ciao-mode)))
  '(custom-safe-themes
    (quote
-    ("f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b"
-     "a507b9ca4a605d5256716da70961741b9ef9ec3246041a4eb776102e8df18418"
-     "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6"
-     "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365"
-     default)))
+    ("90edd91338ebfdfcd52ecd4025f1c7f731aced4c9c49ed28cfbebb3a3654840b" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "a507b9ca4a605d5256716da70961741b9ef9ec3246041a4eb776102e8df18418" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" default)))
  '(helm-M-x-fuzzy-match (quote (quote t)))
  '(safe-local-variable-values
    (quote
     ((eval progn
-	   (let ((tt-root-directory (when buffer-file-name
-				      (locate-dominating-file buffer-file-name ".dir-locals.el")))
- 		 (tt-project-find-file (and (boundp (quote tt-project-find-file)) tt-project-find-file)))
-	     (setq tags-file-name (concat tt-root-directory "TAGS"))
+	   (let
+	       ((tt-root-directory
+		 (when buffer-file-name
+		   (locate-dominating-file buffer-file-name ".dir-locals.el")))
+		(tt-project-find-file
+		 (and
+		  (boundp
+		   (quote tt-project-find-file))
+		  tt-project-find-file)))
+	     (setq tags-file-name
+		   (concat tt-root-directory "TAGS"))
 	     (unless tt-project-find-file
-	       (setq compile-command (concat "make -C " tt-root-directory)))
+	       (setq compile-command
+		     (concat "make -C " tt-root-directory)))
 	     (setq default-directory tt-root-directory))))))
-
- (cond
-  ((file-exists-p "/usr/bin/scheme") '(scheme-program-name "/usr/bin/scheme"))
-  ((file-exists-p "/usr/bin/petite") '(scheme-program-name "/usr/bin/petite")))
-
- '(vc-follow-symlinks 't))
+ '(scheme-program-name "/usr/bin/petite")
+ '(vc-follow-symlinks (quote t)))
 
 ;; For 311, to make continuations RI.
 ;; Assumes k has some formal parameters
@@ -182,3 +167,9 @@
 ;; Get code to color parens again. 
 ;; Setup package-pinned-packages, so as to draw from the correct package repo. 
 ;; Spacing with parens in various non-lisp modes that you use w/paredit mode.
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
