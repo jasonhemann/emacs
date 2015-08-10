@@ -10,6 +10,9 @@
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
+;; I don't care that we're redefining tramp-read-passwd
+(setq ad-redefinition-action 'accept)
+
 (show-paren-mode 1)
 (setq show-paren-delay 0)
 
@@ -34,10 +37,23 @@
     flyspell-lazy hc-zenburn-theme helm helm-idris 
     helm-j-cheatsheet highlight idris-mode j-mode
     log4e org-ac org-beautify-theme paredit
-    popup racket-mode s
+    prop-menu popup racket-mode s
     sml-mode sml-modeline yaxception))
 
 (setq flyspell-issue-welcome-flag nil)
+;; easy spell check setup.
+(global-set-key (kbd "<f8>") 'ispell-word)
+(global-set-key (kbd "C-S-<f8>") 'flyspell-mode)
+(global-set-key (kbd "C-M-<f8>") 'flyspell-buffer)
+(global-set-key (kbd "C-<f8>") 'flyspell-check-previous-highlighted-word)
+(defun flyspell-check-next-highlighted-word ()
+  "Custom function to spell check next highlighted word"
+  (interactive)
+  (flyspell-goto-next-error)
+  (ispell-word)
+  )
+(global-set-key (kbd "M-<f8>") 'flyspell-check-next-highlighted-word)
+
 
 (if (eq system-type 'darwin)
     (setq-default ispell-program-name "/usr/local/bin/aspell")
@@ -69,7 +85,7 @@
 
 (helm-mode 1)
 
-(global-linum-mode t)
+;; (global-linum-mode t)
 
 ;; These don't work. 
 ;; (add-hook 'auto-package-update-minor-mode-hook #'package-menu-mark-obsolete-for-deletion)
@@ -122,8 +138,9 @@
     (emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode agda-mode agda2-mode haskell-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode racket-mode Racket-mode idris-mode racket-repl-mode idris-repl-mode ciao-mode)))
  '(custom-safe-themes
    (quote
-    ("90edd91338ebfdfcd52ecd4025f1c7f731aced4c9c49ed28cfbebb3a3654840b" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "a507b9ca4a605d5256716da70961741b9ef9ec3246041a4eb776102e8df18418" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" default)))
+    ("83e584d74b0faea99a414a06dae12f11cd3176fdd4eba6674422539951bcfaa8" "90edd91338ebfdfcd52ecd4025f1c7f731aced4c9c49ed28cfbebb3a3654840b" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "a507b9ca4a605d5256716da70961741b9ef9ec3246041a4eb776102e8df18418" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" default)))
  '(helm-M-x-fuzzy-match (quote (quote t)))
+ '(mac-option-modifier (quote (:ordinary meta :mouse alt)))
  '(safe-local-variable-values
    (quote
     ((eval progn
