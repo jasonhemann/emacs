@@ -33,21 +33,18 @@
    (package-refresh-contents))
 
 (install-if-missing
-  '(ace-jump-mode async auto-complete auto-complete-pcmp 
-    auto-package-update ac-math autopair avy color-theme cyberpunk-theme 
-    dash elscreen elscreen-separate-buffer-list exec-path-from-shell faceup 
-    flyspell-lazy hc-zenburn-theme helm helm-idris 
-    helm-j-cheatsheet highlight idris-mode j-mode
-    log4e org-ac org-beautify-theme paredit
-    prop-menu popup racket-mode s
-    sml-mode sml-modeline yaxception))
+ '(ace-jump-mode async auto-complete auto-complete-pcmp auto-package-update
+   ac-math autopair avy calfw calfw-gcal color-theme cyberpunk-theme dash
+   elscreen elscreen-separate-buffer-list exec-path-from-shell faceup 
+   flyspell-lazy hc-zenburn-theme helm helm-idris helm-j-cheatsheet 
+   highlight idris-mode j-mode log4e org-ac org-beautify-theme org-gcal 
+   paredit prop-menu popup racket-mode s sml-mode sml-modeline yaxception))
 
 (let ((gnu-ls-path (executable-find "gls"))) 
  (when gnu-ls-path 
    (setq insert-directory-program gnu-ls-path)))
 
-(setq flyspell-issue-welcome-flag nil)
-;; easy spell check setup.
+(setq flyspell-issue-welcome-flag nil);; easy spell check setup.
 (global-set-key (kbd "<f8>") 'ispell-word)
 (global-set-key (kbd "C-S-<f8>") 'flyspell-mode)
 (global-set-key (kbd "C-M-<f8>") 'flyspell-buffer)
@@ -195,14 +192,16 @@
 ;; M-x set-input-method RETURN TeX RETURN write unicode chars
 ;; in Racket M-\ to change input mode.
 
+;; Right now, this is busted in the agda-mode repository. 13/12/15
 (when (eq system-type 'darwin)
   (load-file (let ((coding-system-for-read 'utf-8))
 	       (shell-command-to-string "agda-mode locate"))))
 
 ;; Emacs desiderata
+;; Setup emacs calendar to sync with google calendar
 ;; Have width of linum buffer scale as font-size increases.
 ;; Set a higher default font size (point size).
-;; Make it Windows 7/8/10 appropriate. --- see Keep
+;; Make it Windows 7/8/10 appropriate. --- see Google Keep
 ;; Automatically remove obsolete packages
 ;; Get code to color parens again. 
 ;; Setup package-pinned-packages, so as to draw from the correct package repo. 
