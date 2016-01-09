@@ -1,8 +1,9 @@
+;; NB: If you can't get this .emacs file to load successfully, you
+;; should try M-x package-list-packages, then U, then x.
+
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
 			 ("marmalade" . "https://marmalade-repo.org/packages/")
 			 ("melpa" . "http://melpa.milkbox.net/packages/")))
-
-;; If you can't get this to load, try M-x package-list-packages, then U, then x.
 
 (setq inhibit-splash-screen t
       initial-scratch-message nil
@@ -37,8 +38,9 @@
    ac-math autopair avy calfw calfw-gcal color-theme cyberpunk-theme dash
    elscreen elscreen-separate-buffer-list exec-path-from-shell faceup 
    flyspell-lazy hc-zenburn-theme helm helm-idris helm-j-cheatsheet 
-   highlight idris-mode j-mode log4e org-ac org-beautify-theme org-gcal 
-   paredit prop-menu popup racket-mode s sml-mode sml-modeline yaxception))
+   highlight idris-mode j-mode log4e magit magit-filenotify org-ac
+   org-beautify-theme org-gcal paredit prop-menu popup racket-mode s
+   sml-mode sml-modeline yaxception))
 
 (let ((gnu-ls-path (executable-find "gls"))) 
  (when gnu-ls-path 
@@ -194,8 +196,9 @@
 
 ;; Right now, this is busted in the agda-mode repository. 13/12/15
 (when (eq system-type 'darwin)
-  (load-file (let ((coding-system-for-read 'utf-8))
-	       (shell-command-to-string "agda-mode locate"))))
+  (load-file 
+    (let ((coding-system-for-read 'utf-8))
+      (shell-command-to-string "agda-mode locate"))))
 
 ;; Emacs desiderata
 ;; Setup emacs calendar to sync with google calendar
