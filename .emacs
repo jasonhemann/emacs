@@ -5,6 +5,7 @@
 			 ("marmalade" . "https://marmalade-repo.org/packages/")
 			 ("melpa" . "http://melpa.milkbox.net/packages/")))
 
+
 (setq inhibit-splash-screen t
       initial-scratch-message nil
       ring-bell-function 'ignore)
