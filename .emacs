@@ -48,9 +48,9 @@
    ac-math autopair avy calfw calfw-gcal color-theme cyberpunk-theme dash
    elscreen elscreen-separate-buffer-list exec-path-from-shell faceup 
    flyspell-lazy hc-zenburn-theme helm helm-idris helm-j-cheatsheet 
-   highlight icicles idris-mode j-mode log4e magit magit-filenotify org-ac
-   org-beautify-theme org-gcal paredit prop-menu popup racket-mode s
-   sml-mode sml-modeline yaxception))
+   highlight icicles idris-mode j-mode log4e magit magit-filenotify
+   mc-extras multiple-cursors org-ac org-beautify-theme org-gcal paredit
+   prop-menu popup racket-mode s sml-mode sml-modeline yaxception))
 
 (let ((gnu-ls-path (executable-find "gls"))) 
  (when gnu-ls-path 
@@ -117,6 +117,15 @@
 ;; (ac-config-default)
 ;; (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
 
+;; (global-set-key (kbd "C-x C-y") ) ಠ_ಠ
+
+(require 'multiple-cursors)
+(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+
+
 (require 'savehist)
 (savehist-mode t)
 
@@ -156,7 +165,8 @@
         (fresh . 1)
         (run . 1)
         (run* . 1)
-        (run . 2)))
+        (run . 2)
+	(letrec . 0)))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -200,6 +210,8 @@
 (fset 'make-k-ri
       (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([134217749 134217749 134217749 134217734 134217732 134217732 134217732 134217749 201326624 134217847 134217749 134217730 134217734 25 134217730 134217730 201326624 134217847 134217732 25 32 134217749 201326624 134217765 32 return 32 44 return 33 134217749 96 2 201326624 23 134217732 134217734 134217734 return 25 134217732 25 201326624 201326624 23 134217749 134217730 134217734 201326624 23 134217749 134217749 201326624 tab 134217730 134217734 134217748 2 2 2 134217730 134217730 134217734 25 134217749 201326624 tab 134217734 134217730 134217734 2 134217730 134217730 134217734] 0 "%d")) arg)))
 
+;; I need to write a keyboard macro for going from let* to begir/set!
+
 ;; Indent regions C-x <tab> left or right. Mix with C-u `num` for multi
 ;; M-x set-input-method RETURN TeX RETURN write unicode chars
 ;; in Racket M-\ to change input mode.
@@ -219,6 +231,8 @@
 ;; Get code to color parens again. 
 ;; Setup package-pinned-packages, so as to draw from the correct package repo. 
 ;; Spacing with parens in various non-lisp modes that you use w/paredit mode.
+;; Turn off C-z behavior that hides window
+;; Insert look-of-disapproval keyboard shortcut
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
