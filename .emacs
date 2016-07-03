@@ -25,6 +25,9 @@
 
 (package-initialize)
 
+(add-to-list 'load-path "~/.emacs.d/lisp/")
+
+
 ;; (unless (package-installed-p 'use-package)
 ;;   (progn
 ;;     (unless package-archive-contents
@@ -78,6 +81,31 @@
 (require 'helm)
 (require 'helm-config)
 (require 'midnight)
+(require 'langtool)
+(require 'diction)
+
+(if (file-exists-p "~/LanguageTool-3.4/")
+    (setq langtool-language-tool-jar "~/LanguageTool-3.4/languagetool-commandline.jar"))
+
+(global-set-key "\C-x4w" 'langtool-check)
+(global-set-key "\C-x4W" 'langtool-check-done)
+(global-set-key "\C-x4l" 'langtool-switch-default-language)
+(global-set-key "\C-x44" 'langtool-show-message-at-point)
+(global-set-key "\C-x4c" 'langtool-correct-buffer)
+
+(setq langtool-default-language "en-US")
+(setq langtool-mother-tongue "en")
+
+;; (defun langtool-autoshow-detail-popup (overlays)
+;;   (when (require 'popup nil t)
+;;     ;; Do not interrupt current popup
+;;     (unless (or popup-instances
+;;                 ;; suppress popup after type `C-g` .
+;;                 (memq last-command '(keyboard-quit)))
+;;       (let ((msg (langtool-details-error-message overlays)))
+;;         (popup-tip msg)))))
+
+;; (setq langtool-autoshow-message-function 'langtool-autoshow-detail-popup)
 
 ;; Execute racket in emacs setup to install 
 
@@ -117,7 +145,8 @@
 ;; (ac-config-default)
 ;; (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
 
-;; (global-set-key (kbd "C-x C-y") ) ಠ_ಠ
+(global-set-key (kbd "C-c (") (lambda () (interactive) (insert "ಠ_ಠ")))
+
 
 (require 'multiple-cursors)
 (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
@@ -200,7 +229,7 @@
 	       (setq compile-command
 		     (concat "make -C " tt-root-directory)))
 	     (setq default-directory tt-root-directory))))))
- '(scheme-program-name "/usr/bin/petite")
+ '(scheme-program-name "scheme")
  '(vc-follow-symlinks (quote t)))
 
 ;; For 311, to make continuations RI.
@@ -215,6 +244,7 @@
 ;; Indent regions C-x <tab> left or right. Mix with C-u `num` for multi
 ;; M-x set-input-method RETURN TeX RETURN write unicode chars
 ;; in Racket M-\ to change input mode.
+;; C-u M-x shell -- get multiple shells!
 
 ;; Right now, this is busted in the agda-mode repository. 13/12/15
 (when (eq system-type 'darwin)
@@ -240,3 +270,4 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
