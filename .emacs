@@ -81,20 +81,21 @@
 (require 'helm)
 (require 'helm-config)
 (require 'midnight)
-(require 'langtool)
 (require 'diction)
 
 (if (file-exists-p "~/LanguageTool-3.4/")
-    (setq langtool-language-tool-jar "~/LanguageTool-3.4/languagetool-commandline.jar"))
+    (begin
+      (require 'langtool)
+      (setq langtool-language-tool-jar "~/LanguageTool-3.4/languagetool-commandline.jar")
+      (global-set-key "\C-x4w" 'langtool-check)
+      (global-set-key "\C-x4W" 'langtool-check-done)
+      (global-set-key "\C-x4l" 'langtool-switch-default-language)
+      (global-set-key "\C-x44" 'langtool-show-message-at-point)
+      (global-set-key "\C-x4c" 'langtool-correct-buffer)
 
-(global-set-key "\C-x4w" 'langtool-check)
-(global-set-key "\C-x4W" 'langtool-check-done)
-(global-set-key "\C-x4l" 'langtool-switch-default-language)
-(global-set-key "\C-x44" 'langtool-show-message-at-point)
-(global-set-key "\C-x4c" 'langtool-correct-buffer)
+      (setq langtool-default-language "en-US")
+      (setq langtool-mother-tongue "en")))
 
-(setq langtool-default-language "en-US")
-(setq langtool-mother-tongue "en")
 
 ;; (defun langtool-autoshow-detail-popup (overlays)
 ;;   (when (require 'popup nil t)
@@ -263,6 +264,10 @@
 ;; Spacing with parens in various non-lisp modes that you use w/paredit mode.
 ;; Turn off C-z behavior that hides window
 ;; Insert look-of-disapproval keyboard shortcut
+;; add diction file as a submodule, and suggest that if it's not found, that the directory in my .emacs module be symlinked to the correct location.
+;; use David's .emacs as a sample, to set things up properly.
+;; Add a separate file with my private information like git stuff etc, that folk can setup and add. 
+
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
