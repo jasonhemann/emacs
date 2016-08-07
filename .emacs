@@ -267,7 +267,8 @@
 ;; add diction file as a submodule, and suggest that if it's not found, that the directory in my .emacs module be symlinked to the correct location.
 ;; use David's .emacs as a sample, to set things up properly.
 ;; Add a separate file with my private information like git stuff etc, that folk can setup and add. 
-
+;; Set things up so langtool will either be automatically downloaded or suggest that it be downloaded.
+;; Perhaps instead set these things up as an emacs 24 package. 
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
