@@ -84,7 +84,7 @@
 (require 'diction)
 
 (if (file-exists-p "~/LanguageTool-3.4/")
-    (begin
+    (let ()
       (require 'langtool)
       (setq langtool-language-tool-jar "~/LanguageTool-3.4/languagetool-commandline.jar")
       (global-set-key "\C-x4w" 'langtool-check)
