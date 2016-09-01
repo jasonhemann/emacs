@@ -255,6 +255,7 @@
 
 ;; Emacs desiderata
 ;; Setup emacs calendar to sync with google calendar
+;; Set up paradox
 ;; Have width of linum buffer scale as font-size increases.
 ;; Set a higher default font size (point size).
 ;; Make it Windows 7/8/10 appropriate. --- see Google Keep
