@@ -208,9 +208,13 @@
     (emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode agda-mode agda2-mode haskell-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode racket-mode Racket-mode idris-mode racket-repl-mode idris-repl-mode ciao-mode)))
  '(custom-safe-themes
    (quote
-    ("71ecffba18621354a1be303687f33b84788e13f40141580fa81e7840752d31bf" "c86f868347919095aa44d2a6129dd714cbcf8feaa88ba954f636295b14ceff8f" "8fed5e4b89cf69107d524c4b91b4a4c35bcf1b3563d5f306608f0c48f580fdf8" "83e584d74b0faea99a414a06dae12f11cd3176fdd4eba6674422539951bcfaa8" "90edd91338ebfdfcd52ecd4025f1c7f731aced4c9c49ed28cfbebb3a3654840b" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "a507b9ca4a605d5256716da70961741b9ef9ec3246041a4eb776102e8df18418" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" default)))
+    ("235dc2dd925f492667232ead701c450d5c6fce978d5676e54ef9ca6dd37f6ceb" "38e64ea9b3a5e512ae9547063ee491c20bd717fe59d9c12219a0b1050b439cdd" "e64111716b1c8c82638796667c2c03466fde37e69cada5f6b640c16f1f4e97df" "71ecffba18621354a1be303687f33b84788e13f40141580fa81e7840752d31bf" "c86f868347919095aa44d2a6129dd714cbcf8feaa88ba954f636295b14ceff8f" "8fed5e4b89cf69107d524c4b91b4a4c35bcf1b3563d5f306608f0c48f580fdf8" "83e584d74b0faea99a414a06dae12f11cd3176fdd4eba6674422539951bcfaa8" "90edd91338ebfdfcd52ecd4025f1c7f731aced4c9c49ed28cfbebb3a3654840b" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "a507b9ca4a605d5256716da70961741b9ef9ec3246041a4eb776102e8df18418" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" default)))
  '(helm-M-x-fuzzy-match (quote (quote t)))
  '(mac-option-modifier (quote (:ordinary meta :mouse alt)))
+ '(package-selected-packages
+   (quote
+    (wordsmith-mode tabbar dr-racket-like-unicode biblio bog eldoro org-doing org-dotemacs org-rtm wordnut sml-modeline sml-mode paredit-menu paredit-everywhere org-ac mc-extras magit-filenotify j-mode helm-wordnet helm-idris helm-dictionary hc-zenburn-theme flyspell-lazy elscreen-separate-buffer-list dictionary company-dict color-theme calfw-gcal autopair auto-package-update ace-jump-mode ac-math)))
+ '(racket-program "racket")
  '(racket-racket-program "racket")
  '(safe-local-variable-values
    (quote
@@ -240,7 +244,7 @@
 (fset 'make-k-ri
       (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([134217749 134217749 134217749 134217734 134217732 134217732 134217732 134217749 201326624 134217847 134217749 134217730 134217734 25 134217730 134217730 201326624 134217847 134217732 25 32 134217749 201326624 134217765 32 return 32 44 return 33 134217749 96 2 201326624 23 134217732 134217734 134217734 return 25 134217732 25 201326624 201326624 23 134217749 134217730 134217734 201326624 23 134217749 134217749 201326624 tab 134217730 134217734 134217748 2 2 2 134217730 134217730 134217734 25 134217749 201326624 tab 134217734 134217730 134217734 2 134217730 134217730 134217734] 0 "%d")) arg)))
 
-;; I need to write a keyboard macro for going from let* to begir/set!
+;; I need to write a keyboard macro for going from let* to begin/set!
 
 ;; Indent regions C-x <tab> left or right. Mix with C-u `num` for multi
 ;; M-x set-input-method RETURN TeX RETURN write unicode chars
@@ -253,18 +257,25 @@
     (let ((coding-system-for-read 'utf-8))
       (shell-command-to-string "agda-mode locate"))))
 
+
+(add-hook 'eval-expression-minibuffer-setup-hook 'my-minibuffer-setup)
+(add-hook 'minibuffer-setup-hook 'my-minibuffer-setup)
+(defun my-minibuffer-setup ()
+  (set (make-local-variable 'face-remapping-alist)
+       '((default :height 5.0))))
+
 ;; Emacs desiderata
 ;; Setup emacs calendar to sync with google calendar
 ;; Set up paradox
+;; Set up wordsmith-mode
 ;; Have width of linum buffer scale as font-size increases.
 ;; Set a higher default font size (point size).
 ;; Make it Windows 7/8/10 appropriate. --- see Google Keep
 ;; Automatically remove obsolete packages
-;; Get code to color parens again. 
+;; Get code to color parens again for latex files. 
 ;; Setup package-pinned-packages, so as to draw from the correct package repo. 
 ;; Spacing with parens in various non-lisp modes that you use w/paredit mode.
 ;; Turn off C-z behavior that hides window
-;; Insert look-of-disapproval keyboard shortcut
 ;; add diction file as a submodule, and suggest that if it's not found, that the directory in my .emacs module be symlinked to the correct location.
 ;; use David's .emacs as a sample, to set things up properly.
 ;; Add a separate file with my private information like git stuff etc, that folk can setup and add. 
