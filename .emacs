@@ -46,14 +46,15 @@
 (unless package-archive-contents
    (package-refresh-contents))
 
-(install-if-missing
- '(ace-jump-mode async auto-complete auto-complete-pcmp auto-package-update
-   ac-math autopair avy calfw calfw-gcal color-theme cyberpunk-theme dash
-   elscreen elscreen-separate-buffer-list exec-path-from-shell faceup 
-   flyspell-lazy hc-zenburn-theme helm helm-idris helm-j-cheatsheet 
-   highlight icicles idris-mode j-mode log4e magit magit-filenotify
-   mc-extras multiple-cursors org-ac org-beautify-theme org-gcal paredit
-   prop-menu popup racket-mode s sml-mode sml-modeline yaxception))
+(install-if-missing  
+ '(ac-math ace-jump-mode auto-package-update
+    autopair biblio bog calfw-gcal color-theme company-dict
+    dictionary dr-racket-like-unicode eldoro elscreen-separate-buffer-list
+    flymake-racket flyspell-lazy hc-zenburn-theme helm-dictionary
+    helm-idris helm-wordnet j-mode magit-filenotify mc-extras
+    org-ac org-doing org-dotemacs org-rtm paredit-everywhere
+    paredit-menu racket-mode scheme-complete sml-mode sml-modeline
+    tabbar wordnut wordsmith-mode))
 
 (let ((gnu-ls-path (executable-find "gls"))) 
  (when gnu-ls-path 
@@ -213,7 +214,7 @@
  '(mac-option-modifier (quote (:ordinary meta :mouse alt)))
  '(package-selected-packages
    (quote
-    (wordsmith-mode tabbar dr-racket-like-unicode biblio bog eldoro org-doing org-dotemacs org-rtm wordnut sml-modeline sml-mode paredit-menu paredit-everywhere org-ac mc-extras magit-filenotify j-mode helm-wordnet helm-idris helm-dictionary hc-zenburn-theme flyspell-lazy elscreen-separate-buffer-list dictionary company-dict color-theme calfw-gcal autopair auto-package-update ace-jump-mode ac-math)))
+    (langtool helm magit racket-mode scheme-complete flymake-racket wordsmith-mode tabbar dr-racket-like-unicode biblio bog eldoro org-doing org-dotemacs org-rtm wordnut sml-modeline sml-mode paredit-menu paredit-everywhere org-ac mc-extras magit-filenotify j-mode helm-wordnet helm-idris helm-dictionary hc-zenburn-theme flyspell-lazy elscreen-separate-buffer-list dictionary company-dict color-theme calfw-gcal autopair auto-package-update ace-jump-mode ac-math)))
  '(racket-program "racket")
  '(racket-racket-program "racket")
  '(safe-local-variable-values
