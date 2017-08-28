@@ -48,7 +48,7 @@
 
 (install-if-missing  
  '(ac-math ace-jump-mode auto-package-update
-    autopair biblio bog calfw-gcal color-theme company-dict
+    autopair biblio bog calfw-gcal color-theme company-dict cyberpunk-theme
     dictionary dr-racket-like-unicode eldoro elscreen-separate-buffer-list
     flymake-racket flyspell-lazy hc-zenburn-theme helm-dictionary
     helm-idris helm-wordnet j-mode magit-filenotify mc-extras
@@ -214,7 +214,7 @@
  '(mac-option-modifier (quote (:ordinary meta :mouse alt)))
  '(package-selected-packages
    (quote
-    (langtool helm magit racket-mode scheme-complete flymake-racket wordsmith-mode tabbar dr-racket-like-unicode biblio bog eldoro org-doing org-dotemacs org-rtm wordnut sml-modeline sml-mode paredit-menu paredit-everywhere org-ac mc-extras magit-filenotify j-mode helm-wordnet helm-idris helm-dictionary hc-zenburn-theme flyspell-lazy elscreen-separate-buffer-list dictionary company-dict color-theme calfw-gcal autopair auto-package-update ace-jump-mode ac-math)))
+    (cyberpunk-theme langtool helm magit racket-mode scheme-complete flymake-racket wordsmith-mode tabbar dr-racket-like-unicode biblio bog eldoro org-doing org-dotemacs org-rtm wordnut sml-modeline sml-mode paredit-menu paredit-everywhere org-ac mc-extras magit-filenotify j-mode helm-wordnet helm-idris helm-dictionary hc-zenburn-theme flyspell-lazy elscreen-separate-buffer-list dictionary company-dict color-theme calfw-gcal autopair auto-package-update ace-jump-mode ac-math)))
  '(racket-program "racket")
  '(racket-racket-program "racket")
  '(safe-local-variable-values
