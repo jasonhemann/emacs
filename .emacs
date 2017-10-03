@@ -141,8 +141,8 @@
 ;; (global-linum-mode t)
 
 ;; These don't work. 
-;; (add-hook 'auto-package-update-minor-mode-hook #'package-menu-mark-obsolete-for-deletion)
-;; (add-hook 'auto-package-update-minor-mode-hook #'package-menu-execute)
+(add-hook 'auto-package-update-minor-mode-hook 'package-menu-mark-obsolete-for-deletion)
+(add-hook 'auto-package-update-minor-mode-hook 'package-menu-execute)
 (auto-package-update-maybe)
 
 ;; JBH
@@ -156,6 +156,9 @@
 
 (add-hook 'text-mode-hook 'writegood-mode)
 (add-hook 'text-mode-hook 'artbollocks-mode)
+
+(add-hook 'tex-mode-hook (lambda () (define-key tex-mode-map (kbd "C-c C-k") 'compile)))
+(add-hook 'tex-mode-hook (lambda () (define-key tex-mode-map (kbd "C-c |") 'align-current)))
 
 (require 'multiple-cursors)
 (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
