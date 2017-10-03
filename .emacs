@@ -56,9 +56,12 @@
     paredit-menu racket-mode scheme-complete sml-mode sml-modeline
     tabbar wordnut wordsmith-mode))
 
+(global-set-key (kbd "C-x g") 'magit-status)
+
+
 (let ((gnu-ls-path (executable-find "gls"))) 
- (when gnu-ls-path 
-   (setq insert-directory-program gnu-ls-path)))
+  (when gnu-ls-path 
+    (setq insert-directory-program gnu-ls-path)))
 
 (setq flyspell-issue-welcome-flag nil);; easy spell check setup.
 (global-set-key (kbd "<f8>") 'ispell-word)
@@ -148,14 +151,17 @@
 ;; (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
 
 (global-set-key (kbd "C-c (") (lambda () (interactive) (insert "ಠ_ಠ")))
+;; ebib mode for latex
+(global-set-key "\C-ce" 'ebib)
 
+(add-hook 'text-mode-hook 'writegood-mode)
+(add-hook 'text-mode-hook 'artbollocks-mode)
 
 (require 'multiple-cursors)
 (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
 (global-set-key (kbd "C->") 'mc/mark-next-like-this)
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
-
 
 (require 'savehist)
 (savehist-mode t)
@@ -173,6 +179,7 @@
 (add-hook 'lisp-mode-hook                          #'enable-paredit-mode)
 (add-hook 'lisp-interaction-mode-hook              #'enable-paredit-mode)
 (add-hook 'scheme-mode-hook                        #'enable-paredit-mode)
+(add-hook 'inferior-scheme-mode-hook               #'enable-paredit-mode)
 (add-hook 'racket-mode-hook                        #'enable-paredit-mode)
 (add-hook 'racket-repl-mode-hook                   #'enable-paredit-mode)
 (add-hook 'idris-mode-hook                         #'enable-paredit-mode)
@@ -209,12 +216,13 @@
     (emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode agda-mode agda2-mode haskell-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode racket-mode Racket-mode idris-mode racket-repl-mode idris-repl-mode ciao-mode)))
  '(custom-safe-themes
    (quote
-    ("235dc2dd925f492667232ead701c450d5c6fce978d5676e54ef9ca6dd37f6ceb" "38e64ea9b3a5e512ae9547063ee491c20bd717fe59d9c12219a0b1050b439cdd" "e64111716b1c8c82638796667c2c03466fde37e69cada5f6b640c16f1f4e97df" "71ecffba18621354a1be303687f33b84788e13f40141580fa81e7840752d31bf" "c86f868347919095aa44d2a6129dd714cbcf8feaa88ba954f636295b14ceff8f" "8fed5e4b89cf69107d524c4b91b4a4c35bcf1b3563d5f306608f0c48f580fdf8" "83e584d74b0faea99a414a06dae12f11cd3176fdd4eba6674422539951bcfaa8" "90edd91338ebfdfcd52ecd4025f1c7f731aced4c9c49ed28cfbebb3a3654840b" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "a507b9ca4a605d5256716da70961741b9ef9ec3246041a4eb776102e8df18418" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" default)))
+    ("d6922c974e8a78378eacb01414183ce32bc8dbf2de78aabcc6ad8172547cb074" "235dc2dd925f492667232ead701c450d5c6fce978d5676e54ef9ca6dd37f6ceb" "38e64ea9b3a5e512ae9547063ee491c20bd717fe59d9c12219a0b1050b439cdd" "e64111716b1c8c82638796667c2c03466fde37e69cada5f6b640c16f1f4e97df" "71ecffba18621354a1be303687f33b84788e13f40141580fa81e7840752d31bf" "c86f868347919095aa44d2a6129dd714cbcf8feaa88ba954f636295b14ceff8f" "8fed5e4b89cf69107d524c4b91b4a4c35bcf1b3563d5f306608f0c48f580fdf8" "83e584d74b0faea99a414a06dae12f11cd3176fdd4eba6674422539951bcfaa8" "90edd91338ebfdfcd52ecd4025f1c7f731aced4c9c49ed28cfbebb3a3654840b" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "a507b9ca4a605d5256716da70961741b9ef9ec3246041a4eb776102e8df18418" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" default)))
+ '(default-input-method "english-dvorak")
  '(helm-M-x-fuzzy-match (quote (quote t)))
  '(mac-option-modifier (quote (:ordinary meta :mouse alt)))
  '(package-selected-packages
    (quote
-    (cyberpunk-theme langtool helm magit racket-mode scheme-complete flymake-racket wordsmith-mode tabbar dr-racket-like-unicode biblio bog eldoro org-doing org-dotemacs org-rtm wordnut sml-modeline sml-mode paredit-menu paredit-everywhere org-ac mc-extras magit-filenotify j-mode helm-wordnet helm-idris helm-dictionary hc-zenburn-theme flyspell-lazy elscreen-separate-buffer-list dictionary company-dict color-theme calfw-gcal autopair auto-package-update ace-jump-mode ac-math)))
+    (artbollocks-mode www-synonyms osx-dictionary x-dict writegood-mode magithub ebib cyberpunk-theme langtool racket-mode scheme-complete flymake-racket wordsmith-mode tabbar dr-racket-like-unicode biblio bog eldoro org-doing org-dotemacs org-rtm wordnut sml-modeline sml-mode paredit-menu paredit-everywhere org-ac mc-extras magit-filenotify j-mode helm-wordnet helm-idris helm-dictionary hc-zenburn-theme flyspell-lazy elscreen-separate-buffer-list dictionary company-dict color-theme calfw-gcal autopair auto-package-update ace-jump-mode ac-math)))
  '(racket-program "racket")
  '(racket-racket-program "racket")
  '(safe-local-variable-values
