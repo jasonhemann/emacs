@@ -58,7 +58,6 @@
 
 (global-set-key (kbd "C-x g") 'magit-status)
 
-
 (let ((gnu-ls-path (executable-find "gls"))) 
   (when gnu-ls-path 
     (setq insert-directory-program gnu-ls-path)))
@@ -156,6 +155,7 @@
 
 (add-hook 'text-mode-hook 'writegood-mode)
 (add-hook 'text-mode-hook 'artbollocks-mode)
+(add-hook 'tex-mode-hook 'auxtex-mode)
 
 (add-hook 'tex-mode-hook (lambda () (define-key tex-mode-map (kbd "C-c C-k") 'compile)))
 (add-hook 'tex-mode-hook (lambda () (define-key tex-mode-map (kbd "C-c |") 'align-current)))
@@ -225,7 +225,7 @@
  '(mac-option-modifier (quote (:ordinary meta :mouse alt)))
  '(package-selected-packages
    (quote
-    (artbollocks-mode www-synonyms osx-dictionary x-dict writegood-mode magithub ebib cyberpunk-theme langtool racket-mode scheme-complete flymake-racket wordsmith-mode tabbar dr-racket-like-unicode biblio bog eldoro org-doing org-dotemacs org-rtm wordnut sml-modeline sml-mode paredit-menu paredit-everywhere org-ac mc-extras magit-filenotify j-mode helm-wordnet helm-idris helm-dictionary hc-zenburn-theme flyspell-lazy elscreen-separate-buffer-list dictionary company-dict color-theme calfw-gcal autopair auto-package-update ace-jump-mode ac-math)))
+    (bind-key auctex artbollocks-mode www-synonyms osx-dictionary x-dict writegood-mode magithub ebib cyberpunk-theme langtool racket-mode scheme-complete flymake-racket wordsmith-mode tabbar dr-racket-like-unicode biblio bog eldoro org-doing org-dotemacs org-rtm wordnut sml-modeline sml-mode paredit-menu paredit-everywhere org-ac mc-extras magit-filenotify j-mode helm-wordnet helm-idris helm-dictionary hc-zenburn-theme flyspell-lazy elscreen-separate-buffer-list dictionary company-dict color-theme calfw-gcal autopair auto-package-update ace-jump-mode ac-math)))
  '(racket-program "racket")
  '(racket-racket-program "racket")
  '(safe-local-variable-values
