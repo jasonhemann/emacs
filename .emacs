@@ -166,6 +166,10 @@
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 
+
+(add-hook 'scheme-mode-hook                        'multiple-cursors-mode)
+(add-hook 'inferior-scheme-mode-hook               'multiple-cursors-mode)
+
 (require 'savehist)
 (savehist-mode t)
 
@@ -223,6 +227,7 @@
  '(default-input-method "english-dvorak")
  '(helm-M-x-fuzzy-match (quote (quote t)))
  '(mac-option-modifier (quote (:ordinary meta :mouse alt)))
+ '(org-use-speed-commands t)
  '(package-selected-packages
    (quote
     (bind-key auctex artbollocks-mode www-synonyms osx-dictionary x-dict writegood-mode magithub ebib cyberpunk-theme langtool racket-mode scheme-complete flymake-racket wordsmith-mode tabbar dr-racket-like-unicode biblio bog eldoro org-doing org-dotemacs org-rtm wordnut sml-modeline sml-mode paredit-menu paredit-everywhere org-ac mc-extras magit-filenotify j-mode helm-wordnet helm-idris helm-dictionary hc-zenburn-theme flyspell-lazy elscreen-separate-buffer-list dictionary company-dict color-theme calfw-gcal autopair auto-package-update ace-jump-mode ac-math)))
