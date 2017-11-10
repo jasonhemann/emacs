@@ -155,6 +155,7 @@
 
 (add-hook 'text-mode-hook 'writegood-mode)
 (add-hook 'text-mode-hook 'artbollocks-mode)
+(add-hook 'tex-mode-hook (function (lambda () (setq ispell-parser 'tex))))
 (add-hook 'tex-mode-hook 'auxtex-mode)
 
 (add-hook 'tex-mode-hook (lambda () (define-key tex-mode-map (kbd "C-c C-k") 'compile)))
