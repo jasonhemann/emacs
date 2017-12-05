@@ -50,12 +50,12 @@
  '(ac-math ace-jump-mode auto-package-update
     autopair biblio bog calfw-gcal color-theme company-dict cyberpunk-theme
     dictionary dr-racket-like-unicode eldoro elscreen-separate-buffer-list
+    exec-path-from-shell
     flymake-racket flyspell-lazy hc-zenburn-theme helm-dictionary
     helm-idris helm-wordnet j-mode magit-filenotify mc-extras
     org-ac org-doing org-dotemacs org-rtm paredit-everywhere
     paredit-menu racket-mode scheme-complete sml-mode sml-modeline
     tabbar wordnut wordsmith-mode))
-
 (global-set-key (kbd "C-x g") 'magit-status)
 
 (let ((gnu-ls-path (executable-find "gls"))) 
@@ -84,7 +84,7 @@
 (require 'helm)
 (require 'helm-config)
 (require 'midnight)
-(require 'diction)
+;; (require 'diction)
 
 (if (file-exists-p "~/LanguageTool-3.4/")
     (let ()
@@ -220,6 +220,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(TeX-auto-untabify t)
  '(ac-modes
    (quote
     (emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode agda-mode agda2-mode haskell-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode racket-mode Racket-mode idris-mode racket-repl-mode idris-repl-mode ciao-mode)))
@@ -229,6 +230,7 @@
  '(default-input-method "english-dvorak")
  '(helm-M-x-fuzzy-match (quote (quote t)))
  '(mac-option-modifier (quote (:ordinary meta :mouse alt)))
+ '(org-src-tab-acts-natively t)
  '(org-use-speed-commands t)
  '(package-selected-packages
    (quote
