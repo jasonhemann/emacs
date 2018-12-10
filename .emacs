@@ -1,10 +1,24 @@
-;; NB: If you can't get this .emacs file to load successfully, you
-;; should try M-x package-list-packages, then U, then x.
+;;; package --- Summary
+
+;;; This is Jason Hemann's .emacs setup, intended for OSX and some
+;;; linux machines. It is currently in an unstable state, and the
+;;; non-.emacs dependencies are not listed. Several aspects of this
+;;; rely on packages from homebrew, and a number of other downloaded
+;;; files and hard-coded directories.
+
+;;; Commentary:
+
+;;; To anyone else trying to run or to load this file, you should
+;;; consider the below.
+;;; NB: If you can't get this .emacs file to load successfully, you
+;;; should try M-x package-list-packages, then U, then x.
+
+
+;;; Code:
 
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
 			 ("marmalade" . "https://marmalade-repo.org/packages/")
 			 ("melpa" . "http://melpa.milkbox.net/packages/")))
-
 
 (setq inhibit-splash-screen t
       initial-scratch-message nil
@@ -27,6 +41,7 @@
 
 (add-to-list 'load-path "~/.emacs.d/lisp/")
 
+;; (load "~/Documents/eliemacs/eliemacs")
 
 ;; (unless (package-installed-p 'use-package)
 ;;   (progn
@@ -50,7 +65,7 @@
  '(ac-math ace-jump-mode auto-package-update
     autopair biblio bog calfw-gcal color-theme company-dict cyberpunk-theme
     dictionary dr-racket-like-unicode eldoro elscreen-separate-buffer-list
-    exec-path-from-shell
+    exec-path-from-shell 
     flymake-racket flyspell-lazy hc-zenburn-theme helm-dictionary
     helm-idris helm-wordnet j-mode magit-filenotify mc-extras
     org-ac org-doing org-dotemacs org-rtm paredit-everywhere
@@ -61,6 +76,8 @@
 (let ((gnu-ls-path (executable-find "gls"))) 
   (when gnu-ls-path 
     (setq insert-directory-program gnu-ls-path)))
+
+(global-flycheck-mode)
 
 (setq flyspell-issue-welcome-flag nil);; easy spell check setup.
 (global-set-key (kbd "<f8>") 'ispell-word)
@@ -74,7 +91,7 @@
   (ispell-word)
   )
 (global-set-key (kbd "M-<f8>") 'flyspell-check-next-highlighted-word)
-
+(mac-auto-operator-composition-mode)
 (if (eq system-type 'darwin)
     (setq-default ispell-program-name "/usr/local/bin/aspell")
     (setq-default ispell-program-name "/usr/bin/aspell")) ;; What about Windows?
@@ -140,9 +157,9 @@
 ;; (global-linum-mode t)
 
 ;; These don't work. 
-(add-hook 'auto-package-update-minor-mode-hook 'package-menu-mark-obsolete-for-deletion)
-(add-hook 'auto-package-update-minor-mode-hook 'package-menu-execute)
-(auto-package-update-maybe)
+;; (add-hook 'auto-package-update-minor-mode-hook 'package-menu-mark-obsolete-for-deletion)
+;; (add-hook 'auto-package-update-minor-mode-hook 'package-menu-execute)
+;; (auto-package-update-maybe)
 
 ;; JBH
 ;; (require 'auto-complete-config)
@@ -152,6 +169,10 @@
 (global-set-key (kbd "C-c (") (lambda () (interactive) (insert "ಠ_ಠ")))
 ;; ebib mode for latex
 (global-set-key "\C-ce" 'ebib)
+
+
+(add-hook 'LaTeX-mode-hook 'turn-on-reftex)   ; with AUCTeX LaTeX mode
+(add-hook 'latex-mode-hook 'turn-on-reftex)   ; with Emacs latex mode
 
 (add-hook 'text-mode-hook 'writegood-mode)
 (add-hook 'text-mode-hook 'artbollocks-mode)
@@ -169,17 +190,42 @@
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 
 
+(add-hook 'scheme-mode-hook                        'flylisp-mode)
+(add-hook 'inferior-scheme-mode-hook               'flylisp-mode)
 (add-hook 'scheme-mode-hook                        'multiple-cursors-mode)
 (add-hook 'inferior-scheme-mode-hook               'multiple-cursors-mode)
 
 (require 'savehist)
 (savehist-mode t)
 
+;; (autoload 'scheme-smart-complete "scheme-complete" nil t)
+
+;; (eval-after-load 'scheme
+;;   '(define-key scheme-mode-map "\t" 'scheme-complete-or-indent))
+
+;; (autoload 'scheme-get-current-symbol-info "scheme-complete" nil t)
+;; (add-hook 'scheme-mode-hook
+;;   (lambda ()
+;;     (make-local-variable 'eldoc-documentation-function)
+;;     (setq eldoc-documentation-function 'scheme-get-current-symbol-info)
+;;     (eldoc-mode)))
+
+;; (setq lisp-indent-function 'scheme-smart-indent-function)
+
+;; (define-key flyspell-mode-map (kbd "C-;") #'flyspell-popup-correct)
+
+;; You can also enable flyspell-popup-auto-correct-mode to popup that
+;; Popup Menu automatically with a delay (default 1.6 seconds):
+
+(add-hook 'flyspell-mode-hook #'flyspell-popup-auto-correct-mode)
+
 (setq auto-mode-alist (cons '("\\.v$" . coq-mode) auto-mode-alist))
 (autoload 'coq-mode "coq" "Major mode for editing Coq vernacular." t)
 
 (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
 (global-set-key (kbd "{") 'paredit-open-curly)
+(add-hook 'racket-mode-hook      #'flylisp-mode)
+(add-hook 'racket-repl-mode-hook #'flylisp-mode)
 (add-hook 'racket-mode-hook      #'racket-unicode-input-method-enable)
 (add-hook 'racket-repl-mode-hook #'racket-unicode-input-method-enable)
 (add-hook 'emacs-lisp-mode-hook                    #'enable-paredit-mode)
@@ -215,6 +261,8 @@
         (run . 2)
 	(letrec . 0)))
 
+(setq-default major-mode 'text-mode)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -226,15 +274,17 @@
     (emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode agda-mode agda2-mode haskell-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode racket-mode Racket-mode idris-mode racket-repl-mode idris-repl-mode ciao-mode)))
  '(custom-safe-themes
    (quote
-    ("d6922c974e8a78378eacb01414183ce32bc8dbf2de78aabcc6ad8172547cb074" "235dc2dd925f492667232ead701c450d5c6fce978d5676e54ef9ca6dd37f6ceb" "38e64ea9b3a5e512ae9547063ee491c20bd717fe59d9c12219a0b1050b439cdd" "e64111716b1c8c82638796667c2c03466fde37e69cada5f6b640c16f1f4e97df" "71ecffba18621354a1be303687f33b84788e13f40141580fa81e7840752d31bf" "c86f868347919095aa44d2a6129dd714cbcf8feaa88ba954f636295b14ceff8f" "8fed5e4b89cf69107d524c4b91b4a4c35bcf1b3563d5f306608f0c48f580fdf8" "83e584d74b0faea99a414a06dae12f11cd3176fdd4eba6674422539951bcfaa8" "90edd91338ebfdfcd52ecd4025f1c7f731aced4c9c49ed28cfbebb3a3654840b" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "a507b9ca4a605d5256716da70961741b9ef9ec3246041a4eb776102e8df18418" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" default)))
+    ("d1cc05d755d5a21a31bced25bed40f85d8677e69c73ca365628ce8024827c9e3" "834cbeacb6837f3ddca4a1a7b19b1af3834f36a701e8b15b628cad3d85c970ff" "923ee73494ea3611d2a1ff9f31bbf8d71b0b0cc2aeb4a6e0944ec6c83bc0ac23" "9fe1540491fcf692b8c639a3abacd32b29233bc4cb834a12a0fd1e01cbd0a128" "d6922c974e8a78378eacb01414183ce32bc8dbf2de78aabcc6ad8172547cb074" "235dc2dd925f492667232ead701c450d5c6fce978d5676e54ef9ca6dd37f6ceb" "38e64ea9b3a5e512ae9547063ee491c20bd717fe59d9c12219a0b1050b439cdd" "e64111716b1c8c82638796667c2c03466fde37e69cada5f6b640c16f1f4e97df" "71ecffba18621354a1be303687f33b84788e13f40141580fa81e7840752d31bf" "c86f868347919095aa44d2a6129dd714cbcf8feaa88ba954f636295b14ceff8f" "8fed5e4b89cf69107d524c4b91b4a4c35bcf1b3563d5f306608f0c48f580fdf8" "83e584d74b0faea99a414a06dae12f11cd3176fdd4eba6674422539951bcfaa8" "90edd91338ebfdfcd52ecd4025f1c7f731aced4c9c49ed28cfbebb3a3654840b" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "a507b9ca4a605d5256716da70961741b9ef9ec3246041a4eb776102e8df18418" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" default)))
  '(default-input-method "english-dvorak")
  '(helm-M-x-fuzzy-match (quote (quote t)))
  '(mac-option-modifier (quote (:ordinary meta :mouse alt)))
+ '(org-babel-load-languages (quote ((scheme . t))))
  '(org-src-tab-acts-natively t)
+ '(org-support-shift-select t)
  '(org-use-speed-commands t)
  '(package-selected-packages
    (quote
-    (bind-key auctex artbollocks-mode www-synonyms osx-dictionary x-dict writegood-mode magithub ebib cyberpunk-theme langtool racket-mode scheme-complete flymake-racket wordsmith-mode tabbar dr-racket-like-unicode biblio bog eldoro org-doing org-dotemacs org-rtm wordnut sml-modeline sml-mode paredit-menu paredit-everywhere org-ac mc-extras magit-filenotify j-mode helm-wordnet helm-idris helm-dictionary hc-zenburn-theme flyspell-lazy elscreen-separate-buffer-list dictionary company-dict color-theme calfw-gcal autopair auto-package-update ace-jump-mode ac-math)))
+    (company-emacs-eclim ac-emacs-eclim eclim prescient bind-key font-utils fontawesome flylisp flyspell-correct-popup flyspell-popup helm-flyspell flycheck writegood-mode ediprolog ebib el-get el-init el-init-viewer el-mock el-patch el2org pdf-tools latex-unicode-math-mode htmlize auctex artbollocks-mode www-synonyms x-dict cyberpunk-theme langtool racket-mode flymake-racket wordsmith-mode tabbar dr-racket-like-unicode biblio eldoro org-doing org-dotemacs org-rtm paredit-menu paredit-everywhere org-ac magit-filenotify helm-wordnet helm-idris helm-dictionary hc-zenburn-theme elscreen-separate-buffer-list dictionary color-theme calfw-gcal autopair ace-jump-mode ac-math)))
  '(racket-program "racket")
  '(racket-racket-program "racket")
  '(safe-local-variable-values
@@ -271,6 +321,8 @@
 ;; M-x set-input-method RETURN TeX RETURN write unicode chars
 ;; in Racket M-\ to change input mode.
 ;; C-u M-x shell -- get multiple shells!
+;; point-to-register C-x r SPC
+;; jump-to-register C-x r j 
 
 ;; Right now, this is busted in the agda-mode repository. 13/12/15
 (when (eq system-type 'darwin)
@@ -278,6 +330,7 @@
     (let ((coding-system-for-read 'utf-8))
       (shell-command-to-string "agda-mode locate"))))
 
+(add-to-list 'auto-mode-alist '("\\.rkt\\'" . racket-mode))
 
 (add-hook 'eval-expression-minibuffer-setup-hook 'my-minibuffer-setup)
 (add-hook 'minibuffer-setup-hook 'my-minibuffer-setup)
