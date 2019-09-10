@@ -195,28 +195,6 @@
 ;; ebib mode for latex
 (global-set-key "\C-ce" 'ebib)
 
-
-;; TeX-latex-mode, LaTeX-mode, TeX-mode, tex-mode, latex-mode, auxtex-mode
-
-(add-hook 'TeX-mode-hook 'turn-on-reftex)   ; with AUCTeX LaTeX mode
-(add-hook 'latex-mode-hook 'turn-on-reftex)   ; with Emacs latex mode
-(add-hook 'TeX-mode-hook 'turn-on-cdlatex)   ; with AUCTeX LaTeX mode
-(add-hook 'latex-mode-hook 'turn-on-cdlatex)   ; with Emacs latex mode
-(add-hook 'TeX-mode-hook 'visual-line-mode)
-(add-hook 'TeX-mode-hook 'LaTeX-math-mode)
-(add-hook 'TeX-mode-hook 'flyspell-preprocess-buffer)
-(add-hook 'TeX-mode-hook 'TeX-source-correlate-mode)
-(add-hook 'TeX-mode-hook 'LaTeX-preview-setup)
-(add-hook 'TeX-mode-hook 'TeX-PDF-mode)
-(add-hook 'TeX-mode-hook 'TeX-fold-mode)
-(add-hook 'TeX-mode-hook (lambda () (TeX-fold-mode 1)))
-(add-hook 'TeX-mode-hook #'TeX-fold-mode) ;; Automatically activate TeX-fold-mode.
-
-
-;; must be after font locking is set up for the buffer on!
-(add-hook 'find-file-hook 'TeX-fold-buffer t)
-
-
 (add-hook 'text-mode-hook 'writegood-mode)
 (add-hook 'text-mode-hook 'artbollocks-mode)
 (add-hook 'text-mode-hook 'flyspell-mode)
@@ -239,6 +217,28 @@
 
 (require 'savehist)
 (savehist-mode t)
+
+
+;; TeX-latex-mode, LaTeX-mode, TeX-mode, tex-mode, latex-mode, auxtex-mode
+
+(add-hook 'latex-mode-hook 'turn-on-cdlatex)   ; with Emacs latex mode
+(add-hook 'latex-mode-hook 'turn-on-reftex)   ; with Emacs latex mode
+
+(add-hook 'TeX-mode-hook 'turn-on-reftex)   ; with AUCTeX LaTeX mode
+(add-hook 'TeX-mode-hook 'turn-on-cdlatex)   ; with AUCTeX LaTeX mode
+(add-hook 'TeX-mode-hook 'visual-line-mode)
+;; (add-hook 'TeX-mode-hook 'flyspell-preprocess-buffer) ;; somehow void
+(add-hook 'TeX-mode-hook 'TeX-source-correlate-mode)
+(add-hook 'TeX-mode-hook 'TeX-PDF-mode)
+(add-hook 'TeX-mode-hook 'TeX-fold-mode)
+(add-hook 'TeX-mode-hook (lambda () (TeX-fold-mode 1)))
+(add-hook 'TeX-mode-hook #'TeX-fold-mode) ;; Automatically activate TeX-fold-mode.
+(add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+(add-hook 'LaTeX-mode-hook 'LaTeX-preview-setup)
+
+;; must be after font locking is set up for the buffer on!
+(add-hook 'find-file-hook 'TeX-fold-buffer t)
+
 
 ;; (autoload 'scheme-smart-complete "scheme-complete" nil t)
 
