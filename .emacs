@@ -218,6 +218,10 @@
 (require 'savehist)
 (savehist-mode t)
 
+(setq TeX-auto-save t)
+(setq TeX-parse-self t)
+(setq-default TeX-master nil)
+
 
 ;; TeX-latex-mode, LaTeX-mode, TeX-mode, tex-mode, latex-mode, auxtex-mode
 
