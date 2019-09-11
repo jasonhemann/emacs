@@ -220,8 +220,29 @@
 
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
-(setq-default TeX-master nil)
+(setq-default TeX-master nil) ;; (setq-default TeX-master "master") ; set a master for in the future.
+;; (setq reftex-label-alist '(AMSTeX)) ;; For if I'm getting parens around my references
 
+;; I grabbed this code off of the internet. The reftex-ref-style-alist
+;; variables already had some of these cleveref options, so not sure
+;; if I needed all of this. 
+(eval-after-load
+    "latex"
+  '(TeX-add-style-hook
+    "cleveref"
+    (lambda ()
+      (if (boundp 'reftex-ref-style-alist)
+	  (add-to-list
+	   'reftex-ref-style-alist
+	   '("Cleveref" "cleveref"
+             (("\\cref" ?c) ("\\Cref" ?C) ("\\cpageref" ?d) ("\\Cpageref" ?D)))))
+      (reftex-ref-style-activate "Cleveref")
+      (TeX-add-symbols
+       '("cref" TeX-arg-ref)
+       '("Cref" TeX-arg-ref)
+       '("cpageref" TeX-arg-ref)
+       '("Cpageref" TeX-arg-ref)))))
+;; Also not sure what else I needed to do to make subsec: available by default
 
 ;; TeX-latex-mode, LaTeX-mode, TeX-mode, tex-mode, latex-mode, auxtex-mode
 
@@ -240,9 +261,9 @@
 (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
 (add-hook 'LaTeX-mode-hook 'LaTeX-preview-setup)
 
+;; Only sometimes works!
 ;; must be after font locking is set up for the buffer on!
-(add-hook 'find-file-hook 'TeX-fold-buffer t)
-
+;; (add-hook 'find-file-hook 'TeX-fold-buffer t)
 
 ;; (autoload 'scheme-smart-complete "scheme-complete" nil t)
 
@@ -340,7 +361,8 @@
  '(racket-racket-program "racket")
  '(safe-local-variable-values
    (quote
-    ((eval progn
+    ((TeX-command-extra-options . "-shell-escape")
+     (eval progn
 	   (let
 	       ((tt-root-directory
 		 (when buffer-file-name
