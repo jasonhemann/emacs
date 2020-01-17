@@ -89,7 +89,7 @@
 
 (install-if-missing
  '(ac-math ace-jump-mode auto-package-update
-    autopair biblio bog calfw-gcal color-theme company-dict cyberpunk-theme
+    autopair biblio bog calfw-gcal clang-format color-theme company-dict cyberpunk-theme
     dictionary dr-racket-like-unicode eldoro elscreen-separate-buffer-list
     exec-path-from-shell
     flymake-racket flyspell-lazy hc-zenburn-theme helm-dictionary
@@ -97,7 +97,9 @@
     org-ac org-doing org-dotemacs org-rtm paredit-everywhere
     paredit-menu racket-mode scheme-complete sml-mode sml-modeline
     tabbar wordnut wordsmith-mode))
+
 (global-set-key (kbd "C-x g") 'magit-status)
+(global-set-key [C-M-tab] 'clang-format-region)
 
 (let ((gnu-ls-path (executable-find "gls")))
   (when gnu-ls-path
@@ -351,6 +353,7 @@
    (quote
     ("6bc387a588201caf31151205e4e468f382ecc0b888bac98b2b525006f7cb3307" "59e82a683db7129c0142b4b5a35dbbeaf8e01a4b81588f8c163bd255b76f4d21" "d1cc05d755d5a21a31bced25bed40f85d8677e69c73ca365628ce8024827c9e3" "834cbeacb6837f3ddca4a1a7b19b1af3834f36a701e8b15b628cad3d85c970ff" "923ee73494ea3611d2a1ff9f31bbf8d71b0b0cc2aeb4a6e0944ec6c83bc0ac23" "9fe1540491fcf692b8c639a3abacd32b29233bc4cb834a12a0fd1e01cbd0a128" "d6922c974e8a78378eacb01414183ce32bc8dbf2de78aabcc6ad8172547cb074" "235dc2dd925f492667232ead701c450d5c6fce978d5676e54ef9ca6dd37f6ceb" "38e64ea9b3a5e512ae9547063ee491c20bd717fe59d9c12219a0b1050b439cdd" "e64111716b1c8c82638796667c2c03466fde37e69cada5f6b640c16f1f4e97df" "71ecffba18621354a1be303687f33b84788e13f40141580fa81e7840752d31bf" "c86f868347919095aa44d2a6129dd714cbcf8feaa88ba954f636295b14ceff8f" "8fed5e4b89cf69107d524c4b91b4a4c35bcf1b3563d5f306608f0c48f580fdf8" "83e584d74b0faea99a414a06dae12f11cd3176fdd4eba6674422539951bcfaa8" "90edd91338ebfdfcd52ecd4025f1c7f731aced4c9c49ed28cfbebb3a3654840b" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "a507b9ca4a605d5256716da70961741b9ef9ec3246041a4eb776102e8df18418" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" default)))
  '(default-input-method "english-dvorak")
+ '(ebib-bibtex-dialect (quote biblatex))
  '(eclim-eclipse-dirs
    (quote
     ("/Applications/eclipse" "/usr/lib/eclipse" "/usr/local/lib/eclipse" "/usr/share/eclipse" "/Applications/Eclipse.app/Contents/Eclipse/" "/Applications/Eclipse Java.app/Contents/Eclipse/")))
@@ -387,6 +390,7 @@
 		     (concat "make -C " tt-root-directory)))
 	     (setq default-directory tt-root-directory))))))
  '(scheme-program-name "scheme")
+ '(straight-use-package-by-default t)
  '(vc-follow-symlinks (quote t)))
 
 ;; For 311, to make continuations RI.
