@@ -13,7 +13,6 @@
 ;;; NB: If you can't get this .emacs file to load successfully, you
 ;;; should try M-x package-list-packages, then U, then x.
 
-
 ;;; Code:
 (defvar bootstrap-version)
 (let ((bootstrap-file
@@ -46,8 +45,105 @@
 
 (straight-use-package '(flycheck-textlint :type git :host github :repo "kisaragi-hiu/flycheck-textlint"))
 (straight-use-package 'use-package)
+(straight-use-package 'wanderlust)
+(straight-use-package 'meghanada)
+;; (straight-use-package 'proof-general)
+;; (straight-use-package 'wordnut)
+;; (straight-use-package 'wanderlust)
+;; (straight-use-package 'w3m)
+;; (straight-use-package 'treepy)
+;; (straight-use-package 'sml-modeline)
+;; (straight-use-package 'sml-mode)
+;; (straight-use-package 'semi)
+;; (straight-use-package 'scheme-complete)
+;; (straight-use-package 'reazon)
+;; (straight-use-package 'powerthesaurus)
+;; (straight-use-package 'parent-mode)
+;; (straight-use-package 'multiple-cursors)
+;; (straight-use-package 'mc-extras)
+;; (straight-use-package 'magit-popup)
+;; (straight-use-package 'jeison)
+;; (straight-use-package 'j-mode)
+;; (straight-use-package 'ht)
+;; (straight-use-package 'graphql)
+;; (straight-use-package 'ghub)
+;; (straight-use-package 'flyspell-lazy)
+;; (straight-use-package 'flymake-easy)
+;; (straight-use-package 'flim)
+;; (straight-use-package 'exec-path-from-shell)
+;; (straight-use-package 'company-dict)
+;; (straight-use-package 'clang-format)
+;; (straight-use-package 'cdlatex)
+;; (straight-use-package 'bog)
+;; (straight-use-package 'bbdb)
+;; (straight-use-package 'auto-package-update)
+;; (straight-use-package 'auctex-latexmk)
+;; (straight-use-package 'apel)
+;; (straight-use-package 'academic-phrases)
+
 ;; I don't care that we're redefining tramp-read-passwd
 (setq ad-redefinition-action 'accept)
+
+
+(autoload 'wl "wl" "Wanderlust" t)
+(autoload 'wl-other-frame "wl" "Wanderlust on new frame." t)
+(autoload 'wl-draft "wl-draft" "Write draft with Wanderlust." t)
+
+
+
+;; IMAP
+(setq elmo-imap4-default-server "imap.gmail.com")
+(setq elmo-imap4-default-user "jason.hemann@gmail.com") 
+(setq elmo-imap4-default-authenticate-type 'clear) 
+(setq elmo-imap4-default-port '993)
+(setq elmo-imap4-default-stream-type 'ssl)
+
+(setq elmo-imap4-use-modified-utf7 t) 
+
+;; SMTP
+(setq wl-smtp-connection-type 'starttls)
+(setq wl-smtp-posting-port 587)
+(setq wl-smtp-authenticate-type "plain")
+(setq wl-smtp-posting-user "jason.hemann")
+(setq wl-smtp-posting-server "smtp.gmail.com")
+(setq wl-local-domain "gmail.com")
+(setq wl-message-id-domain "smtp.gmail.com")
+
+
+(setq wl-default-folder "%inbox")
+(setq wl-default-spec "%")
+(setq wl-draft-folder "%[Gmail]/Drafts") ; Gmail IMAP
+(setq wl-trash-folder "%[Gmail]/Trash")
+(setq mail-user-agent 'wl-user-agent)
+(setq wl-folder-check-async t) 
+
+(setq wl-from "Jason Hemann <jason.hemann@gmail.com>"
+      ;; All system folders (draft, trash, spam, etc) are placed in the
+      ;; [Gmail]-folder, except inbox. "%" means it's an IMAP-folder
+      wl-default-folder "%inbox"
+      wl-draft-folder   "%[Gmail]/Drafts"
+      wl-trash-folder   "%[Gmail]/Trash"
+      ;; The below is not necessary when you send mail through Gmail's SMTP server,
+      ;; see https://support.google.com/mail/answer/78892?hl=en&rd=1
+      ;; wl-fcc            "%[Gmail]/Sent"
+
+      ;; Mark sent messages as read (sent messages get sent back to you and
+      ;; placed in the folder specified by wl-fcc)
+      wl-fcc-force-as-read    t
+
+      ;; For auto-completing foldernames
+      wl-default-spec "%")
+
+(autoload 'wl-user-agent-compose "wl-draft" nil t)
+(if (boundp 'mail-user-agent)
+    (setq mail-user-agent 'wl-user-agent))
+(if (fboundp 'define-mail-user-agent)
+    (define-mail-user-agent
+      'wl-user-agent
+      'wl-user-agent-compose
+      'wl-draft-send
+      'wl-draft-kill
+      'mail-send-hook))
 
 (show-paren-mode 1)
 (setq show-paren-delay 0)
@@ -62,6 +158,7 @@
 (require 'eclim)
 (add-hook 'java-mode-hook 'eclim-mode)
 
+;; I should want maven, I think, tbqh
 (require 'gradle-mode)
 (add-hook 'java-mode-hook '(lambda() (gradle-mode 1)))
 
@@ -183,7 +280,7 @@
 (add-hook 'racket-mode-hook (lambda () (define-key racket-mode-map (kbd "C-c r") 'racket-run)))
 (setq tab-always-indent 'complete)
 
-;; (global-linum-mode t)
+(global-linum-mode t)
 
 ;; These don't work. 
 ;; (add-hook 'auto-package-update-minor-mode-hook 'package-menu-mark-obsolete-for-deletion)
@@ -197,6 +294,8 @@
 
 (global-set-key (kbd "C-c (") (lambda () (interactive) (insert "ಠ_ಠ")))
 (global-set-key (kbd "C-c )") (lambda () (interactive) (insert "¯\\_(ツ)_/¯")))
+(global-set-key (kbd "C-c C-x (") (lambda () (interactive) (insert "ᕕ( ᐛ )ᕗ")))
+;; ""
 ;; ebib mode for latex
 (global-set-key "\C-ce" 'ebib)
 
@@ -260,7 +359,7 @@
 (add-hook 'TeX-mode-hook 'turn-on-reftex)   ; with AUCTeX LaTeX mode
 (add-hook 'TeX-mode-hook 'turn-on-cdlatex)   ; with AUCTeX LaTeX mode
 (add-hook 'TeX-mode-hook 'visual-line-mode)
-;; (add-hook 'TeX-mode-hook 'flyspell-preprocess-buffer) ;; somehow void
+(add-hook 'TeX-mode-hook 'flyspell-preprocess-buffer) ;; somehow void
 (add-hook 'TeX-mode-hook 'TeX-source-correlate-mode)
 (add-hook 'TeX-mode-hook 'TeX-PDF-mode)
 (add-hook 'TeX-mode-hook 'TeX-fold-mode)
@@ -301,8 +400,8 @@
 (global-set-key (kbd "{") 'paredit-open-curly)
 (add-hook 'racket-mode-hook      #'flylisp-mode)
 (add-hook 'racket-repl-mode-hook #'flylisp-mode)
-(add-hook 'racket-mode-hook      #'racket-unicode-input-method-enable)
-(add-hook 'racket-repl-mode-hook #'racket-unicode-input-method-enable)
+;; (add-hook 'racket-mode-hook      #'racket-unicode-input-method-enable)
+;; (add-hook 'racket-repl-mode-hook #'racket-unicode-input-method-enable)
 (add-hook 'emacs-lisp-mode-hook                    #'enable-paredit-mode)
 (add-hook 'eval-expression-minibuffer-setup-hook   #'enable-paredit-mode)
 (add-hook 'ielm-mode-hook                          #'enable-paredit-mode) ;; inferior-emacs-lisp-mode
@@ -344,28 +443,30 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(TeX-auto-untabify t)
+ ;; 
  '(TeX-engine (quote xetex))
  '(ac-modes
    (quote
-    (emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode agda-mode agda2-mode haskell-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode racket-mode Racket-mode idris-mode racket-repl-mode idris-repl-mode ciao-mode)))
+    (emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode agda-mode agda2-mode haskell-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode racket-mode Racket-mode racket-repl-mode idris-mode idris-repl-mode ciao-mode)))
  '(bibtex-maintain-sorted-entries (quote plain))
  '(custom-safe-themes
    (quote
-    ("6bc387a588201caf31151205e4e468f382ecc0b888bac98b2b525006f7cb3307" "59e82a683db7129c0142b4b5a35dbbeaf8e01a4b81588f8c163bd255b76f4d21" "d1cc05d755d5a21a31bced25bed40f85d8677e69c73ca365628ce8024827c9e3" "834cbeacb6837f3ddca4a1a7b19b1af3834f36a701e8b15b628cad3d85c970ff" "923ee73494ea3611d2a1ff9f31bbf8d71b0b0cc2aeb4a6e0944ec6c83bc0ac23" "9fe1540491fcf692b8c639a3abacd32b29233bc4cb834a12a0fd1e01cbd0a128" "d6922c974e8a78378eacb01414183ce32bc8dbf2de78aabcc6ad8172547cb074" "235dc2dd925f492667232ead701c450d5c6fce978d5676e54ef9ca6dd37f6ceb" "38e64ea9b3a5e512ae9547063ee491c20bd717fe59d9c12219a0b1050b439cdd" "e64111716b1c8c82638796667c2c03466fde37e69cada5f6b640c16f1f4e97df" "71ecffba18621354a1be303687f33b84788e13f40141580fa81e7840752d31bf" "c86f868347919095aa44d2a6129dd714cbcf8feaa88ba954f636295b14ceff8f" "8fed5e4b89cf69107d524c4b91b4a4c35bcf1b3563d5f306608f0c48f580fdf8" "83e584d74b0faea99a414a06dae12f11cd3176fdd4eba6674422539951bcfaa8" "90edd91338ebfdfcd52ecd4025f1c7f731aced4c9c49ed28cfbebb3a3654840b" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "a507b9ca4a605d5256716da70961741b9ef9ec3246041a4eb776102e8df18418" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" default)))
+    ("2d835b43e2614762893dc40cbf220482d617d3d4e2c35f7100ca697f1a388a0e" "6bc387a588201caf31151205e4e468f382ecc0b888bac98b2b525006f7cb3307" "59e82a683db7129c0142b4b5a35dbbeaf8e01a4b81588f8c163bd255b76f4d21" "d1cc05d755d5a21a31bced25bed40f85d8677e69c73ca365628ce8024827c9e3" "834cbeacb6837f3ddca4a1a7b19b1af3834f36a701e8b15b628cad3d85c970ff" "923ee73494ea3611d2a1ff9f31bbf8d71b0b0cc2aeb4a6e0944ec6c83bc0ac23" "9fe1540491fcf692b8c639a3abacd32b29233bc4cb834a12a0fd1e01cbd0a128" "d6922c974e8a78378eacb01414183ce32bc8dbf2de78aabcc6ad8172547cb074" "235dc2dd925f492667232ead701c450d5c6fce978d5676e54ef9ca6dd37f6ceb" "38e64ea9b3a5e512ae9547063ee491c20bd717fe59d9c12219a0b1050b439cdd" "e64111716b1c8c82638796667c2c03466fde37e69cada5f6b640c16f1f4e97df" "71ecffba18621354a1be303687f33b84788e13f40141580fa81e7840752d31bf" "c86f868347919095aa44d2a6129dd714cbcf8feaa88ba954f636295b14ceff8f" "8fed5e4b89cf69107d524c4b91b4a4c35bcf1b3563d5f306608f0c48f580fdf8" "83e584d74b0faea99a414a06dae12f11cd3176fdd4eba6674422539951bcfaa8" "90edd91338ebfdfcd52ecd4025f1c7f731aced4c9c49ed28cfbebb3a3654840b" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "a507b9ca4a605d5256716da70961741b9ef9ec3246041a4eb776102e8df18418" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" default)))
  '(default-input-method "english-dvorak")
  '(ebib-bibtex-dialect (quote biblatex))
  '(eclim-eclipse-dirs
    (quote
     ("/Applications/eclipse" "/usr/lib/eclipse" "/usr/local/lib/eclipse" "/usr/share/eclipse" "/Applications/Eclipse.app/Contents/Eclipse/" "/Applications/Eclipse Java.app/Contents/Eclipse/")))
- '(helm-M-x-fuzzy-match (quote (quote t)))
  '(mac-option-modifier (quote (:ordinary meta :mouse alt)))
  '(org-babel-load-languages (quote ((scheme . t))))
+ '(org-export-backends (quote (ascii html icalendar latex md org)))
  '(org-src-tab-acts-natively t)
  '(org-support-shift-select t)
  '(org-use-speed-commands t)
+ ;; 
  '(package-selected-packages
    (quote
-    (flycheck-gradle flymake-gradle gradle-mode company-emacs-eclim ac-emacs-eclim eclim prescient bind-key font-utils fontawesome flylisp flyspell-correct-popup flyspell-popup helm-flyspell flycheck writegood-mode ediprolog ebib el-get el-init el-init-viewer el-mock el-patch el2org pdf-tools latex-unicode-math-mode htmlize auctex artbollocks-mode www-synonyms x-dict cyberpunk-theme langtool racket-mode flymake-racket wordsmith-mode tabbar dr-racket-like-unicode biblio eldoro org-doing org-dotemacs org-rtm paredit-menu paredit-everywhere org-ac magit-filenotify helm-wordnet helm-idris helm-dictionary hc-zenburn-theme elscreen-separate-buffer-list dictionary color-theme calfw-gcal autopair ace-jump-mode ac-math)))
+    (flycheck-gradle flymake-gradle gradle-mode company-emacs-eclim ac-emacs-eclim eclim prescient bind-key font-utils fontawesome flylisp flyspell-correct-popup flyspell-popup  flycheck writegood-mode ediprolog ebib el-get el-init el-init-viewer el-mock el-patch el2org pdf-tools latex-unicode-math-mode htmlize auctex artbollocks-mode www-synonyms x-dict cyberpunk-theme langtool racket-mode flymake-racket wordsmith-mode tabbar dr-racket-like-unicode biblio eldoro org-doing org-dotemacs org-rtm paredit-menu paredit-everywhere org-ac magit-filenotify  hc-zenburn-theme elscreen-separate-buffer-list dictionary color-theme calfw-gcal autopair ace-jump-mode ac-math helm-flyspell helm-wordnet helm-idris helm-dictionary)))
  '(preview-auto-cache-preamble t)
  '(racket-program "racket")
  '(racket-racket-program "racket")
