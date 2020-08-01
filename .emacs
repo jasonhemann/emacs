@@ -45,6 +45,8 @@
 
 (straight-use-package '(flycheck-textlint :type git :host github :repo "kisaragi-hiu/flycheck-textlint"))
 (straight-use-package 'use-package)
+(straight-use-package 'yaml-mode)
+(straight-use-package 'bibtex-completion)
 (straight-use-package 'wanderlust)
 (straight-use-package 'meghanada)
 (straight-use-package 'calfw-cal)
