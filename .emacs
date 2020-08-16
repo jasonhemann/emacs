@@ -28,9 +28,11 @@
   (load bootstrap-file nil 'nomessage))
 
 
-(setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
-			 ("marmalade" . "https://marmalade-repo.org/packages/")
-			 ("melpa" . "http://melpa.org/packages/")))
+(require 'package)
+
+(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")             t)
+(add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/") t)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/")              t)
 
 (setq inhibit-splash-screen t
       column-number-mode t
@@ -162,6 +164,7 @@
 
 (add-to-list 'load-path "~/.emacs.d/lisp/")
 
+(require 'langtool)
 (require 'eclim)
 (add-hook 'java-mode-hook 'eclim-mode)
 
@@ -260,6 +263,8 @@
       (setq langtool-default-language "en-US")
       (setq langtool-mother-tongue "en")))
 
+
+(global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows)
 
 (defun langtool-autoshow-detail-popup (overlays)
   (when (require 'popup nil t)
