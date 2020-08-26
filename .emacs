@@ -86,6 +86,12 @@
 (straight-use-package 'auctex-latexmk)
 (straight-use-package 'apel)
 (straight-use-package 'academic-phrases)
+(straight-use-package 'easy-jekyll)
+(straight-use-package 'gh-md)
+(straight-use-package 'flymd)
+(straight-use-package 'markdown-preview-mode)
+(straight-use-package 'markdown-mode+)
+
 
 ;; I don't care that we're redefining tramp-read-passwd
 (setq ad-redefinition-action 'accept)
@@ -263,7 +269,6 @@
       (setq langtool-default-language "en-US")
       (setq langtool-mother-tongue "en")))
 
-
 (global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows)
 
 (defun langtool-autoshow-detail-popup (overlays)
@@ -318,6 +323,8 @@
 (global-set-key (kbd "C-c (") (lambda () (interactive) (insert "ಠ_ಠ")))
 (global-set-key (kbd "C-c )") (lambda () (interactive) (insert "¯\\_(ツ)_/¯")))
 (global-set-key (kbd "C-c C-x (") (lambda () (interactive) (insert "ᕕ( ᐛ )ᕗ")))
+(global-set-key (kbd "C-c C-x )") (lambda () (interactive) (insert "(－‸ლ)")))
+
 ;; ""
 ;; ebib mode for latex
 (global-set-key "\C-ce" 'ebib)
@@ -466,35 +473,30 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(TeX-auto-untabify t)
- '(TeX-engine (quote xetex))
+ '(TeX-engine 'xetex)
  '(ac-modes
-   (quote
-    (emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode agda-mode agda2-mode haskell-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode racket-mode Racket-mode racket-repl-mode idris-mode idris-repl-mode ciao-mode)))
- '(bibtex-maintain-sorted-entries (quote plain))
+   '(emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode agda-mode agda2-mode haskell-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode racket-mode Racket-mode racket-repl-mode idris-mode idris-repl-mode ciao-mode))
+ '(bibtex-maintain-sorted-entries 'plain)
  '(custom-safe-themes
-   (quote
-    ("b89a4f5916c29a235d0600ad5a0849b1c50fab16c2c518e1d98f0412367e7f97" "2d835b43e2614762893dc40cbf220482d617d3d4e2c35f7100ca697f1a388a0e" "6bc387a588201caf31151205e4e468f382ecc0b888bac98b2b525006f7cb3307" "59e82a683db7129c0142b4b5a35dbbeaf8e01a4b81588f8c163bd255b76f4d21" "d1cc05d755d5a21a31bced25bed40f85d8677e69c73ca365628ce8024827c9e3" "834cbeacb6837f3ddca4a1a7b19b1af3834f36a701e8b15b628cad3d85c970ff" "923ee73494ea3611d2a1ff9f31bbf8d71b0b0cc2aeb4a6e0944ec6c83bc0ac23" "9fe1540491fcf692b8c639a3abacd32b29233bc4cb834a12a0fd1e01cbd0a128" "d6922c974e8a78378eacb01414183ce32bc8dbf2de78aabcc6ad8172547cb074" "235dc2dd925f492667232ead701c450d5c6fce978d5676e54ef9ca6dd37f6ceb" "38e64ea9b3a5e512ae9547063ee491c20bd717fe59d9c12219a0b1050b439cdd" "e64111716b1c8c82638796667c2c03466fde37e69cada5f6b640c16f1f4e97df" "71ecffba18621354a1be303687f33b84788e13f40141580fa81e7840752d31bf" "c86f868347919095aa44d2a6129dd714cbcf8feaa88ba954f636295b14ceff8f" "8fed5e4b89cf69107d524c4b91b4a4c35bcf1b3563d5f306608f0c48f580fdf8" "83e584d74b0faea99a414a06dae12f11cd3176fdd4eba6674422539951bcfaa8" "90edd91338ebfdfcd52ecd4025f1c7f731aced4c9c49ed28cfbebb3a3654840b" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "a507b9ca4a605d5256716da70961741b9ef9ec3246041a4eb776102e8df18418" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" default)))
+   '("b89a4f5916c29a235d0600ad5a0849b1c50fab16c2c518e1d98f0412367e7f97" "2d835b43e2614762893dc40cbf220482d617d3d4e2c35f7100ca697f1a388a0e" "6bc387a588201caf31151205e4e468f382ecc0b888bac98b2b525006f7cb3307" "59e82a683db7129c0142b4b5a35dbbeaf8e01a4b81588f8c163bd255b76f4d21" "d1cc05d755d5a21a31bced25bed40f85d8677e69c73ca365628ce8024827c9e3" "834cbeacb6837f3ddca4a1a7b19b1af3834f36a701e8b15b628cad3d85c970ff" "923ee73494ea3611d2a1ff9f31bbf8d71b0b0cc2aeb4a6e0944ec6c83bc0ac23" "9fe1540491fcf692b8c639a3abacd32b29233bc4cb834a12a0fd1e01cbd0a128" "d6922c974e8a78378eacb01414183ce32bc8dbf2de78aabcc6ad8172547cb074" "235dc2dd925f492667232ead701c450d5c6fce978d5676e54ef9ca6dd37f6ceb" "38e64ea9b3a5e512ae9547063ee491c20bd717fe59d9c12219a0b1050b439cdd" "e64111716b1c8c82638796667c2c03466fde37e69cada5f6b640c16f1f4e97df" "71ecffba18621354a1be303687f33b84788e13f40141580fa81e7840752d31bf" "c86f868347919095aa44d2a6129dd714cbcf8feaa88ba954f636295b14ceff8f" "8fed5e4b89cf69107d524c4b91b4a4c35bcf1b3563d5f306608f0c48f580fdf8" "83e584d74b0faea99a414a06dae12f11cd3176fdd4eba6674422539951bcfaa8" "90edd91338ebfdfcd52ecd4025f1c7f731aced4c9c49ed28cfbebb3a3654840b" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "a507b9ca4a605d5256716da70961741b9ef9ec3246041a4eb776102e8df18418" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" default))
  '(default-input-method "TeX")
- '(ebib-bibtex-dialect (quote biblatex))
+ '(ebib-bibtex-dialect 'biblatex)
  '(eclim-eclipse-dirs
-   (quote
-    ("/Applications/eclipse" "/usr/lib/eclipse" "/usr/local/lib/eclipse" "/usr/share/eclipse" "/Applications/Eclipse.app/Contents/Eclipse/" "/Applications/Eclipse Java.app/Contents/Eclipse/")))
- '(mac-option-modifier (quote (:ordinary meta :mouse alt)))
- '(org-babel-load-languages (quote ((scheme . t))))
- '(org-export-backends (quote (ascii html icalendar latex md org)))
+   '("/Applications/eclipse" "/usr/lib/eclipse" "/usr/local/lib/eclipse" "/usr/share/eclipse" "/Applications/Eclipse.app/Contents/Eclipse/" "/Applications/Eclipse Java.app/Contents/Eclipse/"))
+ '(mac-option-modifier '(:ordinary meta :mouse alt))
+ '(org-babel-load-languages '((scheme . t)))
+ '(org-export-backends '(ascii html icalendar latex md org))
  '(org-src-tab-acts-natively t)
  '(org-support-shift-select t)
  '(org-use-speed-commands t)
  '(package-selected-packages
-   (quote
-    (flycheck-gradle flymake-gradle gradle-mode company-emacs-eclim ac-emacs-eclim eclim prescient bind-key font-utils fontawesome flylisp flyspell-correct-popup flyspell-popup flycheck writegood-mode ediprolog ebib el-get el-init el-init-viewer el-mock el-patch el2org pdf-tools latex-unicode-math-mode htmlize auctex artbollocks-mode www-synonyms x-dict cyberpunk-theme langtool racket-mode flymake-racket wordsmith-mode tabbar dr-racket-like-unicode biblio eldoro org-doing org-dotemacs org-rtm paredit-menu paredit-everywhere org-ac magit-filenotify hc-zenburn-theme elscreen-separate-buffer-list dictionary color-theme calfw-gcal autopair ace-jump-mode ac-math helm-flyspell helm-wordnet helm-idris helm-dictionary)))
+   '(flycheck-gradle flymake-gradle gradle-mode company-emacs-eclim ac-emacs-eclim eclim prescient bind-key font-utils fontawesome flylisp flyspell-correct-popup flyspell-popup flycheck writegood-mode ediprolog ebib el-get el-init el-init-viewer el-mock el-patch el2org pdf-tools latex-unicode-math-mode htmlize auctex artbollocks-mode www-synonyms x-dict cyberpunk-theme langtool racket-mode flymake-racket wordsmith-mode tabbar dr-racket-like-unicode biblio eldoro org-doing org-dotemacs org-rtm paredit-menu paredit-everywhere org-ac magit-filenotify hc-zenburn-theme elscreen-separate-buffer-list dictionary color-theme calfw-gcal autopair ace-jump-mode ac-math helm-flyspell helm-wordnet helm-idris helm-dictionary))
  '(preview-auto-cache-preamble t)
  '(racket-program "/Users/jhemann/Documents/racket/racket/bin/racket")
  '(racket-racket-program "racket")
- '(reftex-cite-format (quote biblatex))
+ '(reftex-cite-format 'biblatex)
  '(safe-local-variable-values
-   (quote
-    ((TeX-command-extra-options . "-shell-escape")
+   '((TeX-command-extra-options . "-shell-escape")
      (eval progn
 	   (let
 	       ((tt-root-directory
@@ -502,18 +504,17 @@
 		   (locate-dominating-file buffer-file-name ".dir-locals.el")))
 		(tt-project-find-file
 		 (and
-		  (boundp
-		   (quote tt-project-find-file))
+		  (boundp 'tt-project-find-file)
 		  tt-project-find-file)))
 	     (setq tags-file-name
 		   (concat tt-root-directory "TAGS"))
 	     (unless tt-project-find-file
 	       (setq compile-command
 		     (concat "make -C " tt-root-directory)))
-	     (setq default-directory tt-root-directory))))))
+	     (setq default-directory tt-root-directory)))))
  '(scheme-program-name "scheme")
  '(straight-use-package-by-default t)
- '(vc-follow-symlinks (quote t)))
+ '(vc-follow-symlinks 't))
 
 ;; For 311, to make continuations RI.
 ;; Assumes k has some formal parameters
