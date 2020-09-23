@@ -198,7 +198,8 @@
 (unless package-archive-contents
    (package-refresh-contents))
 
-
+(require 'racket-xp)
+(add-hook 'racket-mode-hook #'racket-xp-mode)
 
 (install-if-missing
  '(ac-math ace-jump-mode auto-package-update
@@ -213,6 +214,7 @@
 
 (global-set-key (kbd "C-x g") 'magit-status)
 (global-set-key [C-M-tab] 'clang-format-region)
+
 
 (let ((gnu-ls-path (executable-find "gls")))
   (when gnu-ls-path
@@ -247,6 +249,61 @@
 (if (eq system-type 'darwin)
     (setq-default ispell-program-name "/usr/local/bin/aspell")
     (setq-default ispell-program-name "/usr/bin/aspell")) ;; What about Windows?
+
+(global-set-key (kbd "C-c C-r")
+ (lambda () (interactive)
+   (let ((roster '(((Antaki)           (David)     )
+		   ((Barbiellini)      (Anna Maria))
+		   ((Bian)             (Justin)    )
+		   ((Bidgood)          (George)    )
+		   ((Chan)             (Matthew)   )
+		   ((Chen)             (Nan)       )
+		   ((Chenrayan)        (Siddharth) )
+		   ((Coffen)           (Sarah)     )
+		   ((DAquino)          (Brendan)   )
+		   ((Datta)            (Krishanu)  )
+		   ((Goldberg)         (Zachary)   )
+		   ((Huang)            (Dylan)     )
+		   ((Hughes)           (Francis)   )
+		   ((joshi)            (Maitreyee) )
+		   ((Jung)             (Ryan)      )
+		   ((Kaming-Thanassi)  (Joseph)    )
+		   ((Keith)            (Thomas)    )
+		   ((Kelly)            (Sean)      )
+		   ((Khan)             (Rashad)    )
+		   ((Khan)             (Yousuf)    )
+		   ((Kim)              (Ilwoo)     )
+		   ((Levi)             (Jake)      )
+		   ((Lisciandro)       (Allison)   )
+		   ((Min)              (Amy)       )
+		   ((Moore)            (Drake)     )
+		   ((Morton)           (Mark)      )
+		   ((Nabar)            (Ohm)       )
+		   ((Nieto)            (Zachary)   )
+		   ((Oprica)           (Daniel)    )
+		   ((Pan)              (Wenyu)     )
+		   ((Payne)            (Katherine) )
+		   ((Penikelapati)     (Ravi Teja) )
+		   ((Pontier)          (Samantha)  )
+		   ((Ragheb)           (Mary)      )
+		   ((Salvadore)        (Maxwell)   )
+		   ((Sanders)          (Robert)    )
+		   ((Sharma)           (Manav)     )
+		   ((Shen)             (Angela)    )
+		   ((Simon)            (Siddharth) )
+		   ((Sullivan)         (Brett)     )
+		   ((TerMaat)          (Morgan)    )
+		   ((Therrien)         (Kelli)     )
+		   ((Thomas)           (William)   )
+		   ((Thorarensen)      (Johannes)  )
+		   ((Trimble)          (Jake)      )
+		   ((Vanni)            (Marc)      )
+		   ((Wohlers)          (William)   )
+		   ((Zhang)            (Felicia)   )
+		   ((Zou)              (Ken)       ))))
+    (let ((n (length roster)))
+      (let ((student (nth (random n) roster)))
+	(message "%s" (append (cadr student) (car student))))))))
 
 (setq-default ispell-list-command "list")
 
@@ -324,6 +381,7 @@
 (global-set-key (kbd "C-c )") (lambda () (interactive) (insert "¯\\_(ツ)_/¯")))
 (global-set-key (kbd "C-c C-x (") (lambda () (interactive) (insert "ᕕ( ᐛ )ᕗ")))
 (global-set-key (kbd "C-c C-x )") (lambda () (interactive) (insert "(－‸ლ)")))
+;; !(•̀ᴗ•́)و ̑̑
 
 ;; ""
 ;; ebib mode for latex
@@ -492,8 +550,7 @@
  '(package-selected-packages
    '(flycheck-gradle flymake-gradle gradle-mode company-emacs-eclim ac-emacs-eclim eclim prescient bind-key font-utils fontawesome flylisp flyspell-correct-popup flyspell-popup flycheck writegood-mode ediprolog ebib el-get el-init el-init-viewer el-mock el-patch el2org pdf-tools latex-unicode-math-mode htmlize auctex artbollocks-mode www-synonyms x-dict cyberpunk-theme langtool racket-mode flymake-racket wordsmith-mode tabbar dr-racket-like-unicode biblio eldoro org-doing org-dotemacs org-rtm paredit-menu paredit-everywhere org-ac magit-filenotify hc-zenburn-theme elscreen-separate-buffer-list dictionary color-theme calfw-gcal autopair ace-jump-mode ac-math helm-flyspell helm-wordnet helm-idris helm-dictionary))
  '(preview-auto-cache-preamble t)
- '(racket-program "/Users/jhemann/Documents/racket/racket/bin/racket")
- '(racket-racket-program "racket")
+ '(racket-program "racket")
  '(reftex-cite-format 'biblatex)
  '(safe-local-variable-values
    '((TeX-command-extra-options . "-shell-escape")
@@ -572,5 +629,3 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-
-
