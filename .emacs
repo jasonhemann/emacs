@@ -27,71 +27,127 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
-
-(require 'package)
-
 (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")             t)
 (add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/") t)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/")              t)
 
-(setq inhibit-splash-screen t
-      column-number-mode t
+(setq debug-on-quit t
+      inhibit-splash-screen t
+      column-number-mode t     
       initial-scratch-message nil
       ring-bell-function 'ignore)
 
 (tool-bar-mode -1)
 (add-hook 'find-file-hook (lambda () (ruler-mode 1)))
 
-
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-(straight-use-package '(flycheck-textlint :type git :host github :repo "kisaragi-hiu/flycheck-textlint"))
-(straight-use-package 'use-package)
-(straight-use-package 'yaml-mode)
-(straight-use-package 'bibtex-completion)
-(straight-use-package 'wanderlust)
-(straight-use-package 'meghanada)
-(straight-use-package 'calfw-cal)
-(straight-use-package 'calfw)
-(straight-use-package 'proof-general)
-(straight-use-package 'wordnut)
-(straight-use-package 'wanderlust)
-(straight-use-package 'w3m)
-(straight-use-package 'treepy)
-(straight-use-package 'sml-modeline)
-(straight-use-package 'sml-mode)
-(straight-use-package 'semi)
-(straight-use-package 'scheme-complete)
-(straight-use-package 'reazon)
-(straight-use-package 'powerthesaurus)
-(straight-use-package 'parent-mode)
-(straight-use-package 'multiple-cursors)
-(straight-use-package 'mc-extras)
-(straight-use-package 'magit-popup)
-(straight-use-package 'jeison)
-(straight-use-package 'j-mode)
-(straight-use-package 'ht)
-(straight-use-package 'graphql)
-(straight-use-package 'ghub)
-(straight-use-package 'flyspell-lazy)
-(straight-use-package 'flymake-easy)
-(straight-use-package 'flim)
-(straight-use-package 'exec-path-from-shell)
-(straight-use-package 'company-dict)
-(straight-use-package 'clang-format)
-(straight-use-package 'cdlatex)
-(straight-use-package 'bog)
-(straight-use-package 'bbdb)
-(straight-use-package 'auto-package-update)
-(straight-use-package 'auctex-latexmk)
-(straight-use-package 'apel)
+;; (straight-use-package '(flycheck-textlint :type git :host github :repo "kisaragi-hiu/flycheck-textlint"))
+(straight-use-package 'ac-math)
 (straight-use-package 'academic-phrases)
+(straight-use-package 'ace-jump-mode)
+(straight-use-package 'apel)
+(straight-use-package 'auctex-latexmk)
+(straight-use-package 'auto-complete-auctex)
+;; (straight-use-package 'auto-complete-config)
+(straight-use-package 'auto-package-update)
+(straight-use-package 'autopair)
+(straight-use-package 'bbdb)
+(straight-use-package 'biblio)
+(straight-use-package 'bibtex-completion)
+(straight-use-package 'bog)
+(straight-use-package 'calfw)
+(straight-use-package 'calfw-cal)
+(straight-use-package 'calfw-gcal)
+(straight-use-package 'calfw-ical)
+(straight-use-package 'calfw-org)
+(straight-use-package 'cdlatex)
+(straight-use-package 'clang-format)
+(straight-use-package 'color-theme-modern)
+(straight-use-package 'company-coq)
+(straight-use-package 'company-dict)
+(straight-use-package 'company-lean)
+(straight-use-package 'company-math)
+(straight-use-package 'coq-commenter)
+(straight-use-package 'cyberpunk-theme)
+(straight-use-package 'dash-functional)
+;; (straight-use-package 'diction) Not a package!!!
+(straight-use-package 'dictionary)
+(straight-use-package 'dr-racket-like-unicode)
 (straight-use-package 'easy-jekyll)
-(straight-use-package 'gh-md)
-(straight-use-package 'flymd)
-(straight-use-package 'markdown-preview-mode)
-(straight-use-package 'markdown-mode+)
+(straight-use-package 'eclim)
 
+(straight-use-package 'elscreen-separate-buffer-list)
+(straight-use-package 'exec-path-from-shell)
+(straight-use-package 'f)
+(straight-use-package 'flim)
+(straight-use-package 'flymake-easy)
+(straight-use-package 'flymake-racket)
+(straight-use-package 'flymd)
+(straight-use-package 'flyspell-lazy)
+(straight-use-package 'gh-md)
+(straight-use-package 'ghub)
+(straight-use-package 'gradle-mode)
+(straight-use-package 'graphql)
+(straight-use-package 'hc-zenburn-theme)
+(straight-use-package 'helm)
+(straight-use-package 'helm-dictionary)
+(straight-use-package 'helm-idris)
+(straight-use-package 'helm-lean)
+(straight-use-package 'helm-wordnet)
+(straight-use-package 'ht)
+(straight-use-package 'j-mode)
+(straight-use-package 'jeison)
+(straight-use-package 'langtool)
+(straight-use-package 'lean-mode)
+(straight-use-package 'magit-filenotify)
+(straight-use-package 'magit-popup)
+(straight-use-package 'markdown-mode+)
+(straight-use-package 'markdown-preview-mode)
+(straight-use-package 'mc-extras)
+(straight-use-package 'meghanada)
+(straight-use-package 'midnight)
+(straight-use-package 'multiple-cursors)
+(straight-use-package 'mustache)
+(straight-use-package 'nlinum)
+(straight-use-package 'org-ac)
+(straight-use-package 'org-doing)
+(straight-use-package 'org-dotemacs)
+(straight-use-package 'org-roam)
+(straight-use-package 'org-rtm)
+(straight-use-package 'org-super-agenda)
+(straight-use-package 'org-trello)
+(straight-use-package 'org2web)
+(straight-use-package 'paredit-everywhere)
+(straight-use-package 'paredit-menu)
+(straight-use-package 'parent-mode)
+(straight-use-package 'powerthesaurus)
+(straight-use-package 'proof-general)
+(straight-use-package 'racket-mode)
+(straight-use-package 'reazon)
+(straight-use-package 'scheme-complete)
+(straight-use-package 'semi)
+(straight-use-package 'simple-httpd)
+(straight-use-package 'sml-mode)
+(straight-use-package 'sml-modeline)
+(straight-use-package 'smog)
+(straight-use-package 'tabbar)
+(straight-use-package 'treepy)
+(straight-use-package 'use-package)
+(straight-use-package 'w3m)
+(straight-use-package 'wanderlust)
+(straight-use-package 'wordnut)
+(straight-use-package 'wordsmith-mode)
+(straight-use-package 'yaml-mode)
+(straight-use-package 'zones)
+(straight-use-package 'zygospore)
+
+;;;;;;
+;; (straight-use-package 'eldoro) maybe not a package
+;; (straight-use-package 'helm-config) 
+
+;; (package-install-file "~/Documents/org-inline-pdf.el/org-inline-pdf.el")
+;; (require 'org-inline-pdf) ;; Trying, in case it works
 
 ;; I don't care that we're redefining tramp-read-passwd
 (setq ad-redefinition-action 'accept)
@@ -104,6 +160,7 @@
 (autoload 'wl-other-frame "wl" "Wanderlust on new frame." t)
 (autoload 'wl-draft "wl-draft" "Write draft with Wanderlust." t)
 
+;; (org-agenda-include-diary t)
 
 
 ;; IMAP
@@ -163,6 +220,10 @@
 (show-paren-mode 1)
 (setq show-paren-delay 0)
 
+
+(if (file-exists-p "/Users/jhemann/Documents/acl2/scripts-master/.lisp.el")
+    (load-file "/Users/jhemann/Documents/acl2/scripts-master/.lisp.el"))
+
 (if (file-exists-p "/usr/local/lib/ciao/ciao-mode-init.el")
     (load-file "/usr/local/lib/ciao/ciao-mode-init.el"))
 
@@ -170,12 +231,11 @@
 
 (add-to-list 'load-path "~/.emacs.d/lisp/")
 
-(require 'langtool)
-(require 'eclim)
+
 (add-hook 'java-mode-hook 'eclim-mode)
 
 ;; I should want maven, I think, tbqh
-(require 'gradle-mode)
+
 (add-hook 'java-mode-hook '(lambda() (gradle-mode 1)))
 
 ;; (load "~/Documents/eliemacs/eliemacs")
@@ -198,19 +258,8 @@
 (unless package-archive-contents
    (package-refresh-contents))
 
-(require 'racket-xp)
 (add-hook 'racket-mode-hook #'racket-xp-mode)
-
-(install-if-missing
- '(ac-math ace-jump-mode auto-package-update
-    autopair biblio bog calfw-gcal clang-format color-theme company-dict cyberpunk-theme
-    dictionary dr-racket-like-unicode eldoro elscreen-separate-buffer-list
-    exec-path-from-shell
-    flymake-racket flyspell-lazy hc-zenburn-theme helm-dictionary
-    helm-idris helm-wordnet j-mode magit-filenotify mc-extras
-    org-ac org-doing org-dotemacs org-rtm paredit-everywhere
-    paredit-menu racket-mode scheme-complete sml-mode sml-modeline
-    tabbar wordnut wordsmith-mode))
+(require 'racket-xp) ;; Don't know what this is but I think it's not a package
 
 (global-set-key (kbd "C-x g") 'magit-status)
 (global-set-key [C-M-tab] 'clang-format-region)
@@ -242,89 +291,25 @@
   "Custom function to spell check next highlighted word"
   (interactive)
   (flyspell-goto-next-error)
-  (ispell-word)
-  )
+  (ispell-word))
+
 (global-set-key (kbd "M-<f8>") 'flyspell-check-next-highlighted-word)
 (mac-auto-operator-composition-mode)
 (if (eq system-type 'darwin)
     (setq-default ispell-program-name "/usr/local/bin/aspell")
     (setq-default ispell-program-name "/usr/bin/aspell")) ;; What about Windows?
 
-(global-set-key (kbd "C-c C-r")
- (lambda () (interactive)
-   (let ((roster '(((Antaki)           (David)       )
-		   ((Barbiellini)      (Anna Maria)  )
-		   ((Bian)             (Justin)      )
-		   ((Bidgood)          (George)      )
-		   ((Chan)             (Matthew)     )
-		   ((Chen)             (Nan)         )
-		   ((Chenrayan)        (Siddharth)   )
-		   ((Coffen)           (Sarah)       )
-		   ((DAquino)          (Brendan)     )
-		   ((Datta)            (Krishanu)    )
-		   ((Goldberg)         (Zachary)     )
-		   ((Huang)            (Dylan)       )
-		   ((Hughes)           (Francis)     )
-		   ((joshi)            (Maitreyee)   )
-		   ((Jung)             (Ryan)        )
-		   ((Kaming-Thanassi)  (Joseph)      )
-		   ((Keith)            (Thomas)      )
-		   ((Kelly)            (Sean)        )
-		   ((Khan)             (Rashad)      )
-		   ((Khan)             (Yousuf)      )
-		   ((Kim)              (Ilwoo)       )
-		   ((Levi)             (Jake)        )
-		   ((Lisciandro)       (Allison)     )
-		   ((Min)              (Amy)         )
-		   ((Moore)            (Drake)       )
-		   ((Morton)           (Mark)        )
-		   ((Nabar)            (Ohm)         )
-		   ((Nieto)            (Zachary)     )
-		   ((Oprica)           (Daniel)      )
-		   ((Pan)              (Wenyu)       )
-		   ((Payne)            (Katherine)   )
-		   ((Penikelapati)     (Ravi Teja)   )
-		   ((Applicable)          (Not)      ) ;; (Samantha) (Pontier)
-		   ((Ragheb)           (Mary)        )
-		   ((Salvadore)        (Maxwell)     )
-		   ((Sanders)          (Robert)      )
-		   ((Sharma)           (Manav)       )
-		   ((Shen)             (Angela)      )
-		   ((Simon)            (Siddharth)   )
-		   ((Sullivan)         (Brett)       )
-		   ((TerMaat)          (Morgan)      )
-		   ((Therrien)         (Kelli)       )
-		   ((Thomas)           (William)     )
-		   ((Thorarensen)      (Johannes)    )
-		   ((Trimble)          (Jake)        )
-		   ((Vanni)            (Marc)        )
-		   ((Wohlers)          (William)     )
-		   ((Zhang)            (Felicia)     )
-		   ((Zou)              (Ken)         ))))
-    (let ((n (length roster)))
-      (let ((student (nth (random n) roster)))
-	(message "%s" (append (cadr student) (car student))))))))
-
 (setq-default ispell-list-command "list")
 
-(require 'helm)
-(require 'helm-config)
-(require 'midnight)
-; (require 'diction)
-(straight-use-package 'auto-complete-auctex)
+(setq langtool-language-tool-jar "~/LanguageTool-3.4/languagetool-commandline.jar")
+(global-set-key "\C-x4w" 'langtool-check)
+(global-set-key "\C-x4W" 'langtool-check-done)
+(global-set-key "\C-x4l" 'langtool-switch-default-language)
+(global-set-key "\C-x44" 'langtool-show-message-at-point)
+(global-set-key "\C-x4c" 'langtool-correct-buffer)
 
-(if (file-exists-p "~/LanguageTool-3.4/")
-    (let ()
-      (require 'langtool)
-      (setq langtool-language-tool-jar "~/LanguageTool-3.4/languagetool-commandline.jar")
-      (global-set-key "\C-x4w" 'langtool-check)
-      (global-set-key "\C-x4W" 'langtool-check-done)
-      (global-set-key "\C-x4l" 'langtool-switch-default-language)
-      (global-set-key "\C-x44" 'langtool-show-message-at-point)
-      (global-set-key "\C-x4c" 'langtool-correct-buffer)
-
-      (setq langtool-default-language "en-US")
-      (setq langtool-mother-tongue "en")))
+(setq langtool-default-language "en-US")
+(setq langtool-mother-tongue "en")
 
 (global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows)
 
@@ -347,25 +332,25 @@
 (global-set-key (kbd "C-c h") 'helm-command-prefix)
 (global-unset-key (kbd "C-x c"))
 
-(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
-(define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
-(define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
+;; (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
+;; (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
+;; (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
 
-(when (executable-find "curl")
-  (setq helm-google-suggest-use-curl-p t))
+;; (when (executable-find "curl")
+;;   (setq helm-google-suggest-use-curl-p t))
 
-(setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
-      helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
-      helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
-      helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
-      helm-ff-file-name-history-use-recentf t)
+;; (setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
+;;       helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
+;;       helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
+;;       helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
+;;       helm-ff-file-name-history-use-recentf t)
 
-(helm-mode 1)
+;; (helm-mode 1)
 
 (add-hook 'racket-mode-hook (lambda () (define-key racket-mode-map (kbd "C-c r") 'racket-run)))
 (setq tab-always-indent 'complete)
 
-(global-linum-mode t)
+(global-nlinum-mode t)
 
 ;; These don't work. 
 ;; (add-hook 'auto-package-update-minor-mode-hook 'package-menu-mark-obsolete-for-deletion)
@@ -373,10 +358,10 @@
 ;; (auto-package-update-maybe)
 
 ;; JBH
-(require 'auto-complete-config)
 (ac-config-default)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
 
+(global-set-key (kbd "C-S-s") (lambda () (interactive (insert "§"))))
 (global-set-key (kbd "C-c (") (lambda () (interactive) (insert "ಠ_ಠ")))
 (global-set-key (kbd "C-c )") (lambda () (interactive) (insert "¯\\_(ツ)_/¯")))
 (global-set-key (kbd "C-c C-x (") (lambda () (interactive) (insert "ᕕ( ᐛ )ᕗ")))
@@ -502,7 +487,7 @@
 (add-hook 'idris-mode-hook                         #'enable-paredit-mode)
 (add-hook 'idris-repl-mode-hook                    #'enable-paredit-mode)
 (add-hook 'agda2-mode-hook                         #'enable-paredit-mode)
-;; (add-hook 'ciao-mode-hook                         #'enable-paredit-mode) ;; not til fix paren space issue.
+ ;; (add-hook 'ciao-mode-hook                         #'enable-paredit-mode) ;; not til fix paren space issue.
 ;; tex-mode has paredit-mode issue too. 
 ;; (add-hook 'idris-prover-script-mode-hook           #'enable-paredit-mode)
 
@@ -546,9 +531,10 @@
  '(org-export-backends '(ascii html icalendar latex md org))
  '(org-src-tab-acts-natively t)
  '(org-support-shift-select t)
+;;  '(org-trello-current-prefix-keybinding "C-c o" nil (org-trello))
  '(org-use-speed-commands t)
  '(package-selected-packages
-   '(flycheck-gradle flymake-gradle gradle-mode company-emacs-eclim ac-emacs-eclim eclim prescient bind-key font-utils fontawesome flylisp flyspell-correct-popup flyspell-popup flycheck writegood-mode ediprolog ebib el-get el-init el-init-viewer el-mock el-patch el2org pdf-tools latex-unicode-math-mode htmlize auctex artbollocks-mode www-synonyms x-dict cyberpunk-theme langtool racket-mode flymake-racket wordsmith-mode tabbar dr-racket-like-unicode biblio eldoro org-doing org-dotemacs org-rtm paredit-menu paredit-everywhere org-ac magit-filenotify hc-zenburn-theme elscreen-separate-buffer-list dictionary color-theme calfw-gcal autopair ace-jump-mode ac-math helm-flyspell helm-wordnet helm-idris helm-dictionary))
+   '(flycheck-gradle flymake-gradle gradle-mode company-emacs-eclim ac-emacs-eclim eclim prescient bind-key font-utils fontawesome flylisp flyspell-correct-popup flyspell-popup flycheck writegood-mode ediprolog ebib el-get el-init el-init-viewer el-mock el-patch el2org pdf-tools latex-unicode-math-mode htmlize auctex artbollocks-mode www-synonyms x-dict cyberpunk-theme langtool racket-mode flymake-racket wordsmith-mode tabbar dr-racket-like-unicode biblio org-doing org-dotemacs org-rtm paredit-menu paredit-everywhere org-ac magit-filenotify hc-zenburn-theme elscreen-separate-buffer-list dictionary color-theme calfw-gcal autopair ace-jump-mode ac-math helm-flyspell helm-wordnet helm-idris helm-dictionary)) ;; eldorado
  '(preview-auto-cache-preamble t)
  '(racket-program "racket")
  '(reftex-cite-format 'biblatex)
@@ -609,7 +595,7 @@
 ;; Set up paradox
 ;; Set up wordsmith-mode
 
-;; Have width of linum buffer scale as font-size increases.
+;; Have width of nlinum buffer scale as font-size increases.
 ;; Set a higher default font size (point size).
 ;; Make it Windows 7/8/10 appropriate. --- see Google Keep
 ;; Automatically remove obsolete packages
