@@ -33,7 +33,7 @@
 
 (setq debug-on-quit t
       inhibit-splash-screen t
-      column-number-mode t     
+      column-number-mode t
       initial-scratch-message nil
       ring-bell-function 'ignore)
 
@@ -71,12 +71,10 @@
 (straight-use-package 'coq-commenter)
 (straight-use-package 'cyberpunk-theme)
 (straight-use-package 'dash-functional)
-;; (straight-use-package 'diction) Not a package!!!
 (straight-use-package 'dictionary)
 (straight-use-package 'dr-racket-like-unicode)
 (straight-use-package 'easy-jekyll)
 (straight-use-package 'eclim)
-
 (straight-use-package 'elscreen-separate-buffer-list)
 (straight-use-package 'exec-path-from-shell)
 (straight-use-package 'f)
@@ -118,6 +116,7 @@
 (straight-use-package 'org-super-agenda)
 (straight-use-package 'org-trello)
 (straight-use-package 'org2web)
+(straight-use-package 'paradox)
 (straight-use-package 'paredit-everywhere)
 (straight-use-package 'paredit-menu)
 (straight-use-package 'parent-mode)
@@ -125,6 +124,7 @@
 (straight-use-package 'proof-general)
 (straight-use-package 'racket-mode)
 (straight-use-package 'reazon)
+(straight-use-package 'savehist)
 (straight-use-package 'scheme-complete)
 (straight-use-package 'semi)
 (straight-use-package 'simple-httpd)
@@ -151,10 +151,6 @@
 
 ;; I don't care that we're redefining tramp-read-passwd
 (setq ad-redefinition-action 'accept)
-
-;; (use-package smog
-;;  :config (setq smog-command "style -L en"))
-
 
 (autoload 'wl "wl" "Wanderlust" t)
 (autoload 'wl-other-frame "wl" "Wanderlust on new frame." t)
@@ -329,23 +325,24 @@
 ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
 ;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
 ;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
-(global-set-key (kbd "C-c h") 'helm-command-prefix)
-(global-unset-key (kbd "C-x c"))
+;; (require 'helm-config)
+;; (global-set-key (kbd "C-c h") 'helm-command-prefix)
+;; (global-unset-key (kbd "C-x c"))
 
 ;; (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
 ;; (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
 ;; (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
 
-;; (when (executable-find "curl")
-;;   (setq helm-google-suggest-use-curl-p t))
+(when (executable-find "curl")
+  (setq helm-google-suggest-use-curl-p t))
 
-;; (setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
-;;       helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
-;;       helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
-;;       helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
-;;       helm-ff-file-name-history-use-recentf t)
+(setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
+      helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
+      helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
+      helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
+      helm-ff-file-name-history-use-recentf t)
 
-;; (helm-mode 1)
+(helm-mode 1)
 
 (add-hook 'racket-mode-hook (lambda () (define-key racket-mode-map (kbd "C-c r") 'racket-run)))
 (setq tab-always-indent 'complete)
@@ -372,6 +369,9 @@
 ;; ebib mode for latex
 (global-set-key "\C-ce" 'ebib)
 
+(if (eq system-type 'darwin)
+    (add-hook 'text-mode-hook 'wordsmith-mode)) ;; Because this depends on OSX tooling specifically
+
 (add-hook 'text-mode-hook 'writegood-mode)
 (add-hook 'text-mode-hook 'artbollocks-mode)
 (add-hook 'text-mode-hook 'flyspell-mode)
@@ -381,7 +381,6 @@
 (add-hook 'tex-mode-hook (lambda () (define-key tex-mode-map (kbd "C-c C-k") 'compile)))
 (add-hook 'tex-mode-hook (lambda () (define-key tex-mode-map (kbd "C-c |") 'align-current)))
 
-(require 'multiple-cursors)
 (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
 (global-set-key (kbd "C->") 'mc/mark-next-like-this)
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
@@ -392,7 +391,6 @@
 (add-hook 'scheme-mode-hook                        'multiple-cursors-mode)
 (add-hook 'inferior-scheme-mode-hook               'multiple-cursors-mode)
 
-(require 'savehist)
 (savehist-mode t)
 
 (setq TeX-auto-save t)
@@ -469,27 +467,30 @@
 (setq auto-mode-alist (cons '("\\.v$" . coq-mode) auto-mode-alist))
 (autoload 'coq-mode "coq" "Major mode for editing Coq vernacular." t)
 
+
 (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
+(add-hook 'prog-mode-hook 'paredit-everywhere-mode)
+;; (add-hook 'racket-mode-hook      #'racket-unicode-input-method-enable)
+;; (add-hook 'racket-repl-mode-hook #'racket-unicode-input-method-enable)
+;; (add-hook 'emacs-lisp-mode-hook                    #'enable-paredit-mode)
+;; (add-hook 'eval-expression-minibuffer-setup-hook   #'enable-paredit-mode)
+;; (add-hook 'ielm-mode-hook                          #'enable-paredit-mode) ;; inferior-emacs-lisp-mode
+;; (add-hook 'lisp-mode-hook                          #'enable-paredit-mode)
+;; (add-hook 'lisp-interaction-mode-hook              #'enable-paredit-mode)
+;; (add-hook 'scheme-mode-hook                        #'enable-paredit-mode)
+;; (add-hook 'inferior-scheme-mode-hook               #'enable-paredit-mode)
+;; (add-hook 'racket-mode-hook                        #'enable-paredit-mode)
+;; (add-hook 'racket-repl-mode-hook                   #'enable-paredit-mode)
+;; (add-hook 'idris-mode-hook                         #'enable-paredit-mode)
+;; (add-hook 'idris-repl-mode-hook                    #'enable-paredit-mode)
+;; (add-hook 'agda2-mode-hook                         #'enable-paredit-mode)
+;; (add-hook 'ciao-mode-hook                          #'enable-paredit-mode) ;; not til fix paren space issue.
+;; tex-mode has paredit-mode issue too. 
+;; (add-hook 'idris-prover-script-mode-hook           #'enable-paredit-mode)
+
 (global-set-key (kbd "{") 'paredit-open-curly)
 (add-hook 'racket-mode-hook      #'flylisp-mode)
 (add-hook 'racket-repl-mode-hook #'flylisp-mode)
-;; (add-hook 'racket-mode-hook      #'racket-unicode-input-method-enable)
-;; (add-hook 'racket-repl-mode-hook #'racket-unicode-input-method-enable)
-(add-hook 'emacs-lisp-mode-hook                    #'enable-paredit-mode)
-(add-hook 'eval-expression-minibuffer-setup-hook   #'enable-paredit-mode)
-(add-hook 'ielm-mode-hook                          #'enable-paredit-mode) ;; inferior-emacs-lisp-mode
-(add-hook 'lisp-mode-hook                          #'enable-paredit-mode)
-(add-hook 'lisp-interaction-mode-hook              #'enable-paredit-mode)
-(add-hook 'scheme-mode-hook                        #'enable-paredit-mode)
-(add-hook 'inferior-scheme-mode-hook               #'enable-paredit-mode)
-(add-hook 'racket-mode-hook                        #'enable-paredit-mode)
-(add-hook 'racket-repl-mode-hook                   #'enable-paredit-mode)
-(add-hook 'idris-mode-hook                         #'enable-paredit-mode)
-(add-hook 'idris-repl-mode-hook                    #'enable-paredit-mode)
-(add-hook 'agda2-mode-hook                         #'enable-paredit-mode)
- ;; (add-hook 'ciao-mode-hook                         #'enable-paredit-mode) ;; not til fix paren space issue.
-;; tex-mode has paredit-mode issue too. 
-;; (add-hook 'idris-prover-script-mode-hook           #'enable-paredit-mode)
 
 (when (memq window-system '(mac ns))
   (exec-path-from-shell-initialize))
@@ -521,7 +522,7 @@
    '(emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode agda-mode agda2-mode haskell-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode racket-mode Racket-mode racket-repl-mode idris-mode idris-repl-mode ciao-mode))
  '(bibtex-maintain-sorted-entries 'plain)
  '(custom-safe-themes
-   '("b89a4f5916c29a235d0600ad5a0849b1c50fab16c2c518e1d98f0412367e7f97" "2d835b43e2614762893dc40cbf220482d617d3d4e2c35f7100ca697f1a388a0e" "6bc387a588201caf31151205e4e468f382ecc0b888bac98b2b525006f7cb3307" "59e82a683db7129c0142b4b5a35dbbeaf8e01a4b81588f8c163bd255b76f4d21" "d1cc05d755d5a21a31bced25bed40f85d8677e69c73ca365628ce8024827c9e3" "834cbeacb6837f3ddca4a1a7b19b1af3834f36a701e8b15b628cad3d85c970ff" "923ee73494ea3611d2a1ff9f31bbf8d71b0b0cc2aeb4a6e0944ec6c83bc0ac23" "9fe1540491fcf692b8c639a3abacd32b29233bc4cb834a12a0fd1e01cbd0a128" "d6922c974e8a78378eacb01414183ce32bc8dbf2de78aabcc6ad8172547cb074" "235dc2dd925f492667232ead701c450d5c6fce978d5676e54ef9ca6dd37f6ceb" "38e64ea9b3a5e512ae9547063ee491c20bd717fe59d9c12219a0b1050b439cdd" "e64111716b1c8c82638796667c2c03466fde37e69cada5f6b640c16f1f4e97df" "71ecffba18621354a1be303687f33b84788e13f40141580fa81e7840752d31bf" "c86f868347919095aa44d2a6129dd714cbcf8feaa88ba954f636295b14ceff8f" "8fed5e4b89cf69107d524c4b91b4a4c35bcf1b3563d5f306608f0c48f580fdf8" "83e584d74b0faea99a414a06dae12f11cd3176fdd4eba6674422539951bcfaa8" "90edd91338ebfdfcd52ecd4025f1c7f731aced4c9c49ed28cfbebb3a3654840b" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "a507b9ca4a605d5256716da70961741b9ef9ec3246041a4eb776102e8df18418" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" default))
+   '("e9d47d6d41e42a8313c81995a60b2af6588e9f01a1cf19ca42669a7ffd5c2fde" "b89a4f5916c29a235d0600ad5a0849b1c50fab16c2c518e1d98f0412367e7f97" "2d835b43e2614762893dc40cbf220482d617d3d4e2c35f7100ca697f1a388a0e" "6bc387a588201caf31151205e4e468f382ecc0b888bac98b2b525006f7cb3307" "59e82a683db7129c0142b4b5a35dbbeaf8e01a4b81588f8c163bd255b76f4d21" "d1cc05d755d5a21a31bced25bed40f85d8677e69c73ca365628ce8024827c9e3" "834cbeacb6837f3ddca4a1a7b19b1af3834f36a701e8b15b628cad3d85c970ff" "923ee73494ea3611d2a1ff9f31bbf8d71b0b0cc2aeb4a6e0944ec6c83bc0ac23" "9fe1540491fcf692b8c639a3abacd32b29233bc4cb834a12a0fd1e01cbd0a128" "d6922c974e8a78378eacb01414183ce32bc8dbf2de78aabcc6ad8172547cb074" "235dc2dd925f492667232ead701c450d5c6fce978d5676e54ef9ca6dd37f6ceb" "38e64ea9b3a5e512ae9547063ee491c20bd717fe59d9c12219a0b1050b439cdd" "e64111716b1c8c82638796667c2c03466fde37e69cada5f6b640c16f1f4e97df" "71ecffba18621354a1be303687f33b84788e13f40141580fa81e7840752d31bf" "c86f868347919095aa44d2a6129dd714cbcf8feaa88ba954f636295b14ceff8f" "8fed5e4b89cf69107d524c4b91b4a4c35bcf1b3563d5f306608f0c48f580fdf8" "83e584d74b0faea99a414a06dae12f11cd3176fdd4eba6674422539951bcfaa8" "90edd91338ebfdfcd52ecd4025f1c7f731aced4c9c49ed28cfbebb3a3654840b" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "a507b9ca4a605d5256716da70961741b9ef9ec3246041a4eb776102e8df18418" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" default))
  '(default-input-method "TeX")
  '(ebib-bibtex-dialect 'biblatex)
  '(eclim-eclipse-dirs
@@ -531,10 +532,9 @@
  '(org-export-backends '(ascii html icalendar latex md org))
  '(org-src-tab-acts-natively t)
  '(org-support-shift-select t)
-;;  '(org-trello-current-prefix-keybinding "C-c o" nil (org-trello))
  '(org-use-speed-commands t)
  '(package-selected-packages
-   '(flycheck-gradle flymake-gradle gradle-mode company-emacs-eclim ac-emacs-eclim eclim prescient bind-key font-utils fontawesome flylisp flyspell-correct-popup flyspell-popup flycheck writegood-mode ediprolog ebib el-get el-init el-init-viewer el-mock el-patch el2org pdf-tools latex-unicode-math-mode htmlize auctex artbollocks-mode www-synonyms x-dict cyberpunk-theme langtool racket-mode flymake-racket wordsmith-mode tabbar dr-racket-like-unicode biblio org-doing org-dotemacs org-rtm paredit-menu paredit-everywhere org-ac magit-filenotify hc-zenburn-theme elscreen-separate-buffer-list dictionary color-theme calfw-gcal autopair ace-jump-mode ac-math helm-flyspell helm-wordnet helm-idris helm-dictionary)) ;; eldorado
+   '(flycheck-gradle flymake-gradle gradle-mode company-emacs-eclim ac-emacs-eclim eclim prescient bind-key font-utils fontawesome flylisp flyspell-correct-popup flyspell-popup flycheck writegood-mode ediprolog ebib el-get el-init el-init-viewer el-mock el-patch el2org pdf-tools latex-unicode-math-mode htmlize auctex artbollocks-mode www-synonyms x-dict cyberpunk-theme langtool racket-mode flymake-racket wordsmith-mode tabbar dr-racket-like-unicode biblio org-doing org-dotemacs org-rtm paredit-menu paredit-everywhere org-ac magit-filenotify hc-zenburn-theme elscreen-separate-buffer-list dictionary color-theme calfw-gcal autopair ace-jump-mode ac-math helm-flyspell helm-wordnet helm-idris helm-dictionary))
  '(preview-auto-cache-preamble t)
  '(racket-program "racket")
  '(reftex-cite-format 'biblatex)
@@ -575,6 +575,7 @@
 ;; point-to-register C-x r SPC
 ;; jump-to-register C-x r j 
 ;; M-x LaTeX-math-cal Ret <the letter>
+;; M-x smog-check-region 
 
 ;; Right now, this is busted in the agda-mode repository. 13/12/15
 ;; (when (eq system-type 'darwin)
@@ -592,18 +593,21 @@
 
 ;; Emacs desiderata
 ;; Setup emacs calendar to sync with google calendar
-;; Set up paradox
-;; Set up wordsmith-mode
 
-;; Have width of nlinum buffer scale as font-size increases.
+
+;; Have width of nlinum buffer scale as font-size increases. 
 ;; Set a higher default font size (point size).
 ;; Make it Windows 7/8/10 appropriate. --- see Google Keep
-;; Automatically remove obsolete packages
+
 ;; Get code to color parens again for latex files. 
 ;; Setup package-pinned-packages, so as to draw from the correct package repo. 
+;; Set up paradox -- if that's still a good idea. Cf straight-use-package, etc. etc. 
+;; Automatically remove obsolete packages
+
 ;; Spacing with parens in various non-lisp modes that you use w/paredit mode.
+
 ;; Turn off C-z behavior that hides window
-;; add diction file as a submodule, and suggest that if it's not found, that the directory in my .emacs module be symlinked to the correct location.
+
 ;; use David's .emacs as a sample, to set things up properly.
 ;; Add a separate file with my private information like git stuff etc, that folk can setup and add. 
 ;; Set things up so langtool will either be automatically downloaded or suggest that it be downloaded.
