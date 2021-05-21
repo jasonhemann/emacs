@@ -1,4 +1,4 @@
-;;; package --- Summary
+;;; Package --- Summary
 
 ;;; This is Jason Hemann's .emacs setup, intended for OSX and some
 ;;; linux machines. It is currently in an unstable state, and the
@@ -27,9 +27,12 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
-(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")             t)
-(add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/") t)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/")              t)
+(straight-pull-recipe-repositories '(org-elpa melpa gnu-elpa-mirror el-get emacsmirror-mirror))
+
+
+;; (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")             t)
+;; (add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/") t)
+;; (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/")              t)
 
 (setq debug-on-quit t
       inhibit-splash-screen t
@@ -46,6 +49,7 @@
 (straight-use-package 'ac-math)
 (straight-use-package 'academic-phrases)
 (straight-use-package 'ace-jump-mode)
+;; (straight-use-package 'agda-mode)
 (straight-use-package 'apel)
 (straight-use-package 'auctex-latexmk)
 (straight-use-package 'auto-complete-auctex)
@@ -142,12 +146,12 @@
 (straight-use-package 'zones)
 (straight-use-package 'zygospore)
 
-;;;;;;
-;; (straight-use-package 'eldoro) maybe not a package
-;; (straight-use-package 'helm-config) 
 
-;; (package-install-file "~/Documents/org-inline-pdf.el/org-inline-pdf.el")
-;; (require 'org-inline-pdf) ;; Trying, in case it works
+;; (straight-use-package 'eldoro) maybe not a package
+;; (straight-use-package 'helm-config)
+
+(package-install-file "~/Documents/org-inline-pdf.el/org-inline-pdf.el")
+(require 'org-inline-pdf) ;; Trying, in case it works
 
 ;; I don't care that we're redefining tramp-read-passwd
 (setq ad-redefinition-action 'accept)
@@ -177,7 +181,68 @@
 (setq wl-local-domain "gmail.com")
 (setq wl-message-id-domain "smtp.gmail.com")
 
+;; 'expand-region Increase selected region by semantic units
+;; 'wrap-region  Emacs minor mode to wrap region with tag or punctuations
+;; 'exec-path-from-shell  Make Emacs use the $PATH set up by the user's shell
+;; 'visual-regexp  A regexp/replace command for Emacs with interactive visual feedback
+;; 'buffer-move used for rotating buffers
+;; 'visual-regexp-steroids  Extends visual-regexp to support other regexp engines
+;; 'ido-vertical-mode  makes ido-mode display vertically
+;; 'yafolding  Yet another folding extension for Emacs
+;; 's  The long lost Emacs string manipulation library.
+;; 'sourcemap   Sourmap parser in Emacs Lisp
+;; 'projectile Project Interaction Library for Emacs http://projectile.readthedocs.io
+;; 'f  Modern API for working with files and directories in Emacs
+;; 'jump build functions which contextually jump between files
+;; 'discover discover more of Emacs
+;; 'dired-details hide or show the file and directory detail
+;; 'ibuffer-vc  Let Emacs' ibuffer-mode group files by git project etc., and show file state
+;; 'auto-compile  Automatically compile Emacs Lisp libraries
+;; 'yaml-mode  The emacs major mode for editing files in the YAML data serialization format.
+;; 'undo-tree Treat undo history as a tree
+;; 'smartscan Quickly jumps between other symbols found at point in Emacs
+;; 'discover-my-major  Discover key bindings and their meaning for the current Emacs major mode
+;; 'goto-chg Goto last change in current buffer
+;; 'anzu displays current match and total matches information
+;; 'fullframe  Advice commands to execute fullscreen, restoring the window setup when exiting.
+;; 'dash  A modern list library for Emacs
+;; 'popup  Visual Popup Interface Library for Emacs
+;; 'company Complete anything ;-)
+;; 'cl-lib Properly prefixed CL functions and macros
+;; 'eldoc the argument list of the function call you are currently writing
+;; 'evil Evil is an extensible vi layer for Emacs
+;; 'sh-script The major mode for editing Unix and GNU/Linux shell script code
+;; 'neotree  A emacs tree plugin like NerdTree for Vim.
+;; 'sx Stackoverflow mode ;-)
+;; 'duplicate-thing duplicate current line
+;; 'clean-aindent-mode Emacs extension for simple indent and unindent
+;; 'comment-dwim-2  A replacement for the emacs' built-in command comment-dwim
+;; 'dtrt-indent A minor mode that guesses the indentation offset originally used for creating source code
+;; 'ws-butler  Unobtrusively trim extraneous white-space *ONLY* in lines edited.
+;; 'iedit Emacs minor mode and allows you to edit one occurrence of some text in a buffer
+;; 'smartparens Minor mode for Emacs that deals with parens pairs and tries to be smart about it.
+;; 'volatile-highlights Minor mode for visual feedback on some operations.
 
+;; 'fliplr
+;; Programming
+;; 'anaconda-mode Python IDE
+;; 'company-anaconda Python ide -completions
+;; 'docker
+;; GIT
+;; 'magit git on emacs
+;; 'magit-gerrit gerrit mode for emacs
+;; 'git-timemachine Walk through git revisions of a file
+;; keep latest org-mode
+;; 'org Go and use
+;; Themes https://emacsthemes.com/
+;; 'green-phosphor-theme
+;; 'gotham-theme
+;; 'solarized-theme))
+
+;; (dolist (package my-required-packages)
+;;   (when (not (package-installed-p package))
+;;       (package-refresh-contents)
+;;           (package-install package)))
 (setq wl-default-folder "%inbox")
 (setq wl-default-spec "%")
 (setq wl-draft-folder "%[Gmail]/Drafts") ; Gmail IMAP
@@ -197,7 +262,7 @@
 
       ;; Mark sent messages as read (sent messages get sent back to you and
       ;; placed in the folder specified by wl-fcc)
-      wl-fcc-force-as-read    t
+      wl-fcc-force-as-read t
 
       ;; For auto-completing foldernames
       wl-default-spec "%")
@@ -229,27 +294,10 @@
 
 
 (add-hook 'java-mode-hook 'eclim-mode)
-
 ;; I should want maven, I think, tbqh
-
 (add-hook 'java-mode-hook '(lambda() (gradle-mode 1)))
 
 ;; (load "~/Documents/eliemacs/eliemacs")
-
-;; (unless (package-installed-p 'use-package)
-;;   (progn
-;;     (unless package-archive-contents
-;;       (package-refresh-contents))
-;;     (package-install 'use-package)))
-;; On another yak-shave, use the following:
-;; https://www.reddit.com/r/emacs/comments/47aq53/best_way_to_set_up_package_dependencies_in_initel/
-;; to simplify the .emacs
-
-(defun install-if-missing (pkgs)
-  (when pkgs
-    (unless (package-installed-p (car pkgs) nil)
-      (package-install (car pkgs)))
-    (install-if-missing (cdr pkgs))))
 
 (unless package-archive-contents
    (package-refresh-contents))
@@ -290,7 +338,10 @@
   (ispell-word))
 
 (global-set-key (kbd "M-<f8>") 'flyspell-check-next-highlighted-word)
-(mac-auto-operator-composition-mode)
+
+;; Only in Emacs mac-port
+;; (mac-auto-operator-composition-mode t)
+
 (if (eq system-type 'darwin)
     (setq-default ispell-program-name "/usr/local/bin/aspell")
     (setq-default ispell-program-name "/usr/bin/aspell")) ;; What about Windows?
@@ -320,18 +371,18 @@
 
 (setq langtool-autoshow-message-function 'langtool-autoshow-detail-popup)
 
-;; Execute racket in emacs setup to install 
+(helm-mode 1)
 
 ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
 ;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
 ;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
-;; (require 'helm-config)
-;; (global-set-key (kbd "C-c h") 'helm-command-prefix)
-;; (global-unset-key (kbd "C-x c"))
+(require 'helm-config)
+(global-set-key (kbd "C-c h") 'helm-command-prefix)
+(global-unset-key (kbd "C-x c"))
 
-;; (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
-;; (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
-;; (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
+(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
+(define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
+(define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
 
 (when (executable-find "curl")
   (setq helm-google-suggest-use-curl-p t))
@@ -341,8 +392,6 @@
       helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
       helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
       helm-ff-file-name-history-use-recentf t)
-
-(helm-mode 1)
 
 (add-hook 'racket-mode-hook (lambda () (define-key racket-mode-map (kbd "C-c r") 'racket-run)))
 (setq tab-always-indent 'complete)
@@ -467,26 +516,8 @@
 (setq auto-mode-alist (cons '("\\.v$" . coq-mode) auto-mode-alist))
 (autoload 'coq-mode "coq" "Major mode for editing Coq vernacular." t)
 
-
 (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
 (add-hook 'prog-mode-hook 'paredit-everywhere-mode)
-;; (add-hook 'racket-mode-hook      #'racket-unicode-input-method-enable)
-;; (add-hook 'racket-repl-mode-hook #'racket-unicode-input-method-enable)
-;; (add-hook 'emacs-lisp-mode-hook                    #'enable-paredit-mode)
-;; (add-hook 'eval-expression-minibuffer-setup-hook   #'enable-paredit-mode)
-;; (add-hook 'ielm-mode-hook                          #'enable-paredit-mode) ;; inferior-emacs-lisp-mode
-;; (add-hook 'lisp-mode-hook                          #'enable-paredit-mode)
-;; (add-hook 'lisp-interaction-mode-hook              #'enable-paredit-mode)
-;; (add-hook 'scheme-mode-hook                        #'enable-paredit-mode)
-;; (add-hook 'inferior-scheme-mode-hook               #'enable-paredit-mode)
-;; (add-hook 'racket-mode-hook                        #'enable-paredit-mode)
-;; (add-hook 'racket-repl-mode-hook                   #'enable-paredit-mode)
-;; (add-hook 'idris-mode-hook                         #'enable-paredit-mode)
-;; (add-hook 'idris-repl-mode-hook                    #'enable-paredit-mode)
-;; (add-hook 'agda2-mode-hook                         #'enable-paredit-mode)
-;; (add-hook 'ciao-mode-hook                          #'enable-paredit-mode) ;; not til fix paren space issue.
-;; tex-mode has paredit-mode issue too. 
-;; (add-hook 'idris-prover-script-mode-hook           #'enable-paredit-mode)
 
 (global-set-key (kbd "{") 'paredit-open-curly)
 (add-hook 'racket-mode-hook      #'flylisp-mode)
@@ -516,10 +547,38 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+
+ '(auto-save-interval 75)
+ '(auto-save-timeout 10)
+ '(blink-cursor-mode nil)
+ '(bookmark-save-flag 0)
+ '(column-number-mode t)
+ '(dired-listing-switches "-al --group-directories-first --time-style=long-iso")
+ '(display-time-day-and-date t)
+ '(display-time-mode t)
+ '(fill-column 110)
+ '(fringe-mode 2 nil (fringe))
+ '(inhibit-startup-screen t)
+ '(ispell-highlight-face (quote highlight))
+ '(ispell-highlight-p t)
+ '(ispell-program-name "aspell" t)
+ '(load-home-init-file t t)
+ '(ls-lisp-dirs-first t)
+ '(make-backup-files nil)
+ '(scroll-bar-mode (quote right))
+ '(sentence-end-double-space nil)
+ '(sort-fold-case t t)
+ '(tool-bar-mode nil)
+ '(truncate-lines t)
+ '(vc-make-backup-files t)
+ '(version-control t)
+ '(visible-bell t)
+ '(x-select-enable-clipboard t)
+
  '(TeX-auto-untabify t)
  '(TeX-engine 'xetex)
- '(ac-modes
-   '(emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode agda-mode agda2-mode haskell-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode racket-mode Racket-mode racket-repl-mode idris-mode idris-repl-mode ciao-mode))
+ '(ac-modes ;; agda-mode agda2-mode 
+   '(emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode haskell-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode racket-mode Racket-mode racket-repl-mode idris-mode idris-repl-mode ciao-mode))
  '(bibtex-maintain-sorted-entries 'plain)
  '(custom-safe-themes
    '("e9d47d6d41e42a8313c81995a60b2af6588e9f01a1cf19ca42669a7ffd5c2fde" "b89a4f5916c29a235d0600ad5a0849b1c50fab16c2c518e1d98f0412367e7f97" "2d835b43e2614762893dc40cbf220482d617d3d4e2c35f7100ca697f1a388a0e" "6bc387a588201caf31151205e4e468f382ecc0b888bac98b2b525006f7cb3307" "59e82a683db7129c0142b4b5a35dbbeaf8e01a4b81588f8c163bd255b76f4d21" "d1cc05d755d5a21a31bced25bed40f85d8677e69c73ca365628ce8024827c9e3" "834cbeacb6837f3ddca4a1a7b19b1af3834f36a701e8b15b628cad3d85c970ff" "923ee73494ea3611d2a1ff9f31bbf8d71b0b0cc2aeb4a6e0944ec6c83bc0ac23" "9fe1540491fcf692b8c639a3abacd32b29233bc4cb834a12a0fd1e01cbd0a128" "d6922c974e8a78378eacb01414183ce32bc8dbf2de78aabcc6ad8172547cb074" "235dc2dd925f492667232ead701c450d5c6fce978d5676e54ef9ca6dd37f6ceb" "38e64ea9b3a5e512ae9547063ee491c20bd717fe59d9c12219a0b1050b439cdd" "e64111716b1c8c82638796667c2c03466fde37e69cada5f6b640c16f1f4e97df" "71ecffba18621354a1be303687f33b84788e13f40141580fa81e7840752d31bf" "c86f868347919095aa44d2a6129dd714cbcf8feaa88ba954f636295b14ceff8f" "8fed5e4b89cf69107d524c4b91b4a4c35bcf1b3563d5f306608f0c48f580fdf8" "83e584d74b0faea99a414a06dae12f11cd3176fdd4eba6674422539951bcfaa8" "90edd91338ebfdfcd52ecd4025f1c7f731aced4c9c49ed28cfbebb3a3654840b" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "a507b9ca4a605d5256716da70961741b9ef9ec3246041a4eb776102e8df18418" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" default))
@@ -563,8 +622,8 @@
 ;; Assumes k has some formal parameters
 ;; Leave mark at end of last match line in apply-k.
 
-(fset 'make-k-ri
-      (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([134217749 134217749 134217749 134217734 134217732 134217732 134217732 134217749 201326624 134217847 134217749 134217730 134217734 25 134217730 134217730 201326624 134217847 134217732 25 32 134217749 201326624 134217765 32 return 32 44 return 33 134217749 96 2 201326624 23 134217732 134217734 134217734 return 25 134217732 25 201326624 201326624 23 134217749 134217730 134217734 201326624 23 134217749 134217749 201326624 tab 134217730 134217734 134217748 2 2 2 134217730 134217730 134217734 25 134217749 201326624 tab 134217734 134217730 134217734 2 134217730 134217730 134217734] 0 "%d")) arg)))
+;; (fset 'make-k-ri
+;;       (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([134217749 134217749 134217749 134217734 134217732 134217732 134217732 134217749 201326624 134217847 134217749 134217730 134217734 25 134217730 134217730 201326624 134217847 134217732 25 32 134217749 201326624 134217765 32 return 32 44 return 33 134217749 96 2 201326624 23 134217732 134217734 134217734 return 25 134217732 25 201326624 201326624 23 134217749 134217730 134217734 201326624 23 134217749 134217749 201326624 tab 134217730 134217734 134217748 2 2 2 134217730 134217730 134217734 25 134217749 201326624 tab 134217734 134217730 134217734 2 134217730 134217730 134217734] 0 "%d")) arg)))
 
 ;; I need to write a keyboard macro for going from let* to begin/set!
 
@@ -585,11 +644,13 @@
 
 (add-to-list 'auto-mode-alist '("\\.rkt\\'" . racket-mode))
 
-(add-hook 'eval-expression-minibuffer-setup-hook 'my-minibuffer-setup)
-(add-hook 'minibuffer-setup-hook 'my-minibuffer-setup)
-(defun my-minibuffer-setup ()
-  (set (make-local-variable 'face-remapping-alist)
-       '((default :height 5.0))))
+
+;; This was some setup that I did to the minibuffer; not sure it was wise
+;; (add-hook 'eval-expression-minibuffer-setup-hook 'my-minibuffer-setup)
+;; (add-hook 'minibuffer-setup-hook 'my-minibuffer-setup)
+;; (defun my-minibuffer-setup ()
+;;   (set (make-local-variable 'face-remapping-alist)
+;;        '((default :height 5.0))))
 
 ;; Emacs desiderata
 ;; Setup emacs calendar to sync with google calendar
@@ -603,6 +664,15 @@
 ;; Setup package-pinned-packages, so as to draw from the correct package repo. 
 ;; Set up paradox -- if that's still a good idea. Cf straight-use-package, etc. etc. 
 ;; Automatically remove obsolete packages
+
+;; (unless (package-installed-p 'use-package)
+;;   (progn
+;;     (unless package-archive-contents
+;;       (package-refresh-contents))
+;;     (package-install 'use-package)))
+;; On another yak-shave, use the following:
+;; https://www.reddit.com/r/emacs/comments/47aq53/best_way_to_set_up_package_dependencies_in_initel/
+;; to simplify the .emacs
 
 ;; Spacing with parens in various non-lisp modes that you use w/paredit mode.
 
@@ -619,3 +689,4 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
