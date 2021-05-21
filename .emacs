@@ -45,50 +45,65 @@
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-;; (straight-use-package '(flycheck-textlint :type git :host github :repo "kisaragi-hiu/flycheck-textlint"))
 (straight-use-package 'ac-math)
 (straight-use-package 'academic-phrases)
 (straight-use-package 'ace-jump-mode)
-;; (straight-use-package 'agda-mode)
+(straight-use-package 'anzu) ;; displays current match and total matches information
 (straight-use-package 'apel)
 (straight-use-package 'auctex-latexmk)
+(straight-use-package 'auto-compile) ;; Automatically compile Emacs Lisp libraries
 (straight-use-package 'auto-complete-auctex)
-;; (straight-use-package 'auto-complete-config)
 (straight-use-package 'auto-package-update)
 (straight-use-package 'autopair)
 (straight-use-package 'bbdb)
 (straight-use-package 'biblio)
 (straight-use-package 'bibtex-completion)
 (straight-use-package 'bog)
+(straight-use-package 'buffer-move) ;; used for rotating buffers
 (straight-use-package 'calfw)
 (straight-use-package 'calfw-cal)
 (straight-use-package 'calfw-gcal)
 (straight-use-package 'calfw-ical)
 (straight-use-package 'calfw-org)
 (straight-use-package 'cdlatex)
+(straight-use-package 'cl-lib) ;; Properly prefixed CL functions and macros
 (straight-use-package 'clang-format)
+(straight-use-package 'clean-aindent-mode) ;; Emacs extension for simple indent and unindent
 (straight-use-package 'color-theme-modern)
+(straight-use-package 'comment-dwim-2) ;; A replacement for the emacs' built-in command comment-dwim
+(straight-use-package 'company) ;; Complete anything ;-)
 (straight-use-package 'company-coq)
 (straight-use-package 'company-dict)
 (straight-use-package 'company-lean)
 (straight-use-package 'company-math)
 (straight-use-package 'coq-commenter)
 (straight-use-package 'cyberpunk-theme)
+(straight-use-package 'dash) ;; A modern list library for Emacs
 (straight-use-package 'dash-functional)
 (straight-use-package 'dictionary)
+(straight-use-package 'dired-details) ;; hide or show the file and directory detail
+(straight-use-package 'discover) ;; discover more of Emacs
+(straight-use-package 'discover-my-major) ;; Discover key bindings and their meaning for the current Emacs major mode
 (straight-use-package 'dr-racket-like-unicode)
+(straight-use-package 'dtrt-indent) ;; A minor mode that guesses the indentation offset originally used for creating source code
+(straight-use-package 'duplicate-thing) ;; duplicate current line
 (straight-use-package 'easy-jekyll)
 (straight-use-package 'eclim)
+(straight-use-package 'eldoc) ;; the argument list of the function call you are currently writing
 (straight-use-package 'elscreen-separate-buffer-list)
-(straight-use-package 'exec-path-from-shell)
-(straight-use-package 'f)
+(straight-use-package 'exec-path-from-shell) ;; Make Emacs use the $PATH set up by the user's shell
+(straight-use-package 'expand-region) ;; Increase selected region by semantic units
+(straight-use-package 'f) ;; Modern API for working with files and directories in Emacs
 (straight-use-package 'flim)
 (straight-use-package 'flymake-easy)
 (straight-use-package 'flymake-racket)
 (straight-use-package 'flymd)
 (straight-use-package 'flyspell-lazy)
+(straight-use-package 'fullframe) ;; Advice commands to execute fullscreen, restoring the window setup when exiting.
 (straight-use-package 'gh-md)
 (straight-use-package 'ghub)
+(straight-use-package 'git-timemachine) ;; Walk through git revisions of a file
+(straight-use-package 'goto-chg) ;; Goto last change in current buffer
 (straight-use-package 'gradle-mode)
 (straight-use-package 'graphql)
 (straight-use-package 'hc-zenburn-theme)
@@ -98,11 +113,16 @@
 (straight-use-package 'helm-lean)
 (straight-use-package 'helm-wordnet)
 (straight-use-package 'ht)
+(straight-use-package 'ibuffer-vc) ;; Let Emacs' ibuffer-mode group files by git project etc., and show file state
+(straight-use-package 'ido-vertical-mode) ;; makes ido-mode display vertically
+(straight-use-package 'iedit) ;; Emacs minor mode and allows you to edit one occurrence of some text in a buffer
 (straight-use-package 'j-mode)
 (straight-use-package 'jeison)
+(straight-use-package 'jump) ;; build functions which contextually jump between files
 (straight-use-package 'langtool)
 (straight-use-package 'lean-mode)
 (straight-use-package 'magit-filenotify)
+(straight-use-package 'magit-gerrit) ;; gerrit mode for emacs
 (straight-use-package 'magit-popup)
 (straight-use-package 'markdown-mode+)
 (straight-use-package 'markdown-preview-mode)
@@ -111,6 +131,7 @@
 (straight-use-package 'midnight)
 (straight-use-package 'multiple-cursors)
 (straight-use-package 'mustache)
+(straight-use-package 'neotree) ;; A emacs tree plugin like NerdTree for Vim.
 (straight-use-package 'nlinum)
 (straight-use-package 'org-ac)
 (straight-use-package 'org-doing)
@@ -124,27 +145,49 @@
 (straight-use-package 'paredit-everywhere)
 (straight-use-package 'paredit-menu)
 (straight-use-package 'parent-mode)
+(straight-use-package 'popup) ;; Visual Popup Interface Library for Emacs
 (straight-use-package 'powerthesaurus)
+(straight-use-package 'projectile) ;; Project Interaction Library for Emacs http://projectile.readthedocs.io
 (straight-use-package 'proof-general)
 (straight-use-package 'racket-mode)
 (straight-use-package 'reazon)
+(straight-use-package 's) ;; The long lost Emacs string manipulation library.
 (straight-use-package 'savehist)
 (straight-use-package 'scheme-complete)
 (straight-use-package 'semi)
+(straight-use-package 'sh-script) ;; The major mode for editing Unix and GNU/Linux shell script code
 (straight-use-package 'simple-httpd)
+(straight-use-package 'smartscan) ;; Quickly jumps between other symbols found at point in Emacs
 (straight-use-package 'sml-mode)
 (straight-use-package 'sml-modeline)
 (straight-use-package 'smog)
+(straight-use-package 'sourcemap) ;;  Sourmap parser in Emacs Lisp
+(straight-use-package 'sx) ;; Stackoverflow mode ;-)
 (straight-use-package 'tabbar)
 (straight-use-package 'treepy)
+(straight-use-package 'undo-tree) ;; Treat undo history as a tree
 (straight-use-package 'use-package)
+(straight-use-package 'visual-regexp) ;; A regexp/replace command for Emacs with interactive visual feedback
+(straight-use-package 'visual-regexp-steroids) ;; Extends visual-regexp to support other regexp engines
+(straight-use-package 'volatile-highlights) ;; Minor mode for visual feedback on some operations.
 (straight-use-package 'w3m)
 (straight-use-package 'wanderlust)
 (straight-use-package 'wordnut)
 (straight-use-package 'wordsmith-mode)
-(straight-use-package 'yaml-mode)
+(straight-use-package 'wrap-region) ;; Emacs minor mode to wrap region with tag or punctuations
+(straight-use-package 'ws-butler) ;; Unobtrusively trim extraneous white-space *ONLY* in lines edited.
+(straight-use-package 'yafolding) ;; Yet another folding extension for Emacs
+(straight-use-package 'yaml-mode) ;; The emacs major mode for editing files in the YAML data serialization format.
 (straight-use-package 'zones)
 (straight-use-package 'zygospore)
+;; (straight-use-package '(flycheck-textlint :type git :host github :repo "kisaragi-hiu/flycheck-textlint"))
+;; (straight-use-package 'evil) ;; Evil is an extensible vi layer for Emacs
+
+;; (straight-use-package  'fliplr) ;;
+;; Minor mode for Emacs that deals with parens pairs and tries to be smart about it.
+;; I think paredit probably does everything I need
+;; (straight-use-package  'smartparens)
+;; (straight-use-package 'auto-complete-config)
 
 
 ;; (straight-use-package 'eldoro) maybe not a package
@@ -180,64 +223,6 @@
 (setq wl-smtp-posting-server "smtp.gmail.com")
 (setq wl-local-domain "gmail.com")
 (setq wl-message-id-domain "smtp.gmail.com")
-
-;; 'expand-region Increase selected region by semantic units
-;; 'wrap-region  Emacs minor mode to wrap region with tag or punctuations
-;; 'exec-path-from-shell  Make Emacs use the $PATH set up by the user's shell
-;; 'visual-regexp  A regexp/replace command for Emacs with interactive visual feedback
-;; 'buffer-move used for rotating buffers
-;; 'visual-regexp-steroids  Extends visual-regexp to support other regexp engines
-;; 'ido-vertical-mode  makes ido-mode display vertically
-;; 'yafolding  Yet another folding extension for Emacs
-;; 's  The long lost Emacs string manipulation library.
-;; 'sourcemap   Sourmap parser in Emacs Lisp
-;; 'projectile Project Interaction Library for Emacs http://projectile.readthedocs.io
-;; 'f  Modern API for working with files and directories in Emacs
-;; 'jump build functions which contextually jump between files
-;; 'discover discover more of Emacs
-;; 'dired-details hide or show the file and directory detail
-;; 'ibuffer-vc  Let Emacs' ibuffer-mode group files by git project etc., and show file state
-;; 'auto-compile  Automatically compile Emacs Lisp libraries
-;; 'yaml-mode  The emacs major mode for editing files in the YAML data serialization format.
-;; 'undo-tree Treat undo history as a tree
-;; 'smartscan Quickly jumps between other symbols found at point in Emacs
-;; 'discover-my-major  Discover key bindings and their meaning for the current Emacs major mode
-;; 'goto-chg Goto last change in current buffer
-;; 'anzu displays current match and total matches information
-;; 'fullframe  Advice commands to execute fullscreen, restoring the window setup when exiting.
-;; 'dash  A modern list library for Emacs
-;; 'popup  Visual Popup Interface Library for Emacs
-;; 'company Complete anything ;-)
-;; 'cl-lib Properly prefixed CL functions and macros
-;; 'eldoc the argument list of the function call you are currently writing
-;; 'evil Evil is an extensible vi layer for Emacs
-;; 'sh-script The major mode for editing Unix and GNU/Linux shell script code
-;; 'neotree  A emacs tree plugin like NerdTree for Vim.
-;; 'sx Stackoverflow mode ;-)
-;; 'duplicate-thing duplicate current line
-;; 'clean-aindent-mode Emacs extension for simple indent and unindent
-;; 'comment-dwim-2  A replacement for the emacs' built-in command comment-dwim
-;; 'dtrt-indent A minor mode that guesses the indentation offset originally used for creating source code
-;; 'ws-butler  Unobtrusively trim extraneous white-space *ONLY* in lines edited.
-;; 'iedit Emacs minor mode and allows you to edit one occurrence of some text in a buffer
-;; 'smartparens Minor mode for Emacs that deals with parens pairs and tries to be smart about it.
-;; 'volatile-highlights Minor mode for visual feedback on some operations.
-
-;; 'fliplr
-;; Programming
-;; 'anaconda-mode Python IDE
-;; 'company-anaconda Python ide -completions
-;; 'docker
-;; GIT
-;; 'magit git on emacs
-;; 'magit-gerrit gerrit mode for emacs
-;; 'git-timemachine Walk through git revisions of a file
-;; keep latest org-mode
-;; 'org Go and use
-;; Themes https://emacsthemes.com/
-;; 'green-phosphor-theme
-;; 'gotham-theme
-;; 'solarized-theme))
 
 ;; (dolist (package my-required-packages)
 ;;   (when (not (package-installed-p package))
@@ -526,7 +511,7 @@
 (when (memq window-system '(mac ns))
   (exec-path-from-shell-initialize))
 
-(setq window-themes-list '(wheatgrass manoj-dark cyberpunk tango-dark deeper-blue))
+(setq window-themes-list '(wheatgrass manoj-dark cyberpunk tango-dark deeper-blue green-phosphor-theme gotham-theme solarized-theme))
 
 (if window-system
   (load-theme (nth (cl-random (length window-themes-list)) window-themes-list))
