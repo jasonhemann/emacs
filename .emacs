@@ -27,6 +27,7 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
+ 
 (straight-pull-recipe-repositories '(org-elpa melpa gnu-elpa-mirror el-get emacsmirror-mirror))
 
 
@@ -99,6 +100,8 @@
 (straight-use-package 'flymake-racket)
 (straight-use-package 'flymd)
 (straight-use-package 'flyspell-lazy)
+;; xuchunyang/flyspell-popup
+;; (straight-use-package '(flyspell-popup :host github :type git :repo "xuchunyang/flyspell-popup" :fork nil))
 (straight-use-package 'fullframe) ;; Advice commands to execute fullscreen, restoring the window setup when exiting.
 (straight-use-package 'gh-md)
 (straight-use-package 'ghub)
@@ -107,10 +110,39 @@
 (straight-use-package 'gradle-mode)
 (straight-use-package 'graphql)
 (straight-use-package 'hc-zenburn-theme)
+
+;; helm-find-files: one command that handles all the files related commands (bind to C-x C-f).
+;; helm-buffers-list: provides enhanced buffers listing.
+;; helm-occur: enhanced occur for one or more buffers; launch from helm-buffers-list or current-buffer. 
+;; (global-set-key (kbd "C-x c o") 'helm-occur)
+;; helm-browse-project: handles project files and buffers; defaults to current directory; works with helm-find-files; recommended with helm-ls-git, helm-ls-hg and helm-ls-svn for a better handling of version control files. Each time a project under version control is visited it is added to helm-browse-project-history and can be visted with helm-projects-history.
+;; helm-dabbrev: enhanced dabbrev implementation with helm completion; does not use emacs code.
+;; helm-imenu and helm-imenu-in-all-buffers: provide imenus for current or all buffers.
+;; helm-etags-select: enhanced etags with helm-completion; usable everywhere with helm-find-files.
+;; helm-apropos: enhanced apropos for functions and variables that C-h commands provide.
+
+;; Grep: launch from any helm file commands; supports back-ends grep, ack-grep, git-grep, ag and custom implementation of pt.
+
+;; helm-gid: Helm interface for gid from id-utils.
+
+;; helm-show-kill-ring: A helm browser for kill ring.
+;; helm-all-mark-rings: A helm browser for mark ring; retrieves last positions in buffers.
+;; helm-filtered-bookmarks: enhanced browser for bookmarks.
+;; helm-list-elisp-packages: enhanced browser for elisp package management.
+
 (straight-use-package 'helm)
+(straight-use-package 'helm-addressbook)
 (straight-use-package 'helm-dictionary)
+(straight-use-package 'helm-descbinds)
+(straight-use-package 'helm-emms)
+(straight-use-package 'helm-firefox)
 (straight-use-package 'helm-idris)
 (straight-use-package 'helm-lean)
+(straight-use-package 'helm-ls-git)
+(straight-use-package 'helm-mu)
+(straight-use-package 'helm-slime)
+(straight-use-package 'helm-system-packages)
+(straight-use-package 'helm-w3m)
 (straight-use-package 'helm-wordnet)
 (straight-use-package 'ht)
 (straight-use-package 'ibuffer-vc) ;; Let Emacs' ibuffer-mode group files by git project etc., and show file state
@@ -329,7 +361,9 @@
 
 (if (eq system-type 'darwin)
     (setq-default ispell-program-name "/usr/local/bin/aspell")
-    (setq-default ispell-program-name "/usr/bin/aspell")) ;; What about Windows?
+  (if (eq system-type 'linux)
+      (setq-default ispell-program-name "/usr/bin/aspell")
+    (setq-default ispell-program-name ""))) ;; What should we do about Windows?
 
 (setq-default ispell-list-command "list")
 
@@ -346,6 +380,7 @@
 (global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows)
 
 (defun langtool-autoshow-detail-popup (overlays)
+  ""
   (when (require 'popup nil t)
     ;; Do not interrupt current popup
     (unless (or popup-instances
@@ -356,7 +391,10 @@
 
 (setq langtool-autoshow-message-function 'langtool-autoshow-detail-popup)
 
+
+
 (helm-mode 1)
+
 
 ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
 ;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
@@ -364,6 +402,11 @@
 (require 'helm-config)
 (global-set-key (kbd "C-c h") 'helm-command-prefix)
 (global-unset-key (kbd "C-x c"))
+
+(global-set-key (kbd "M-x") 'helm-M-x)
+(global-set-key (kbd "C-x C-f") 'helm-find-files)
+(global-set-key (kbd "M-y") 'helm-show-kill-ring) 
+(global-set-key (kbd "C-x r b") 'helm-filtered-bookmarks)
 
 (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
 (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
@@ -492,11 +535,9 @@
 ;; (setq lisp-indent-function 'scheme-smart-indent-function)
 
 ;; (define-key flyspell-mode-map (kbd "C-;") #'flyspell-popup-correct)
-
 ;; You can also enable flyspell-popup-auto-correct-mode to popup that
 ;; Popup Menu automatically with a delay (default 1.6 seconds):
-
-(add-hook 'flyspell-mode-hook #'flyspell-popup-auto-correct-mode)
+;; (add-hook 'flyspell-mode-hook #'flyspell-popup-auto-correct-mode)
 
 (setq auto-mode-alist (cons '("\\.v$" . coq-mode) auto-mode-alist))
 (autoload 'coq-mode "coq" "Major mode for editing Coq vernacular." t)
