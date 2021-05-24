@@ -22,17 +22,6 @@
  
 (straight-pull-recipe-repositories '(org-elpa melpa gnu-elpa-mirror el-get emacsmirror-mirror))
 
-
-;; (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")             t)
-;; (add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/") t)
-;; (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/")              t)
-
-(setq debug-on-quit t
-      inhibit-splash-screen t
-      column-number-mode t
-      initial-scratch-message nil
-      ring-bell-function 'ignore)
-
 (tool-bar-mode -1)
 (add-hook 'find-file-hook (lambda () (ruler-mode 1)))
 
@@ -46,6 +35,7 @@
 (straight-use-package 'apel)
 (straight-use-package 'auctex-latexmk)
 (straight-use-package 'auto-compile) ;; Automatically compile Emacs Lisp libraries
+(straight-use-package 'auto-complete) ;; Dunno, but I had it before
 (straight-use-package 'auto-complete-auctex)
 (straight-use-package 'auto-package-update)
 (straight-use-package 'autopair)
@@ -89,12 +79,12 @@
 (straight-use-package 'expand-region) ;; Increase selected region by semantic units
 (straight-use-package 'f) ;; Modern API for working with files and directories in Emacs
 (straight-use-package 'flim)
+(straight-use-package '(flycheck-textlint :type git :host github :repo "kisaragi-hiu/flycheck-textlint" :fork nil))
 (straight-use-package 'flymake-easy)
 (straight-use-package 'flymake-racket)
 (straight-use-package 'flymd)
 (straight-use-package 'flyspell-lazy)
-;; xuchunyang/flyspell-popup
-;; (straight-use-package '(flyspell-popup :host github :type git :repo "xuchunyang/flyspell-popup" :fork nil))
+(straight-use-package '(flyspell-popup :type git :host github :repo "xuchunyang/flyspell-popup" :fork nil))
 (straight-use-package 'fullframe) ;; Advice commands to execute fullscreen, restoring the window setup when exiting.
 (straight-use-package 'gh-md)
 (straight-use-package 'ghub)
@@ -106,15 +96,11 @@
 (straight-use-package 'green-phosphor-theme)
 (straight-use-package 'hc-zenburn-theme)
 
-;; helm-find-files: one command that handles all the files related commands (bind to C-x C-f).
-;; helm-buffers-list: provides enhanced buffers listing.
-;; helm-occur: enhanced occur for one or more buffers; launch from helm-buffers-list or current-buffer.
-;; (global-set-key (kbd "C-x c o") 'helm-occur)
+
 ;; helm-browse-project: handles project files and buffers; defaults to current directory; works with helm-find-files; recommended with helm-ls-git, helm-ls-hg and helm-ls-svn for a better handling of version control files. Each time a project under version control is visited it is added to helm-browse-project-history and can be visted with helm-projects-history.
 ;; helm-dabbrev: enhanced dabbrev implementation with helm completion; does not use emacs code.
 ;; helm-imenu and helm-imenu-in-all-buffers: provide imenus for current or all buffers.
 ;; helm-etags-select: enhanced etags with helm-completion; usable everywhere with helm-find-files.
-;; helm-apropos: enhanced apropos for functions and variables that C-h commands provide.
 
 ;; Grep: launch from any helm file commands; supports back-ends grep, ack-grep, git-grep, ag and custom implementation of pt.
 
@@ -209,24 +195,22 @@
 (straight-use-package 'yaml-mode) ;; The emacs major mode for editing files in the YAML data serialization format.
 (straight-use-package 'zones)
 (straight-use-package 'zygospore)
-;; (straight-use-package '(flycheck-textlint :type git :host github :repo "kisaragi-hiu/flycheck-textlint"))
-;; (straight-use-package 'evil) ;; Evil is an extensible vi layer for Emacs
+
 
 ;; (straight-use-package  'fliplr) ;;
 ;; Minor mode for Emacs that deals with parens pairs and tries to be smart about it.
 ;; I think paredit probably does everything I need
 ;; (straight-use-package  'smartparens)
-;; (straight-use-package 'auto-complete-config)
 
 
-;; (straight-use-package 'eldoro) maybe not a package
-;; (straight-use-package 'helm-config)
+
+
+;; (straight-use-package '(eldoro "pjones/eldoro") 
 
 ;; (package-install-file "~/Documents/org-inline-pdf.el/org-inline-pdf.el")
 
 
 ;; I don't care that we're redefining tramp-read-passwd
-(setq ad-redefinition-action 'accept)
 
 (autoload 'wl "wl" "Wanderlust" t)
 (autoload 'wl-other-frame "wl" "Wanderlust on new frame." t)
@@ -299,13 +283,11 @@
 (if (file-exists-p "/Users/jhemann/Documents/acl2/scripts-master/.lisp.el")
     (load-file "/Users/jhemann/Documents/acl2/scripts-master/.lisp.el"))
 
-(if (file-exists-p "/usr/local/lib/ciao/ciao-mode-init.el")
-    (load-file "/usr/local/lib/ciao/ciao-mode-init.el"))
+;; (if (file-exists-p "/usr/local/lib/ciao/ciao-mode-init.el")
+;;     (load-file "/usr/local/lib/ciao/ciao-mode-init.el"))
 
-(package-initialize)
-
-(add-to-list 'load-path "~/.emacs.d/lisp/")
-
+;; (package-initialize) A package.el related doohickus 
+;; (add-to-list 'load-path "~/.emacs.d/lisp/") 
 
 (add-hook 'java-mode-hook 'eclim-mode)
 ;; I should want maven, I think, tbqh
@@ -316,8 +298,9 @@
 (unless package-archive-contents
    (package-refresh-contents))
 
-(add-hook 'racket-mode-hook #'racket-xp-mode)
 (require 'racket-xp) ;; Don't know what this is but I think it's not a package
+(add-hook 'racket-mode-hook #'racket-xp-mode)
+
 
 (global-set-key (kbd "C-x g") 'magit-status)
 (global-set-key [C-M-tab] 'clang-format-region)
@@ -388,10 +371,10 @@
 
 (setq langtool-autoshow-message-function 'langtool-autoshow-detail-popup)
 
-
+;; (ac-mode 1)
+;; (require 'auto-complete-config)
 
 (helm-mode 1)
-
 
 ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
 ;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
@@ -400,14 +383,17 @@
 (global-set-key (kbd "C-c h") 'helm-command-prefix)
 (global-unset-key (kbd "C-x c"))
 
+(global-set-key (kbd "C-x b") 'helm-buffers-list) ;; helm-buffers-list: provides enhanced buffers listing.
+(global-set-key (kbd "C-h a") 'helm-apropos) ;; enhanced apropos for functions and variables that C-h commands provide.
+(global-set-key (kbd "C-c h o") 'helm-occur) ;; helm-occur: enhanced occur for one or more buffers; launch from helm-buffers-list or current-buffer.
 (global-set-key (kbd "M-x") 'helm-M-x)
-(global-set-key (kbd "C-x C-f") 'helm-find-files)
+(global-set-key (kbd "C-x C-f") 'helm-find-files) ;; helm-find-files: one command that handles all the files related commands
 (global-set-key (kbd "M-y") 'helm-show-kill-ring) 
 (global-set-key (kbd "C-x r b") 'helm-filtered-bookmarks)
 
 (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
 (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
-(define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
+(define-key helm-map (kbd "C-z") 'helm-select-action) ; list actions using C-z
 
 (when (executable-find "curl")
   (setq helm-google-suggest-use-curl-p t))
@@ -419,7 +405,6 @@
       helm-ff-file-name-history-use-recentf t)
 
 (add-hook 'racket-mode-hook (lambda () (define-key racket-mode-map (kbd "C-c r") 'racket-run)))
-(setq tab-always-indent 'complete)
 
 (global-nlinum-mode t)
 
@@ -551,10 +536,6 @@
 
 ;; (setq window-themes-list '(wheatgrass manoj-dark cyberpunk tango-dark deeper-blue green-phosphor gotham solarized))
 
-(setq custom-safe-themes t) ;; Even at M-x load theme, treat custom themes as safe.
-(if window-system
-  (load-theme (nth (cl-random (length (custom-available-themes))) (custom-available-themes)) t) ;; To have it always remember this is safe
-  (load-theme 'wombat t))
 
 (mapc (lambda (pr) (put (car pr) 'racket-indent-function (cdr pr)))
       '((conde . 0)
@@ -566,15 +547,25 @@
 
 (setq-default major-mode 'text-mode)
 
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-safe-themes t)  ;; Even at M-x load theme, treat custom themes as safe.
+ '(ad-redefinition-action 'accept)
+ '(debug-on-quit t)
+ '(inhibit-splash-screen t)
+ '(column-number-mode t)
+ '(initial-scratch-message nil)
+ '(ring-bell-function 'ignore)
+ '(tab-always-indent 'complete)
  '(TeX-auto-untabify t)
  '(TeX-engine 'xetex)
  '(ac-modes
    '(emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode haskell-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode racket-mode Racket-mode racket-repl-mode idris-mode idris-repl-mode ciao-mode))
+;;  '(auto-image-file-mode t)
  '(auto-save-interval 75)
  '(auto-save-timeout 10)
  '(bibtex-maintain-sorted-entries 'plain)
@@ -637,6 +628,10 @@
  '(vc-make-backup-files t)
  '(version-control t)
  '(visible-bell t))
+
+(if window-system
+  (load-theme (nth (cl-random (length (custom-available-themes))) (custom-available-themes)) t) ;; To have it always remember this is safe
+  (load-theme 'wombat t))
 
 ;; For 311, to make continuations RI.
 ;; Assumes k has some formal parameters
