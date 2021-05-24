@@ -1,9 +1,10 @@
 ;;; Package --- Summary
 
+;;; Commentary:
+
 ;;; This is Jason Hemann's .emacs setup, intended for OSX and some linux machines. It is currently in an
 ;;; unstable state, and the dependencies outside my .emacs are not listed. Several aspects of this rely on
 ;;; packages from homebrew, and a number of other downloaded files and hard-coded directories.
-
 
 ;;; Code:
 (defvar bootstrap-version)
@@ -18,11 +19,9 @@
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
-
  
 (straight-pull-recipe-repositories '(org-elpa melpa gnu-elpa-mirror el-get emacsmirror-mirror))
 
-(tool-bar-mode -1)
 (add-hook 'find-file-hook (lambda () (ruler-mode 1)))
 
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -95,7 +94,6 @@
 (straight-use-package 'graphql)
 (straight-use-package 'green-phosphor-theme)
 (straight-use-package 'hc-zenburn-theme)
-
 
 ;; helm-browse-project: handles project files and buffers; defaults to current directory; works with helm-find-files; recommended with helm-ls-git, helm-ls-hg and helm-ls-svn for a better handling of version control files. Each time a project under version control is visited it is added to helm-browse-project-history and can be visted with helm-projects-history.
 ;; helm-dabbrev: enhanced dabbrev implementation with helm completion; does not use emacs code.
@@ -196,28 +194,16 @@
 (straight-use-package 'zones)
 (straight-use-package 'zygospore)
 
-
-;; (straight-use-package  'fliplr) ;;
-;; Minor mode for Emacs that deals with parens pairs and tries to be smart about it.
+;; A minor mode for Emacs that deals with parens pairs and tries to be smart about it.
 ;; I think paredit probably does everything I need
 ;; (straight-use-package  'smartparens)
 
-
-
-
 ;; (straight-use-package '(eldoro "pjones/eldoro") 
 
-;; (package-install-file "~/Documents/org-inline-pdf.el/org-inline-pdf.el")
-
-
-;; I don't care that we're redefining tramp-read-passwd
-
+;; Wanderlust doesn't seem to work w/Google 2FA.
 (autoload 'wl "wl" "Wanderlust" t)
 (autoload 'wl-other-frame "wl" "Wanderlust on new frame." t)
 (autoload 'wl-draft "wl-draft" "Write draft with Wanderlust." t)
-
-;; (org-agenda-include-diary t)
-
 
 ;; IMAP
 (setq elmo-imap4-default-server "imap.gmail.com")
@@ -237,10 +223,6 @@
 (setq wl-local-domain "gmail.com")
 (setq wl-message-id-domain "smtp.gmail.com")
 
-;; (dolist (package my-required-packages)
-;;   (when (not (package-installed-p package))
-;;       (package-refresh-contents)
-;;           (package-install package)))
 (setq wl-default-folder "%inbox")
 (setq wl-default-spec "%")
 (setq wl-draft-folder "%[Gmail]/Drafts") ; Gmail IMAP
@@ -276,18 +258,11 @@
       'wl-draft-kill
       'mail-send-hook))
 
-(show-paren-mode 1)
-(setq show-paren-delay 0)
-
-
 (if (file-exists-p "/Users/jhemann/Documents/acl2/scripts-master/.lisp.el")
     (load-file "/Users/jhemann/Documents/acl2/scripts-master/.lisp.el"))
 
-;; (if (file-exists-p "/usr/local/lib/ciao/ciao-mode-init.el")
-;;     (load-file "/usr/local/lib/ciao/ciao-mode-init.el"))
-
-;; (package-initialize) A package.el related doohickus 
-;; (add-to-list 'load-path "~/.emacs.d/lisp/") 
+(if (file-exists-p "/usr/local/lib/ciao/ciao-mode-init.el")
+    (load-file "/usr/local/lib/ciao/ciao-mode-init.el"))
 
 (add-hook 'java-mode-hook 'eclim-mode)
 ;; I should want maven, I think, tbqh
@@ -295,12 +270,14 @@
 
 ;; (load "~/Documents/eliemacs/eliemacs")
 
-(unless package-archive-contents
-   (package-refresh-contents))
+;; Probably package.el related doohickuses
+;; (package-initialize) 
+;; (add-to-list 'load-path "~/.emacs.d/lisp/") 
+;; (unless package-archive-contents
+;;    (package-refresh-contents))
 
 (require 'racket-xp) ;; Don't know what this is but I think it's not a package
 (add-hook 'racket-mode-hook #'racket-xp-mode)
-
 
 (global-set-key (kbd "C-x g") 'magit-status)
 (global-set-key [C-M-tab] 'clang-format-region)
@@ -450,7 +427,7 @@
 (add-hook 'scheme-mode-hook                        'multiple-cursors-mode)
 (add-hook 'inferior-scheme-mode-hook               'multiple-cursors-mode)
 
-(savehist-mode t)
+
 
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
@@ -521,7 +498,8 @@
 ;; Popup Menu automatically with a delay (default 1.6 seconds):
 ;; (add-hook 'flyspell-mode-hook #'flyspell-popup-auto-correct-mode)
 
-(setq auto-mode-alist (cons '("\\.v$" . coq-mode) auto-mode-alist))
+(add-to-list 'auto-mode-alist '("\\.v$" . coq-mode))
+(add-to-list 'auto-mode-alist '("\\.rkt\\'" . racket-mode))
 (autoload 'coq-mode "coq" "Major mode for editing Coq vernacular." t)
 
 (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
@@ -536,7 +514,6 @@
 
 ;; (setq window-themes-list '(wheatgrass manoj-dark cyberpunk tango-dark deeper-blue green-phosphor gotham solarized))
 
-
 (mapc (lambda (pr) (put (car pr) 'racket-indent-function (cdr pr)))
       '((conde . 0)
         (fresh . 1)
@@ -547,14 +524,18 @@
 
 (setq-default major-mode 'text-mode)
 
-
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(org-agenda-include-diary t)
+ '(tool-bar-mode -1)
+ '(savehist-mode t)
+ '(show-paren-mode 1)
+ '(show-paren-delay 0)
  '(custom-safe-themes t)  ;; Even at M-x load theme, treat custom themes as safe.
- '(ad-redefinition-action 'accept)
+ '(ad-redefinition-action 'accept) ;; I don't care that we're redefining tramp-read-passwd
  '(debug-on-quit t)
  '(inhibit-splash-screen t)
  '(column-number-mode t)
@@ -650,15 +631,14 @@
 ;; jump-to-register C-x r j 
 ;; M-x LaTeX-math-cal Ret <the letter>
 ;; M-x smog-check-region 
+;; C-h a does apropos
+;; M-v custom-enabled-themes tells you what themes are in force
 
 ;; Right now, this is busted in the agda-mode repository. 13/12/15
 ;; (when (eq system-type 'darwin)
 ;;   (load-file 
 ;;     (let ((coding-system-for-read 'utf-8))
 ;;       (shell-command-to-string "agda-mode locate"))))
-
-(add-to-list 'auto-mode-alist '("\\.rkt\\'" . racket-mode))
-
 
 ;; This was some setup that I did to the minibuffer; not sure it was wise
 ;; (add-hook 'eval-expression-minibuffer-setup-hook 'my-minibuffer-setup)
