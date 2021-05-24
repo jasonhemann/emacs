@@ -1,17 +1,9 @@
 ;;; Package --- Summary
 
-;;; This is Jason Hemann's .emacs setup, intended for OSX and some
-;;; linux machines. It is currently in an unstable state, and the
-;;; non-.emacs dependencies are not listed. Several aspects of this
-;;; rely on packages from homebrew, and a number of other downloaded
-;;; files and hard-coded directories.
+;;; This is Jason Hemann's .emacs setup, intended for OSX and some linux machines. It is currently in an
+;;; unstable state, and the dependencies outside my .emacs are not listed. Several aspects of this rely on
+;;; packages from homebrew, and a number of other downloaded files and hard-coded directories.
 
-;;; Commentary:
-
-;;; To anyone else trying to run or to load this file, you should
-;;; consider the below.
-;;; NB: If you can't get this .emacs file to load successfully, you
-;;; should try M-x package-list-packages, then U, then x.
 
 ;;; Code:
 (defvar bootstrap-version)
@@ -48,6 +40,7 @@
 
 (straight-use-package 'ac-math)
 (straight-use-package 'academic-phrases)
+(straight-use-package 'artbollocks-mode)
 (straight-use-package 'ace-jump-mode)
 (straight-use-package 'anzu) ;; displays current match and total matches information
 (straight-use-package 'apel)
@@ -106,14 +99,16 @@
 (straight-use-package 'gh-md)
 (straight-use-package 'ghub)
 (straight-use-package 'git-timemachine) ;; Walk through git revisions of a file
+(straight-use-package 'gotham-theme)
 (straight-use-package 'goto-chg) ;; Goto last change in current buffer
 (straight-use-package 'gradle-mode)
 (straight-use-package 'graphql)
+(straight-use-package 'green-phosphor-theme)
 (straight-use-package 'hc-zenburn-theme)
 
 ;; helm-find-files: one command that handles all the files related commands (bind to C-x C-f).
 ;; helm-buffers-list: provides enhanced buffers listing.
-;; helm-occur: enhanced occur for one or more buffers; launch from helm-buffers-list or current-buffer. 
+;; helm-occur: enhanced occur for one or more buffers; launch from helm-buffers-list or current-buffer.
 ;; (global-set-key (kbd "C-x c o") 'helm-occur)
 ;; helm-browse-project: handles project files and buffers; defaults to current directory; works with helm-find-files; recommended with helm-ls-git, helm-ls-hg and helm-ls-svn for a better handling of version control files. Each time a project under version control is visited it is added to helm-browse-project-history and can be visted with helm-projects-history.
 ;; helm-dabbrev: enhanced dabbrev implementation with helm completion; does not use emacs code.
@@ -168,6 +163,7 @@
 (straight-use-package 'org-ac)
 (straight-use-package 'org-doing)
 (straight-use-package 'org-dotemacs)
+(straight-use-package 'org-inline-pdf)
 (straight-use-package 'org-roam)
 (straight-use-package 'org-rtm)
 (straight-use-package 'org-super-agenda)
@@ -193,6 +189,7 @@
 (straight-use-package 'sml-mode)
 (straight-use-package 'sml-modeline)
 (straight-use-package 'smog)
+(straight-use-package 'solarized-emacs)
 (straight-use-package 'sourcemap) ;;  Sourmap parser in Emacs Lisp
 (straight-use-package 'sx) ;; Stackoverflow mode ;-)
 (straight-use-package 'tabbar)
@@ -225,8 +222,8 @@
 ;; (straight-use-package 'eldoro) maybe not a package
 ;; (straight-use-package 'helm-config)
 
-(package-install-file "~/Documents/org-inline-pdf.el/org-inline-pdf.el")
-(require 'org-inline-pdf) ;; Trying, in case it works
+;; (package-install-file "~/Documents/org-inline-pdf.el/org-inline-pdf.el")
+
 
 ;; I don't care that we're redefining tramp-read-passwd
 (setq ad-redefinition-action 'accept)
@@ -449,7 +446,7 @@
 (if (eq system-type 'darwin)
     (add-hook 'text-mode-hook 'wordsmith-mode)) ;; Because this depends on OSX tooling specifically
 
-(add-hook 'text-mode-hook 'writegood-mode)
+;; (add-hook 'text-mode-hook 'writegood-mode)
 (add-hook 'text-mode-hook 'artbollocks-mode)
 (add-hook 'text-mode-hook 'flyspell-mode)
 (add-hook 'tex-mode-hook (function (lambda () (setq ispell-parser 'tex))))
@@ -552,10 +549,11 @@
 (when (memq window-system '(mac ns))
   (exec-path-from-shell-initialize))
 
-(setq window-themes-list '(wheatgrass manoj-dark cyberpunk tango-dark deeper-blue green-phosphor-theme gotham-theme solarized-theme))
+;; (setq window-themes-list '(wheatgrass manoj-dark cyberpunk tango-dark deeper-blue green-phosphor gotham solarized))
 
+(setq custom-safe-themes t) ;; Even at M-x load theme, treat custom themes as safe.
 (if window-system
-  (load-theme (nth (cl-random (length window-themes-list)) window-themes-list))
+  (load-theme (nth (cl-random (length (custom-available-themes))) (custom-available-themes)) t) ;; To have it always remember this is safe
   (load-theme 'wombat t))
 
 (mapc (lambda (pr) (put (car pr) 'racket-indent-function (cdr pr)))
@@ -573,46 +571,33 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
-
+ '(TeX-auto-untabify t)
+ '(TeX-engine 'xetex)
+ '(ac-modes
+   '(emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode haskell-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode racket-mode Racket-mode racket-repl-mode idris-mode idris-repl-mode ciao-mode))
  '(auto-save-interval 75)
  '(auto-save-timeout 10)
+ '(bibtex-maintain-sorted-entries 'plain)
  '(blink-cursor-mode nil)
  '(bookmark-save-flag 0)
  '(column-number-mode t)
+ '(default-input-method "TeX")
  '(dired-listing-switches "-al --group-directories-first --time-style=long-iso")
  '(display-time-day-and-date t)
  '(display-time-mode t)
+ '(ebib-bibtex-dialect 'biblatex)
+ '(eclim-eclipse-dirs
+   '("/Applications/eclipse" "/usr/lib/eclipse" "/usr/local/lib/eclipse" "/usr/share/eclipse" "/Applications/Eclipse.app/Contents/Eclipse/" "/Applications/Eclipse Java.app/Contents/Eclipse/"))
  '(fill-column 110)
  '(fringe-mode 2 nil (fringe))
  '(inhibit-startup-screen t)
- '(ispell-highlight-face (quote highlight))
+ '(ispell-highlight-face 'highlight)
  '(ispell-highlight-p t)
  '(ispell-program-name "aspell" t)
  '(load-home-init-file t t)
  '(ls-lisp-dirs-first t)
  '(make-backup-files nil)
- '(scroll-bar-mode (quote right))
- '(sentence-end-double-space nil)
- '(sort-fold-case t t)
- '(tool-bar-mode nil)
- '(truncate-lines t)
- '(vc-make-backup-files t)
- '(version-control t)
- '(visible-bell t)
- '(x-select-enable-clipboard t)
-
- '(TeX-auto-untabify t)
- '(TeX-engine 'xetex)
- '(ac-modes ;; agda-mode agda2-mode 
-   '(emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode haskell-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode racket-mode Racket-mode racket-repl-mode idris-mode idris-repl-mode ciao-mode))
- '(bibtex-maintain-sorted-entries 'plain)
- '(custom-safe-themes
-   '("e9d47d6d41e42a8313c81995a60b2af6588e9f01a1cf19ca42669a7ffd5c2fde" "b89a4f5916c29a235d0600ad5a0849b1c50fab16c2c518e1d98f0412367e7f97" "2d835b43e2614762893dc40cbf220482d617d3d4e2c35f7100ca697f1a388a0e" "6bc387a588201caf31151205e4e468f382ecc0b888bac98b2b525006f7cb3307" "59e82a683db7129c0142b4b5a35dbbeaf8e01a4b81588f8c163bd255b76f4d21" "d1cc05d755d5a21a31bced25bed40f85d8677e69c73ca365628ce8024827c9e3" "834cbeacb6837f3ddca4a1a7b19b1af3834f36a701e8b15b628cad3d85c970ff" "923ee73494ea3611d2a1ff9f31bbf8d71b0b0cc2aeb4a6e0944ec6c83bc0ac23" "9fe1540491fcf692b8c639a3abacd32b29233bc4cb834a12a0fd1e01cbd0a128" "d6922c974e8a78378eacb01414183ce32bc8dbf2de78aabcc6ad8172547cb074" "235dc2dd925f492667232ead701c450d5c6fce978d5676e54ef9ca6dd37f6ceb" "38e64ea9b3a5e512ae9547063ee491c20bd717fe59d9c12219a0b1050b439cdd" "e64111716b1c8c82638796667c2c03466fde37e69cada5f6b640c16f1f4e97df" "71ecffba18621354a1be303687f33b84788e13f40141580fa81e7840752d31bf" "c86f868347919095aa44d2a6129dd714cbcf8feaa88ba954f636295b14ceff8f" "8fed5e4b89cf69107d524c4b91b4a4c35bcf1b3563d5f306608f0c48f580fdf8" "83e584d74b0faea99a414a06dae12f11cd3176fdd4eba6674422539951bcfaa8" "90edd91338ebfdfcd52ecd4025f1c7f731aced4c9c49ed28cfbebb3a3654840b" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "a507b9ca4a605d5256716da70961741b9ef9ec3246041a4eb776102e8df18418" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" default))
- '(default-input-method "TeX")
- '(ebib-bibtex-dialect 'biblatex)
- '(eclim-eclipse-dirs
-   '("/Applications/eclipse" "/usr/lib/eclipse" "/usr/local/lib/eclipse" "/usr/share/eclipse" "/Applications/Eclipse.app/Contents/Eclipse/" "/Applications/Eclipse Java.app/Contents/Eclipse/"))
- '(mac-option-modifier '(:ordinary meta :mouse alt))
+ '(ns-alternate-modifier '(:ordinary meta :mouse alt))
  '(org-babel-load-languages '((scheme . t)))
  '(org-export-backends '(ascii html icalendar latex md org))
  '(org-src-tab-acts-natively t)
@@ -641,8 +626,17 @@
 		     (concat "make -C " tt-root-directory)))
 	     (setq default-directory tt-root-directory)))))
  '(scheme-program-name "scheme")
+ '(scroll-bar-mode 'right)
+ '(select-enable-clipboard t)
+ '(sentence-end-double-space nil)
+ '(sort-fold-case t t)
  '(straight-use-package-by-default t)
- '(vc-follow-symlinks 't))
+ '(tool-bar-mode nil)
+ '(truncate-lines t)
+ '(vc-follow-symlinks 't)
+ '(vc-make-backup-files t)
+ '(version-control t)
+ '(visible-bell t))
 
 ;; For 311, to make continuations RI.
 ;; Assumes k has some formal parameters
