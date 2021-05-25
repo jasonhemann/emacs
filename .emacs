@@ -48,6 +48,7 @@
 (straight-use-package 'calfw-gcal)
 (straight-use-package 'calfw-ical)
 (straight-use-package 'calfw-org)
+;; (straight-use-package 'calfw-howm)
 (straight-use-package 'cdlatex)
 (straight-use-package 'cl-lib) ;; Properly prefixed CL functions and macros
 (straight-use-package 'clang-format)
@@ -209,12 +210,12 @@
 
 ;; IMAP
 (setq elmo-imap4-default-server "imap.gmail.com")
-(setq elmo-imap4-default-user "jason.hemann@gmail.com") 
-(setq elmo-imap4-default-authenticate-type 'clear) 
+(setq elmo-imap4-default-user "jason.hemann@gmail.com")
+(setq elmo-imap4-default-authenticate-type 'clear)
 (setq elmo-imap4-default-port '993)
 (setq elmo-imap4-default-stream-type 'ssl)
 
-(setq elmo-imap4-use-modified-utf7 t) 
+(setq elmo-imap4-use-modified-utf7 t)
 
 ;; SMTP
 (setq wl-smtp-connection-type 'starttls)
@@ -230,7 +231,7 @@
 (setq wl-draft-folder "%[Gmail]/Drafts") ; Gmail IMAP
 (setq wl-trash-folder "%[Gmail]/Trash")
 (setq mail-user-agent 'wl-user-agent)
-(setq wl-folder-check-async t) 
+(setq wl-folder-check-async t)
 
 (setq wl-from "Jason Hemann <jason.hemann@gmail.com>"
       ;; All system folders (draft, trash, spam, etc) are placed in the
@@ -273,8 +274,8 @@
 ;; (load "~/Documents/eliemacs/eliemacs")
 
 ;; Probably package.el related doohickuses
-;; (package-initialize) 
-;; (add-to-list 'load-path "~/.emacs.d/lisp/") 
+;; (package-initialize)
+;; (add-to-list 'load-path "~/.emacs.d/lisp/")
 ;; (unless package-archive-contents
 ;;    (package-refresh-contents))
 
@@ -307,7 +308,7 @@
 (global-set-key (kbd "C-c h o") 'helm-occur) ;; helm-occur: enhanced occur for one or more buffers; launch from helm-buffers-list or current-buffer.
 (global-set-key (kbd "M-x") 'helm-M-x)
 (global-set-key (kbd "C-x C-f") 'helm-find-files) ;; helm-find-files: one command that handles all the files related commands
-(global-set-key (kbd "M-y") 'helm-show-kill-ring) 
+(global-set-key (kbd "M-y") 'helm-show-kill-ring)
 (global-set-key (kbd "C-x r b") 'helm-filtered-bookmarks)
 
 (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
@@ -319,7 +320,7 @@
 
 (add-hook 'racket-mode-hook (lambda () (define-key racket-mode-map (kbd "C-c r") 'racket-run)))
 
-;; These don't work. 
+;; These don't work.
 ;; (add-hook 'auto-package-update-minor-mode-hook 'package-menu-mark-obsolete-for-deletion)
 ;; (add-hook 'auto-package-update-minor-mode-hook 'package-menu-execute)
 ;; (auto-package-update-maybe)
@@ -383,7 +384,7 @@
 (global-set-key (kbd "C-<f8>") 'flyspell-check-previous-highlighted-word)
 
 (defun flyspell-check-next-highlighted-word ()
-  "Custom function to spell check next highlighted word"
+  "Custom function to spell check next highlighted word."
   (interactive)
   (flyspell-goto-next-error)
   (ispell-word))
@@ -614,7 +615,6 @@
  '(version-control t)
  '(visible-bell t))
 
-
 (flycheck-define-checker proselint
   "A linter for prose."
   :command ("proselint" source-inplace)
@@ -632,7 +632,7 @@
 (global-set-key (kbd "C-<f8>") 'flyspell-check-previous-highlighted-word)
 
 (defun flyspell-check-next-highlighted-word ()
-  "Custom function to spell check next highlighted word"
+  "Custom function to spell check next highlighted word."
   (interactive)
   (flyspell-goto-next-error)
   (ispell-word))
@@ -745,4 +745,3 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-
