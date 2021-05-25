@@ -266,9 +266,9 @@
 (if (file-exists-p "/usr/local/lib/ciao/ciao-mode-init.el")
     (load-file "/usr/local/lib/ciao/ciao-mode-init.el"))
 
-(add-hook 'java-mode-hook 'eclim-mode)
 ;; I should want maven, I think, tbqh
 (add-hook 'java-mode-hook '(lambda() (gradle-mode 1)))
+(add-hook 'java-mode-hook 'eclim-mode)
 
 ;; (load "~/Documents/eliemacs/eliemacs")
 
@@ -289,8 +289,6 @@
     (setq insert-directory-program gnu-ls-path)))
 
 (global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows)
-
-
 
 ;; (ac-mode 1)
 ;; (require 'auto-complete-config)
@@ -318,12 +316,6 @@
 
 (when (executable-find "curl")
   (setq helm-google-suggest-use-curl-p t))
-
-(setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
-      helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
-      helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
-      helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
-      helm-ff-file-name-history-use-recentf t)
 
 (add-hook 'racket-mode-hook (lambda () (define-key racket-mode-map (kbd "C-c r") 'racket-run)))
 
@@ -524,6 +516,11 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(helm-split-window-inside-p t) ; open helm buffer inside current window, not occupy whole other window
+ '(helm-move-to-line-cycle-in-source t) ; move to end or beginning of source when reaching top or bottom of source.
+ '(helm-ff-search-library-in-sexp t) ; search for library in `require' and `declare-function' sexp.
+ '(helm-scroll-amount 8) ; scroll 8 lines other window using M-<next>/M-<prior>
+ ;;'(helm-ff-file-name-history-use-recentf t) ;; Turning this off b/c less convenient
  '(global-nlinum-mode t)
  '(global-flycheck-mode t)
  '(flyspell-issue-welcome-flag nil);; easy spell check setup.
