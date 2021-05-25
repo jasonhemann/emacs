@@ -327,8 +327,6 @@
 
 (add-hook 'racket-mode-hook (lambda () (define-key racket-mode-map (kbd "C-c r") 'racket-run)))
 
-
-
 ;; These don't work. 
 ;; (add-hook 'auto-package-update-minor-mode-hook 'package-menu-mark-obsolete-for-deletion)
 ;; (add-hook 'auto-package-update-minor-mode-hook 'package-menu-execute)
@@ -343,9 +341,9 @@
 (global-set-key (kbd "C-c )") (lambda () (interactive) (insert "¯\\_(ツ)_/¯")))
 (global-set-key (kbd "C-c C-x (") (lambda () (interactive) (insert "ᕕ( ᐛ )ᕗ")))
 (global-set-key (kbd "C-c C-x )") (lambda () (interactive) (insert "(－‸ლ)")))
-;; !(•̀ᴗ•́)و ̑̑
+(global-set-key (kbd "C-c C-x x") (lambda () (interactive) (insert "!(•̀ᴗ•́)و ̑̑")))
 
-;; ""
+
 ;; ebib mode for latex
 (global-set-key "\C-ce" 'ebib)
 
@@ -411,15 +409,11 @@
 
 (setq-default ispell-list-command "list")
 
-(setq langtool-language-tool-jar "~/LanguageTool-3.4/languagetool-commandline.jar")
 (global-set-key "\C-x4w" 'langtool-check)
 (global-set-key "\C-x4W" 'langtool-check-done)
 (global-set-key "\C-x4l" 'langtool-switch-default-language)
 (global-set-key "\C-x44" 'langtool-show-message-at-point)
 (global-set-key "\C-x4c" 'langtool-correct-buffer)
-
-(setq langtool-default-language "en-US")
-(setq langtool-mother-tongue "en")
 
 (defun langtool-autoshow-detail-popup (overlays)
   ""
@@ -430,8 +424,6 @@
                 (memq last-command '(keyboard-quit)))
       (let ((msg (langtool-details-error-message overlays)))
         (popup-tip msg)))))
-
-(setq langtool-autoshow-message-function 'langtool-autoshow-detail-popup)
 
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
@@ -464,11 +456,11 @@
 
 ;; TeX-latex-mode, LaTeX-mode, TeX-mode, tex-mode, latex-mode, auxtex-mode
 
-(add-hook 'latex-mode-hook 'turn-on-cdlatex)   ; with Emacs latex mode
+(add-hook 'latex-mode-hook 'turn-on-cdlatex)  ; with Emacs latex mode
 (add-hook 'latex-mode-hook 'turn-on-reftex)   ; with Emacs latex mode
 
 (add-hook 'TeX-mode-hook 'turn-on-reftex)   ; with AUCTeX LaTeX mode
-(add-hook 'TeX-mode-hook 'turn-on-cdlatex)   ; with AUCTeX LaTeX mode
+(add-hook 'TeX-mode-hook 'turn-on-cdlatex)  ; with AUCTeX LaTeX mode
 (add-hook 'TeX-mode-hook 'visual-line-mode)
 (add-hook 'TeX-mode-hook 'flyspell-preprocess-buffer) ;; somehow void
 (add-hook 'TeX-mode-hook 'TeX-source-correlate-mode)
@@ -483,6 +475,8 @@
 ;; must be after font locking is set up for the buffer on!
 ;; (add-hook 'find-file-hook 'TeX-fold-buffer t)
 
+
+;; (setq lisp-indent-function 'scheme-smart-indent-function)
 ;; (autoload 'scheme-smart-complete "scheme-complete" nil t)
 
 ;; (eval-after-load 'scheme
@@ -494,8 +488,6 @@
 ;;     (make-local-variable 'eldoc-documentation-function)
 ;;     (setq eldoc-documentation-function 'scheme-get-current-symbol-info)
 ;;     (eldoc-mode)))
-
-;; (setq lisp-indent-function 'scheme-smart-indent-function)
 
 ;; (define-key flyspell-mode-map (kbd "C-;") #'flyspell-popup-correct)
 ;; You can also enable flyspell-popup-auto-correct-mode to popup that
