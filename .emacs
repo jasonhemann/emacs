@@ -73,6 +73,8 @@
 (straight-use-package 'easy-jekyll)
 (straight-use-package 'eclim)
 (straight-use-package 'eldoc) ;; the argument list of the function call you are currently writing
+;; The following package requires some set-up to work with org-mode or w/e.
+(straight-use-package 'elmacro) ;; https://github.com/Silex/elmacro#elmacro-processors
 (straight-use-package 'elscreen-separate-buffer-list)
 (straight-use-package 'exec-path-from-shell) ;; Make Emacs use the $PATH set up by the user's shell
 (straight-use-package 'expand-region) ;; Increase selected region by semantic units
@@ -198,7 +200,7 @@
 ;; I think paredit probably does everything I need
 ;; (straight-use-package  'smartparens)
 
-;; (straight-use-package '(eldoro "pjones/eldoro") 
+;; (straight-use-package '(eldoro "pjones/eldoro")
 
 ;; Wanderlust doesn't seem to work w/Google 2FA.
 (autoload 'wl "wl" "Wanderlust" t)
@@ -282,71 +284,13 @@
 (global-set-key (kbd "C-x g") 'magit-status)
 (global-set-key [C-M-tab] 'clang-format-region)
 
-
 (let ((gnu-ls-path (executable-find "gls")))
   (when gnu-ls-path
     (setq insert-directory-program gnu-ls-path)))
 
-(global-flycheck-mode)
-
-(flycheck-define-checker proselint
-  "A linter for prose."
-  :command ("proselint" source-inplace)
-  :error-patterns
-  ((warning line-start (file-name) ":" line ":" column ": "
-	    (id (one-or-more (not (any " "))))
-	    (message) line-end))
-  :modes (text-mode markdown-mode gfm-mode))
-
-(add-to-list 'flycheck-checkers 'proselint)
-
-(setq flyspell-issue-welcome-flag nil);; easy spell check setup.
-(global-set-key (kbd "<f8>") 'ispell-word)
-(global-set-key (kbd "C-S-<f8>") 'flyspell-mode)
-(global-set-key (kbd "C-M-<f8>") 'flyspell-buffer)
-(global-set-key (kbd "C-<f8>") 'flyspell-check-previous-highlighted-word)
-(defun flyspell-check-next-highlighted-word ()
-  "Custom function to spell check next highlighted word"
-  (interactive)
-  (flyspell-goto-next-error)
-  (ispell-word))
-
-(global-set-key (kbd "M-<f8>") 'flyspell-check-next-highlighted-word)
-
-;; Only in Emacs mac-port
-;; (mac-auto-operator-composition-mode t)
-
-(if (eq system-type 'darwin)
-    (setq-default ispell-program-name "/usr/local/bin/aspell")
-  (if (eq system-type 'linux)
-      (setq-default ispell-program-name "/usr/bin/aspell")
-    (setq-default ispell-program-name ""))) ;; What should we do about Windows?
-
-(setq-default ispell-list-command "list")
-
-(setq langtool-language-tool-jar "~/LanguageTool-3.4/languagetool-commandline.jar")
-(global-set-key "\C-x4w" 'langtool-check)
-(global-set-key "\C-x4W" 'langtool-check-done)
-(global-set-key "\C-x4l" 'langtool-switch-default-language)
-(global-set-key "\C-x44" 'langtool-show-message-at-point)
-(global-set-key "\C-x4c" 'langtool-correct-buffer)
-
-(setq langtool-default-language "en-US")
-(setq langtool-mother-tongue "en")
-
 (global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows)
 
-(defun langtool-autoshow-detail-popup (overlays)
-  ""
-  (when (require 'popup nil t)
-    ;; Do not interrupt current popup
-    (unless (or popup-instances
-                ;; suppress popup after type `C-g` .
-                (memq last-command '(keyboard-quit)))
-      (let ((msg (langtool-details-error-message overlays)))
-        (popup-tip msg)))))
 
-(setq langtool-autoshow-message-function 'langtool-autoshow-detail-popup)
 
 ;; (ac-mode 1)
 ;; (require 'auto-complete-config)
@@ -383,7 +327,7 @@
 
 (add-hook 'racket-mode-hook (lambda () (define-key racket-mode-map (kbd "C-c r") 'racket-run)))
 
-(global-nlinum-mode t)
+
 
 ;; These don't work. 
 ;; (add-hook 'auto-package-update-minor-mode-hook 'package-menu-mark-obsolete-for-deletion)
@@ -428,6 +372,66 @@
 (add-hook 'inferior-scheme-mode-hook               'multiple-cursors-mode)
 
 
+(global-flycheck-mode)
+
+(flycheck-define-checker proselint
+  "A linter for prose."
+  :command ("proselint" source-inplace)
+  :error-patterns
+  ((warning line-start (file-name) ":" line ":" column ": "
+	    (id (one-or-more (not (any " "))))
+	    (message) line-end))
+  :modes (text-mode markdown-mode gfm-mode))
+
+(add-to-list 'flycheck-checkers 'proselint)
+
+(setq flyspell-issue-welcome-flag nil);; easy spell check setup.
+
+(global-set-key (kbd "<f8>") 'ispell-word)
+(global-set-key (kbd "C-S-<f8>") 'flyspell-mode)
+(global-set-key (kbd "C-M-<f8>") 'flyspell-buffer)
+(global-set-key (kbd "C-<f8>") 'flyspell-check-previous-highlighted-word)
+
+(defun flyspell-check-next-highlighted-word ()
+  "Custom function to spell check next highlighted word"
+  (interactive)
+  (flyspell-goto-next-error)
+  (ispell-word))
+
+(global-set-key (kbd "M-<f8>") 'flyspell-check-next-highlighted-word)
+
+;; Only in Emacs mac-port
+(mac-auto-operator-composition-mode t)
+
+(if (eq system-type 'darwin)
+    (setq-default ispell-program-name "/usr/local/bin/aspell")
+  (if (eq system-type 'linux)
+      (setq-default ispell-program-name "/usr/bin/aspell")
+    (setq-default ispell-program-name ""))) ;; What should we do about Windows?
+
+(setq-default ispell-list-command "list")
+
+(setq langtool-language-tool-jar "~/LanguageTool-3.4/languagetool-commandline.jar")
+(global-set-key "\C-x4w" 'langtool-check)
+(global-set-key "\C-x4W" 'langtool-check-done)
+(global-set-key "\C-x4l" 'langtool-switch-default-language)
+(global-set-key "\C-x44" 'langtool-show-message-at-point)
+(global-set-key "\C-x4c" 'langtool-correct-buffer)
+
+(setq langtool-default-language "en-US")
+(setq langtool-mother-tongue "en")
+
+(defun langtool-autoshow-detail-popup (overlays)
+  ""
+  (when (require 'popup nil t)
+    ;; Do not interrupt current popup
+    (unless (or popup-instances
+                ;; suppress popup after type `C-g` .
+                (memq last-command '(keyboard-quit)))
+      (let ((msg (langtool-details-error-message overlays)))
+        (popup-tip msg)))))
+
+(setq langtool-autoshow-message-function 'langtool-autoshow-detail-popup)
 
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
@@ -500,6 +504,7 @@
 
 (add-to-list 'auto-mode-alist '("\\.v$" . coq-mode))
 (add-to-list 'auto-mode-alist '("\\.rkt\\'" . racket-mode))
+
 (autoload 'coq-mode "coq" "Major mode for editing Coq vernacular." t)
 
 (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
@@ -522,13 +527,23 @@
         (run . 2)
 	(letrec . 0)))
 
-(setq-default major-mode 'text-mode)
-
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(global-nlinum-mode t)
+ '(global-flycheck-mode t)
+ '(flyspell-issue-welcome-flag nil);; easy spell check setup.
+ '(langtool-language-tool-jar "~/LanguageTool-3.4/languagetool-commandline.jar")
+ '(langtool-default-language "en-US")
+ '(langtool-mother-tongue "en")
+ '(langtool-autoshow-message-function 'langtool-autoshow-detail-popup)
+ '(TeX-auto-save t)
+ '(TeX-parse-self t)
+ '(reftex-plug-into-AUCTeX t)
+ '(reftex-extra-bindings t)
+ '(bib-cite-use-reftex-view-crossref t)
  '(org-agenda-include-diary t)
  '(tool-bar-mode -1)
  '(savehist-mode t)
@@ -610,6 +625,62 @@
  '(version-control t)
  '(visible-bell t))
 
+
+(flycheck-define-checker proselint
+  "A linter for prose."
+  :command ("proselint" source-inplace)
+  :error-patterns
+  ((warning line-start (file-name) ":" line ":" column ": "
+	    (id (one-or-more (not (any " "))))
+	    (message) line-end))
+  :modes (text-mode markdown-mode gfm-mode))
+
+(add-to-list 'flycheck-checkers 'proselint)
+
+(global-set-key (kbd "<f8>") 'ispell-word)
+(global-set-key (kbd "C-S-<f8>") 'flyspell-mode)
+(global-set-key (kbd "C-M-<f8>") 'flyspell-buffer)
+(global-set-key (kbd "C-<f8>") 'flyspell-check-previous-highlighted-word)
+
+(defun flyspell-check-next-highlighted-word ()
+  "Custom function to spell check next highlighted word"
+  (interactive)
+  (flyspell-goto-next-error)
+  (ispell-word))
+
+(global-set-key (kbd "M-<f8>") 'flyspell-check-next-highlighted-word)
+
+;; Only in Emacs mac-port
+(mac-auto-operator-composition-mode t)
+
+(if (eq system-type 'darwin)
+    (setq-default ispell-program-name "/usr/local/bin/aspell")
+  (if (eq system-type 'linux)
+      (setq-default ispell-program-name "/usr/bin/aspell")
+    (setq-default ispell-program-name ""))) ;; What should we do about Windows?
+
+(setq-default major-mode 'text-mode)
+(setq-default ispell-list-command "list")
+
+(global-set-key "\C-x4w" 'langtool-check)
+(global-set-key "\C-x4W" 'langtool-check-done)
+(global-set-key "\C-x4l" 'langtool-switch-default-language)
+(global-set-key "\C-x44" 'langtool-show-message-at-point)
+(global-set-key "\C-x4c" 'langtool-correct-buffer)
+
+(defun langtool-autoshow-detail-popup (overlays)
+  ""
+  (when (require 'popup nil t)
+    ;; Do not interrupt current popup
+    (unless (or popup-instances
+                ;; suppress popup after type `C-g` .
+                (memq last-command '(keyboard-quit)))
+      (let ((msg (langtool-details-error-message overlays)))
+        (popup-tip msg)))))
+(setq-default TeX-master nil) ;; (setq-default TeX-master "master") ; set a master for in the future.
+;;'(reftex-label-alist '(AMSTeX)) ;; For if I'm getting parens around my references
+
+
 (if window-system
   (load-theme (nth (cl-random (length (custom-available-themes))) (custom-available-themes)) t) ;; To have it always remember this is safe
   (load-theme 'wombat t))
@@ -619,7 +690,8 @@
 ;; Leave mark at end of last match line in apply-k.
 
 ;; (fset 'make-k-ri
-;;       (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([134217749 134217749 134217749 134217734 134217732 134217732 134217732 134217749 201326624 134217847 134217749 134217730 134217734 25 134217730 134217730 201326624 134217847 134217732 25 32 134217749 201326624 134217765 32 return 32 44 return 33 134217749 96 2 201326624 23 134217732 134217734 134217734 return 25 134217732 25 201326624 201326624 23 134217749 134217730 134217734 201326624 23 134217749 134217749 201326624 tab 134217730 134217734 134217748 2 2 2 134217730 134217730 134217734 25 134217749 201326624 tab 134217734 134217730 134217734 2 134217730 134217730 134217734] 0 "%d")) arg)))
+;;       (lambda (&optional arg) "Keyboard macro." (interactive "p")
+;;         (kmacro-exec-ring-item (quote ([134217749 134217749 134217749 134217734 134217732 134217732 134217732 134217749 201326624 134217847 134217749 134217730 134217734 25 134217730 134217730 201326624 134217847 134217732 25 32 134217749 201326624 134217765 32 return 32 44 return 33 134217749 96 2 201326624 23 134217732 134217734 134217734 return 25 134217732 25 201326624 201326624 23 134217749 134217730 134217734 201326624 23 134217749 134217749 201326624 tab 134217730 134217734 134217748 2 2 2 134217730 134217730 134217734 25 134217749 201326624 tab 134217734 134217730 134217734 2 134217730 134217730 134217734] 0 "%d")) arg)))
 
 ;; I need to write a keyboard macro for going from let* to begin/set!
 
