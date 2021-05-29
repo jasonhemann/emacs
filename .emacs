@@ -286,7 +286,6 @@
 
 (require 'racket-xp) ;; Don't know what this is but I think it's not a package
 (add-hook 'racket-mode-hook #'racket-xp-mode)
-(add-hook 'racket-mode-hook (lambda () 12345))
 
 (global-set-key (kbd "C-x g") 'magit-status)
 (global-set-key [C-M-tab] 'clang-format-region)
@@ -434,7 +433,7 @@
 
 ;; I grabbed this code off of the internet. The reftex-ref-style-alist
 ;; variables already had some of these cleveref options, so not sure
-;; if I needed all of this. 
+;; if I needed all of this.
 (eval-after-load
     "latex"
   '(TeX-add-style-hook
@@ -702,15 +701,15 @@
 ;; in Racket M-\ to change input mode.
 ;; C-u M-x shell -- get multiple shells!
 ;; point-to-register C-x r SPC
-;; jump-to-register C-x r j 
+;; jump-to-register C-x r j
 ;; M-x LaTeX-math-cal Ret <the letter>
-;; M-x smog-check-region 
+;; M-x smog-check-region
 ;; C-h a does apropos
 ;; M-v custom-enabled-themes tells you what themes are in force
 
 ;; Right now, this is busted in the agda-mode repository. 13/12/15
 ;; (when (eq system-type 'darwin)
-;;   (load-file 
+;;   (load-file
 ;;     (let ((coding-system-for-read 'utf-8))
 ;;       (shell-command-to-string "agda-mode locate"))))
 
@@ -725,13 +724,13 @@
 ;; Setup emacs calendar to sync with google calendar
 
 
-;; Have width of nlinum buffer scale as font-size increases. 
+;; Have width of nlinum buffer scale as font-size increases.
 ;; Set a higher default font size (point size).
 ;; Make it Windows 7/8/10 appropriate. --- see Google Keep
 
-;; Get code to color parens again for latex files. 
-;; Setup package-pinned-packages, so as to draw from the correct package repo. 
-;; Set up paradox -- if that's still a good idea. Cf straight-use-package, etc. etc. 
+;; Get code to color parens again for latex files.
+;; Setup package-pinned-packages, so as to draw from the correct package repo.
+;; Set up paradox -- if that's still a good idea. Cf straight-use-package, etc. etc.
 ;; Automatically remove obsolete packages
 
 ;; (unless (package-installed-p 'use-package)
@@ -748,9 +747,9 @@
 ;; Turn off C-z behavior that hides window
 
 ;; use David's .emacs as a sample, to set things up properly.
-;; Add a separate file with my private information like git stuff etc, that folk can setup and add. 
+;; Add a separate file with my private information like git stuff etc, that folk can setup and add.
 ;; Set things up so langtool will either be automatically downloaded or suggest that it be downloaded.
-;; Perhaps instead set these things up as an emacs 24 package. 
+;; Perhaps instead set these things up as an emacs 24 package.
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -758,3 +757,6 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+(provide '.emacs)
+;;; .emacs ends here
