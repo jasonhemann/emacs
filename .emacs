@@ -82,6 +82,8 @@
 (straight-use-package 'f) ;; Modern API for working with files and directories in Emacs
 (straight-use-package 'flim)
 (straight-use-package '(flycheck-textlint :type git :host github :repo "kisaragi-hiu/flycheck-textlint" :fork nil))
+;; Straight can't find the package
+;; (straight-use-package 'flylisp-mode) ;; Add highlighting to mismatched parentheses, so you can see the mistake
 (straight-use-package 'flymake-easy)
 (straight-use-package 'flymake-racket)
 (straight-use-package 'flymd)
@@ -166,6 +168,7 @@
 (straight-use-package 'proof-general)
 (straight-use-package 'racket-mode)
 (straight-use-package 'reazon)
+(straight-use-package 'refine)
 (straight-use-package 's) ;; The long lost Emacs string manipulation library.
 (straight-use-package 'savehist)
 (straight-use-package 'scheme-complete)
@@ -264,6 +267,8 @@
 (if (file-exists-p "/Users/jhemann/Documents/acl2/scripts-master/.lisp.el")
     (load-file "/Users/jhemann/Documents/acl2/scripts-master/.lisp.el"))
 
+;; https://cliplab.org/~clip/Software/Ciao/ciao-1.15.0.html/CiaoMode.html#Installation%20of%20the%20Ciao%20emacs%20interface
+;; https://github.com/ciao-lang/ciao_emacs
 (if (file-exists-p "/usr/local/lib/ciao/ciao-mode-init.el")
     (load-file "/usr/local/lib/ciao/ciao-mode-init.el"))
 
@@ -281,6 +286,7 @@
 
 (require 'racket-xp) ;; Don't know what this is but I think it's not a package
 (add-hook 'racket-mode-hook #'racket-xp-mode)
+(add-hook 'racket-mode-hook (lambda () 12345))
 
 (global-set-key (kbd "C-x g") 'magit-status)
 (global-set-key [C-M-tab] 'clang-format-region)
@@ -357,8 +363,8 @@
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 
-(add-hook 'scheme-mode-hook                        'flylisp-mode)
-(add-hook 'inferior-scheme-mode-hook               'flylisp-mode)
+;; (add-hook 'scheme-mode-hook                        'flylisp-mode)
+;; (add-hook 'inferior-scheme-mode-hook               'flylisp-mode)
 (add-hook 'scheme-mode-hook                        'multiple-cursors-mode)
 (add-hook 'inferior-scheme-mode-hook               'multiple-cursors-mode)
 
@@ -496,8 +502,8 @@
 (add-hook 'prog-mode-hook 'paredit-everywhere-mode)
 
 (global-set-key (kbd "{") 'paredit-open-curly)
-(add-hook 'racket-mode-hook      #'flylisp-mode)
-(add-hook 'racket-repl-mode-hook #'flylisp-mode)
+;; (add-hook 'racket-mode-hook      #'flylisp-mode)
+;; (add-hook 'racket-repl-mode-hook #'flylisp-mode)
 
 (when (memq window-system '(mac ns))
   (exec-path-from-shell-initialize))
@@ -581,7 +587,7 @@
  '(org-support-shift-select t)
  '(org-use-speed-commands t)
  '(package-selected-packages
-   '(flycheck-gradle flymake-gradle gradle-mode company-emacs-eclim ac-emacs-eclim eclim prescient bind-key font-utils fontawesome flylisp flyspell-correct-popup flyspell-popup flycheck writegood-mode ediprolog ebib el-get el-init el-init-viewer el-mock el-patch el2org pdf-tools latex-unicode-math-mode htmlize auctex artbollocks-mode www-synonyms x-dict cyberpunk-theme langtool racket-mode flymake-racket wordsmith-mode tabbar dr-racket-like-unicode biblio org-doing org-dotemacs org-rtm paredit-menu paredit-everywhere org-ac magit-filenotify hc-zenburn-theme elscreen-separate-buffer-list dictionary color-theme calfw-gcal autopair ace-jump-mode ac-math helm-flyspell helm-wordnet helm-idris helm-dictionary))
+   '(flycheck-gradle flymake-gradle gradle-mode company-emacs-eclim ac-emacs-eclim eclim prescient bind-key font-utils fontawesome flyspell-correct-popup flyspell-popup flycheck writegood-mode ediprolog ebib el-get el-init el-init-viewer el-mock el-patch el2org pdf-tools latex-unicode-math-mode htmlize auctex artbollocks-mode www-synonyms x-dict cyberpunk-theme langtool racket-mode flymake-racket wordsmith-mode tabbar dr-racket-like-unicode biblio org-doing org-dotemacs org-rtm paredit-menu paredit-everywhere org-ac magit-filenotify hc-zenburn-theme elscreen-separate-buffer-list dictionary color-theme calfw-gcal autopair ace-jump-mode ac-math helm-flyspell helm-wordnet helm-idris helm-dictionary))
  '(preview-auto-cache-preamble t)
  '(racket-program "racket")
  '(reftex-cite-format 'biblatex)
@@ -666,13 +672,20 @@
                 (memq last-command '(keyboard-quit)))
       (let ((msg (langtool-details-error-message overlays)))
         (popup-tip msg)))))
-(setq-default TeX-master nil) ;; (setq-default TeX-master "master") ; set a master for in the future.
-;;'(reftex-label-alist '(AMSTeX)) ;; For if I'm getting parens around my references
 
+(setq-default TeX-master nil)
+;; (setq-default TeX-master "master") ; set a master for in the future.
+;;'(reftex-label-alist '(AMSTeX)) ;; For if I'm getting parens around my references
 
 (if window-system
   (load-theme (nth (cl-random (length (custom-available-themes))) (custom-available-themes)) t) ;; To have it always remember this is safe
   (load-theme 'wombat t))
+
+ ;; Add opam emacs directory to the load-path
+(setq opam-share (substring (shell-command-to-string "opam config var share 2> /dev/null") 0 -1))
+(add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
+;; Pre-load Andromeda
+(require 'andromeda-autoloads)
 
 ;; For 311, to make continuations RI.
 ;; Assumes k has some formal parameters
