@@ -137,6 +137,7 @@
 (straight-use-package 'jump) ;; build functions which contextually jump between files
 (straight-use-package 'langtool)
 (straight-use-package 'lean-mode)
+(straight-use-package 'magit)
 (straight-use-package 'magit-filenotify)
 (straight-use-package 'magit-gerrit) ;; gerrit mode for emacs
 (straight-use-package 'magit-popup)
@@ -496,9 +497,29 @@
 (add-to-list 'auto-mode-alist '("\\.rkt\\'" . racket-mode))
 
 (autoload 'coq-mode "coq" "Major mode for editing Coq vernacular." t)
-
 (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
+
+(add-hook 'racket-mode-hook      #'racket-unicode-input-method-enable)
+(add-hook 'racket-repl-mode-hook #'racket-unicode-input-method-enable)
+
+;; Paredit-everywhere-mode is a liar.
+;; It turns on *some* of the paredit keybindings but not all, and it doesn't let you choose
 (add-hook 'prog-mode-hook 'paredit-everywhere-mode)
+(add-hook 'emacs-lisp-mode-hook                    #'enable-paredit-mode)
+(add-hook 'eval-expression-minibuffer-setup-hook   #'enable-paredit-mode)
+(add-hook 'ielm-mode-hook                          #'enable-paredit-mode) ;; inferior-emacs-lisp-mode
+(add-hook 'lisp-mode-hook                          #'enable-paredit-mode)
+(add-hook 'lisp-interaction-mode-hook              #'enable-paredit-mode)
+(add-hook 'scheme-mode-hook                        #'enable-paredit-mode)
+(add-hook 'inferior-scheme-mode-hook               #'enable-paredit-mode)
+(add-hook 'racket-mode-hook                        #'enable-paredit-mode)
+(add-hook 'racket-repl-mode-hook                   #'enable-paredit-mode)
+(add-hook 'idris-mode-hook                         #'enable-paredit-mode)
+(add-hook 'idris-repl-mode-hook                    #'enable-paredit-mode)
+(add-hook 'agda2-mode-hook                         #'enable-paredit-mode)
+;; (add-hook 'ciao-mode-hook                          #'enable-paredit-mode) ;; not til fix paren space issue.
+;; tex-mode has paredit-mode issue too.
+(add-hook 'idris-prover-script-mode-hook           #'enable-paredit-mode)
 
 (global-set-key (kbd "{") 'paredit-open-curly)
 ;; (add-hook 'racket-mode-hook      #'flylisp-mode)
