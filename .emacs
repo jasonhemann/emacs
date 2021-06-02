@@ -34,8 +34,9 @@
 (straight-use-package 'apel)
 (straight-use-package 'auctex-latexmk)
 (straight-use-package 'auto-compile) ;; Automatically compile Emacs Lisp libraries
-(straight-use-package 'auto-complete) ;; Dunno, but I had it before
-(straight-use-package 'auto-complete-auctex)
+;; Auto complete is for most things strictly worse than company-mode
+;; (straight-use-package 'auto-complete) ;; Dunno, but I had it before
+;; (straight-use-package 'auto-complete-auctex)
 (straight-use-package 'auto-package-update)
 (straight-use-package 'autopair)
 (straight-use-package 'bbdb)
@@ -60,6 +61,11 @@
 (straight-use-package 'company-dict)
 (straight-use-package 'company-lean)
 (straight-use-package 'company-math)
+(straight-use-package 'company-org-roam)
+(straight-use-package 'company-auctex)
+(straight-use-package 'company-bibtex)
+(straight-use-package 'company-try-hard)
+(straight-use-package 'company-fuzzy)
 (straight-use-package 'coq-commenter)
 (straight-use-package 'cyberpunk-theme)
 (straight-use-package 'dash) ;; A modern list library for Emacs
@@ -137,7 +143,7 @@
 (straight-use-package 'helm-wordnet)
 (straight-use-package 'ht)
 (straight-use-package 'ibuffer-vc) ;; Let Emacs' ibuffer-mode group files by git project etc., and show file state
-(straight-use-package 'ido-vertical-mode) ;; makes ido-mode display vertically
+;; (straight-use-package 'ido-vertical-mode) ;; makes ido-mode display vertically
 (straight-use-package 'iedit) ;; Emacs minor mode and allows you to edit one occurrence of some text in a buffer
 (straight-use-package 'j-mode)
 (straight-use-package 'jeison)
@@ -212,6 +218,9 @@
 ;; (straight-use-package  'smartparens)
 
 ;; (straight-use-package '(eldoro "pjones/eldoro")
+
+(global-set-key (kbd "C-z") #'company-try-hard)
+;; (define-key company-active-map (kbd "C-z") #'company-try-hard)
 
 ;; Wanderlust doesn't seem to work w/Google 2FA.
 (autoload 'wl "wl" "Wanderlust" t)
@@ -342,8 +351,8 @@
 ;; (auto-package-update-maybe)
 
 ;; JBH
-(ac-config-default)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+;; (ac-config-default)
+;; (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
 
 (global-set-key (kbd "C-S-s") (lambda () (interactive (insert "§"))))
 (global-set-key (kbd "C-c (") (lambda () (interactive) (insert "ಠ_ಠ")))
@@ -414,7 +423,7 @@
     (setq-default ispell-program-name "/usr/local/bin/aspell")
   (if (eq system-type 'linux)
       (setq-default ispell-program-name "/usr/bin/aspell")
-    (setq-default ispell-program-name ""))) ;; What should we do about Windows?
+    (setq-default ispell-program-name (executable-find "asell")))) ;; What should we do about Windows?
 
 (setq-default ispell-list-command "list")
 
@@ -553,47 +562,22 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(helm-split-window-inside-p t) ; open helm buffer inside current window, not occupy whole other window
- '(helm-move-to-line-cycle-in-source t) ; move to end or beginning of source when reaching top or bottom of source.
- '(helm-ff-search-library-in-sexp t) ; search for library in `require' and `declare-function' sexp.
- '(helm-scroll-amount 8) ; scroll 8 lines other window using M-<next>/M-<prior>
- ;;'(helm-ff-file-name-history-use-recentf t) ;; Turning this off b/c less convenient
- '(global-nlinum-mode t)
- '(global-flycheck-mode t)
- '(flyspell-issue-welcome-flag nil);; easy spell check setup.
- '(langtool-language-tool-jar "~/LanguageTool-3.4/languagetool-commandline.jar")
- '(langtool-default-language "en-US")
- '(langtool-mother-tongue "en")
- '(langtool-autoshow-message-function 'langtool-autoshow-detail-popup)
- '(TeX-auto-save t)
- '(TeX-parse-self t)
- '(reftex-plug-into-AUCTeX t)
- '(reftex-extra-bindings t)
- '(bib-cite-use-reftex-view-crossref t)
- '(org-agenda-include-diary t)
- '(tool-bar-mode -1)
- '(savehist-mode t)
- '(show-paren-mode 1)
- '(show-paren-delay 0)
- '(custom-safe-themes t)  ;; Even at M-x load theme, treat custom themes as safe.
- '(ad-redefinition-action 'accept) ;; I don't care that we're redefining tramp-read-passwd
- '(debug-on-quit t)
- '(inhibit-splash-screen t)
- '(column-number-mode t)
- '(initial-scratch-message nil)
- '(ring-bell-function 'ignore)
- '(tab-always-indent 'complete)
+ '(TeX-auto-save t t)
  '(TeX-auto-untabify t)
  '(TeX-engine 'xetex)
+ '(TeX-parse-self t t)
  '(ac-modes
    '(emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode haskell-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode racket-mode Racket-mode racket-repl-mode idris-mode idris-repl-mode ciao-mode))
-;;  '(auto-image-file-mode t)
+ '(ad-redefinition-action 'accept)
  '(auto-save-interval 75)
  '(auto-save-timeout 10)
+ '(bib-cite-use-reftex-view-crossref t t)
  '(bibtex-maintain-sorted-entries 'plain)
  '(blink-cursor-mode nil)
  '(bookmark-save-flag 0)
  '(column-number-mode t)
+ '(custom-safe-themes t)
+ '(debug-on-quit t)
  '(default-input-method "TeX")
  '(dired-listing-switches "-al --group-directories-first --time-style=long-iso")
  '(display-time-day-and-date t)
@@ -602,15 +586,28 @@
  '(eclim-eclipse-dirs
    '("/Applications/eclipse" "/usr/lib/eclipse" "/usr/local/lib/eclipse" "/usr/share/eclipse" "/Applications/Eclipse.app/Contents/Eclipse/" "/Applications/Eclipse Java.app/Contents/Eclipse/"))
  '(fill-column 110)
+ '(flyspell-issue-welcome-flag nil t)
  '(fringe-mode 2 nil (fringe))
+ '(global-flycheck-mode t)
+ '(global-nlinum-mode t)
+ '(helm-ff-search-library-in-sexp t)
+ '(helm-move-to-line-cycle-in-source t)
+ '(helm-scroll-amount 8)
+ '(helm-split-window-inside-p t)
  '(inhibit-startup-screen t)
+ '(initial-scratch-message nil)
  '(ispell-highlight-face 'highlight)
  '(ispell-highlight-p t)
  '(ispell-program-name "aspell" t)
+ '(langtool-autoshow-message-function 'langtool-autoshow-detail-popup)
+ '(langtool-default-language "en-US")
+ '(langtool-language-tool-jar "~/LanguageTool-3.4/languagetool-commandline.jar")
+ '(langtool-mother-tongue "en")
  '(load-home-init-file t t)
  '(ls-lisp-dirs-first t)
  '(make-backup-files nil)
  '(ns-alternate-modifier '(:ordinary meta :mouse alt))
+ '(org-agenda-include-diary t)
  '(org-babel-load-languages '((scheme . t)))
  '(org-export-backends '(ascii html icalendar latex md org))
  '(org-src-tab-acts-natively t)
@@ -621,6 +618,9 @@
  '(preview-auto-cache-preamble t)
  '(racket-program "racket")
  '(reftex-cite-format 'biblatex)
+ '(reftex-extra-bindings t t)
+ '(reftex-plug-into-AUCTeX t t)
+ '(ring-bell-function 'ignore)
  '(safe-local-variable-values
    '((TeX-command-extra-options . "-shell-escape")
      (eval progn
@@ -638,12 +638,16 @@
 	       (setq compile-command
 		     (concat "make -C " tt-root-directory)))
 	     (setq default-directory tt-root-directory)))))
+ '(savehist-mode t)
  '(scheme-program-name "scheme")
  '(scroll-bar-mode 'right)
  '(select-enable-clipboard t)
  '(sentence-end-double-space nil)
+ '(show-paren-delay 0)
+ '(show-paren-mode 1)
  '(sort-fold-case t t)
  '(straight-use-package-by-default t)
+ '(tab-always-indent 'complete)
  '(tool-bar-mode nil)
  '(truncate-lines t)
  '(vc-follow-symlinks 't)
