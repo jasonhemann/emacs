@@ -116,17 +116,24 @@
 
 (straight-use-package 'helm)
 (straight-use-package 'helm-addressbook)
-(straight-use-package 'helm-dictionary)
+(straight-use-package 'helm-bibtex)
+(straight-use-package 'helm-chrome)
+(straight-use-package 'helm-company)
 (straight-use-package 'helm-descbinds)
+(straight-use-package 'helm-dictionary)
+(straight-use-package 'helm-dirset)
 (straight-use-package 'helm-emms)
+(straight-use-package 'helm-eww)
 (straight-use-package 'helm-firefox)
+(straight-use-package 'helm-fuzzy)
+(straight-use-package 'helm-google)
 (straight-use-package 'helm-idris)
 (straight-use-package 'helm-lean)
 (straight-use-package 'helm-ls-git)
 (straight-use-package 'helm-mu)
-(straight-use-package 'helm-slime)
+(straight-use-package 'helm-shell)
 (straight-use-package 'helm-system-packages)
-(straight-use-package 'helm-w3m)
+(straight-use-package 'helm-tramp)
 (straight-use-package 'helm-wordnet)
 (straight-use-package 'ht)
 (straight-use-package 'ibuffer-vc) ;; Let Emacs' ibuffer-mode group files by git project etc., and show file state
@@ -137,7 +144,6 @@
 (straight-use-package 'jump) ;; build functions which contextually jump between files
 (straight-use-package 'langtool)
 (straight-use-package 'lean-mode)
-(straight-use-package 'magit)
 (straight-use-package 'magit-filenotify)
 (straight-use-package 'magit-gerrit) ;; gerrit mode for emacs
 (straight-use-package 'magit-popup)
@@ -302,12 +308,16 @@
 
 (helm-mode 1)
 
+
 ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
 ;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
 ;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
-(require 'helm-config)
 (global-set-key (kbd "C-c h") 'helm-command-prefix)
 (global-unset-key (kbd "C-x c"))
+
+(require 'paredit)
+(require 'calfw)
+(require 'helm-config)
 
 (global-set-key (kbd "C-x b") 'helm-buffers-list) ;; helm-buffers-list: provides enhanced buffers listing.
 (global-set-key (kbd "C-h a") 'helm-apropos) ;; enhanced apropos for functions and variables that C-h commands provide.
@@ -727,6 +737,8 @@
 ;; M-x smog-check-region
 ;; C-h a does apropos
 ;; M-v custom-enabled-themes tells you what themes are in force
+;; In org-mode C-' on a table.el table lets you edit it nicely, like that.
+
 
 ;; Right now, this is busted in the agda-mode repository. 13/12/15
 ;; (when (eq system-type 'darwin)
