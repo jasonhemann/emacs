@@ -43,13 +43,14 @@
 (straight-use-package 'biblio)
 (straight-use-package 'bibtex-completion)
 (straight-use-package 'bog)
-(straight-use-package 'buffer-move) ;; used for rotating buffers
+(straight-use-package 'buffer-move) ;; used for rotating buffers. buf-move-left
 (straight-use-package 'calfw)
 (straight-use-package 'calfw-cal)
 (straight-use-package 'calfw-gcal)
 (straight-use-package 'calfw-ical)
 (straight-use-package 'calfw-org)
 ;; (straight-use-package 'calfw-howm)
+(straight-use-package 'cbm) ;; cycle by major mode
 (straight-use-package 'cdlatex)
 (straight-use-package 'cl-lib) ;; Properly prefixed CL functions and macros
 (straight-use-package 'clang-format)
@@ -67,6 +68,7 @@
 (straight-use-package 'company-try-hard)
 (straight-use-package 'company-fuzzy)
 (straight-use-package 'coq-commenter)
+(straight-use-package 'crux) ;; collection of emacs extensions
 (straight-use-package 'cyberpunk-theme)
 (straight-use-package 'dash) ;; A modern list library for Emacs
 (straight-use-package 'dash-functional)
@@ -142,6 +144,8 @@
 (straight-use-package 'helm-tramp)
 (straight-use-package 'helm-wordnet)
 (straight-use-package 'ht)
+;; https://github.com/coldnew/coldnew-emacs#hydra
+(straight-use-package 'hydra) ;; tie related commands into a family of short bindings w/a common prefix.
 (straight-use-package 'ibuffer-vc) ;; Let Emacs' ibuffer-mode group files by git project etc., and show file state
 ;; (straight-use-package 'ido-vertical-mode) ;; makes ido-mode display vertically
 (straight-use-package 'iedit) ;; Emacs minor mode and allows you to edit one occurrence of some text in a buffer
