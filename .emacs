@@ -166,8 +166,10 @@
 (straight-use-package 'org-doing)
 (straight-use-package 'org-dotemacs)
 (straight-use-package 'org-inline-pdf)
+(straight-use-package 'org-journal)
 (straight-use-package 'org-roam)
 (straight-use-package 'org-rtm)
+(straight-use-package 'org-sidebar)
 (straight-use-package 'org-super-agenda)
 (straight-use-package 'org-trello)
 (straight-use-package 'org2web)
@@ -213,14 +215,14 @@
 (straight-use-package 'zones)
 (straight-use-package 'zygospore)
 
+(global-set-key (kbd "M-;") 'comment-dwim-2)
+(global-set-key (kbd "C-z") #'company-try-hard)
+
 ;; A minor mode for Emacs that deals with parens pairs and tries to be smart about it.
 ;; I think paredit probably does everything I need
 ;; (straight-use-package  'smartparens)
 
 ;; (straight-use-package '(eldoro "pjones/eldoro")
-
-(global-set-key (kbd "C-z") #'company-try-hard)
-;; (define-key company-active-map (kbd "C-z") #'company-try-hard)
 
 ;; Wanderlust doesn't seem to work w/Google 2FA.
 (autoload 'wl "wl" "Wanderlust" t)
@@ -794,6 +796,26 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+(require 'company-try-hard)
+(require 'comment-dwim-2)
+
+(define-key org-mode-map (kbd "M-;") 'org-comment-dwim-2)
+(define-key company-active-map (kbd "C-z") #'company-try-hard)
+
+(use-package org-roam
+      :ensure t
+      :hook
+      (after-init . org-roam-mode)
+      :custom
+      (org-roam-directory (file-truename "~/.org/"))
+      :bind (:map org-roam-mode-map
+              (("C-c n l" . org-roam)
+               ("C-c n f" . org-roam-find-file)
+               ("C-c n g" . org-roam-graph))
+              :map org-mode-map
+              (("C-c n i" . org-roam-insert))
+              (("C-c n I" . org-roam-insert-immediate))))
+
 
 (provide '.emacs)
 ;;; .emacs ends here
