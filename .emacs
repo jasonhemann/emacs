@@ -73,7 +73,7 @@
 (straight-use-package 'dash) ;; A modern list library for Emacs
 (straight-use-package 'dash-functional)
 (straight-use-package 'dictionary)
-(straight-use-package 'dired-details) ;; hide or show the file and directory detail
+(straight-use-package 'dired+)
 (straight-use-package 'discover) ;; discover more of Emacs
 (straight-use-package 'discover-my-major) ;; Discover key bindings and their meaning for the current Emacs major mode
 (straight-use-package 'dr-racket-like-unicode)
@@ -85,6 +85,7 @@
 ;; The following package requires some set-up to work with org-mode or w/e.
 (straight-use-package 'elmacro) ;; https://github.com/Silex/elmacro#elmacro-processors
 (straight-use-package 'elscreen-separate-buffer-list)
+(straight-use-package 'epkg) ;; epkg-describe-package should show the dependencies
 (straight-use-package 'exec-path-from-shell) ;; Make Emacs use the $PATH set up by the user's shell
 (straight-use-package 'expand-region) ;; Increase selected region by semantic units
 (straight-use-package 'f) ;; Modern API for working with files and directories in Emacs
@@ -395,6 +396,7 @@
 
 
 (global-flycheck-mode)
+(global-company-mode)
 
 (flycheck-define-checker proselint
   "A linter for prose."
