@@ -30,6 +30,7 @@
 (straight-use-package 'academic-phrases)
 (straight-use-package 'artbollocks-mode)
 (straight-use-package 'ace-jump-mode)
+(straight-use-package 'agda2-mode)
 (straight-use-package 'anzu) ;; displays current match and total matches information
 (straight-use-package 'apel)
 (straight-use-package 'auctex-latexmk)
@@ -39,7 +40,7 @@
 ;; (straight-use-package 'auto-complete-auctex)
 (straight-use-package 'auto-package-update)
 (straight-use-package 'autopair)
-(straight-use-package 'bbdb)
+(straight-use-package 'bbdb) ;; Emacs address book
 (straight-use-package 'biblio)
 (straight-use-package 'bibtex-completion)
 (straight-use-package 'bog)
@@ -397,6 +398,7 @@
 
 (global-flycheck-mode)
 (global-company-mode)
+(global-anzu-mode +1) ;; global search count mode
 
 (flycheck-define-checker proselint
   "A linter for prose."
@@ -522,6 +524,8 @@
 
 (add-to-list 'auto-mode-alist '("\\.v$" . coq-mode))
 (add-to-list 'auto-mode-alist '("\\.rkt\\'" . racket-mode))
+(add-to-list 'auto-mode-alist '("\\.agda\\'" . agda2-mode))
+(add-to-list 'auto-mode-alist '("\\.lagda.md\\'" . agda2-mode))
 
 (autoload 'coq-mode "coq" "Major mode for editing Coq vernacular." t)
 (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
@@ -570,6 +574,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(calendar-week-start-day 1)
  '(TeX-auto-save t t)
  '(TeX-auto-untabify t)
  '(TeX-engine 'xetex)
@@ -748,8 +753,9 @@
 ;; M-x LaTeX-math-cal Ret <the letter>
 ;; M-x smog-check-region
 ;; C-h a does apropos
-;; M-v custom-enabled-themes tells you what themes are in force
+;; M-v custom-enabled-themes tells you what themes are in force.
 ;; In org-mode C-' on a table.el table lets you edit it nicely, like that.
+;; C-h r for the manual, then g (for "goto node").
 
 
 ;; Right now, this is busted in the agda-mode repository. 13/12/15
@@ -822,6 +828,12 @@
               (("C-c n i" . org-roam-insert))
               (("C-c n I" . org-roam-insert-immediate))))
 
+;; default to mononoki
+(set-face-attribute 'default nil
+                    :family "mononoki"
+                    :height 120
+                    :weight 'normal
+                    :width  'normal)
 
 (provide '.emacs)
 ;;; .emacs ends here
