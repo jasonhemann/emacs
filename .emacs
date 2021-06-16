@@ -169,9 +169,11 @@
 (straight-use-package 'neotree) ;; A emacs tree plugin like NerdTree for Vim.
 (straight-use-package 'nlinum)
 (straight-use-package 'org-ac)
+(straight-use-package 'org-dropbox)
 (straight-use-package 'org-doing)
 (straight-use-package 'org-dotemacs)
 (straight-use-package 'org-inline-pdf)
+(straight-use-package 'org-jekyll)
 (straight-use-package 'org-journal)
 (straight-use-package 'org-roam)
 (straight-use-package 'org-rtm)
@@ -179,6 +181,8 @@
 (straight-use-package 'org-super-agenda)
 (straight-use-package 'org-trello)
 (straight-use-package 'org2web)
+(straight-use-package 'ox-jekyll-md)
+(straight-use-package 'ox-pandoc)
 (straight-use-package 'paradox)
 (straight-use-package 'paredit-everywhere)
 (straight-use-package 'paredit-menu)
@@ -334,6 +338,7 @@
 
 (require 'paredit)
 (require 'calfw)
+(require 'calfw-cal)
 (require 'helm-config)
 
 (global-set-key (kbd "C-x b") 'helm-buffers-list) ;; helm-buffers-list: provides enhanced buffers listing.
@@ -574,7 +579,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(calendar-week-start-day 1)
  '(TeX-auto-save t t)
  '(TeX-auto-untabify t)
  '(TeX-engine 'xetex)
@@ -588,6 +592,8 @@
  '(bibtex-maintain-sorted-entries 'plain)
  '(blink-cursor-mode nil)
  '(bookmark-save-flag 0)
+ '(calendar-mark-diary-entries-flag t)
+ '(calendar-week-start-day 1)
  '(column-number-mode t)
  '(custom-safe-themes t)
  '(debug-on-quit t)
@@ -599,7 +605,7 @@
  '(eclim-eclipse-dirs
    '("/Applications/eclipse" "/usr/lib/eclipse" "/usr/local/lib/eclipse" "/usr/share/eclipse" "/Applications/Eclipse.app/Contents/Eclipse/" "/Applications/Eclipse Java.app/Contents/Eclipse/"))
  '(fill-column 110)
- '(flyspell-issue-welcome-flag nil t)
+ '(flyspell-issue-welcome-flag nil)
  '(fringe-mode 2 nil (fringe))
  '(global-flycheck-mode t)
  '(global-nlinum-mode t)
@@ -611,7 +617,7 @@
  '(initial-scratch-message nil)
  '(ispell-highlight-face 'highlight)
  '(ispell-highlight-p t)
- '(ispell-program-name "aspell" t)
+ '(ispell-program-name "aspell")
  '(langtool-autoshow-message-function 'langtool-autoshow-detail-popup)
  '(langtool-default-language "en-US")
  '(langtool-language-tool-jar "~/LanguageTool-3.4/languagetool-commandline.jar")
@@ -807,7 +813,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(diary ((t (:foreground "dark red")))))
 (require 'company-try-hard)
 (require 'comment-dwim-2)
 
