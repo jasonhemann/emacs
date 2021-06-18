@@ -167,7 +167,7 @@
 (straight-use-package 'multiple-cursors)
 (straight-use-package 'mustache)
 (straight-use-package 'neotree) ;; A emacs tree plugin like NerdTree for Vim.
-(straight-use-package 'nlinum)
+;; (straight-use-package 'nlinum) %% with emacs 26 built-in line numbering, not needed
 (straight-use-package 'org-ac)
 (straight-use-package 'org-bullets)
 (straight-use-package 'org-dropbox)
@@ -610,7 +610,8 @@
  '(flyspell-issue-welcome-flag nil t)
  '(fringe-mode 2 nil (fringe))
  '(global-flycheck-mode t)
- '(global-nlinum-mode t)
+ '(global-display-line-numbers-mode t)
+;;  '(global-nlinum-mode t) %% with emacs 26 built-in line numbering, not needed
  '(helm-ff-search-library-in-sexp t)
  '(helm-move-to-line-cycle-in-source t)
  '(helm-scroll-amount 8)
@@ -787,8 +788,6 @@
 ;; Emacs desiderata
 ;; Setup emacs calendar to sync with google calendar
 
-
-;; Have width of nlinum buffer scale as font-size increases.
 ;; Set a higher default font size (point size).
 ;; Make it Windows 7/8/10 appropriate. --- see Google Keep
 
