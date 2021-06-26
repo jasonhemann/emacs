@@ -209,6 +209,7 @@
 (straight-use-package 'solarized-emacs)
 (straight-use-package 'sourcemap) ;;  Sourmap parser in Emacs Lisp
 (straight-use-package 'sx) ;; Stackoverflow mode ;-)
+(straight-use-package 'svg-tag-mode)
 (straight-use-package 'tabbar)
 (straight-use-package 'treepy)
 (straight-use-package 'undo-tree) ;; Treat undo history as a tree
