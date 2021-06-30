@@ -771,7 +771,7 @@
 ;; M-v custom-enabled-themes tells you what themes are in force.
 ;; In org-mode C-' on a table.el table lets you edit it nicely, like that.
 ;; C-h r for the manual, then g (for "goto node").
-
+;; M-x table-capture https://www.gnu.org/software/emacs/manual/html_node/emacs/Table-Conversion.html
 
 ;; Right now, this is busted in the agda-mode repository. 13/12/15
 ;; (when (eq system-type 'darwin)
