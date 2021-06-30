@@ -212,6 +212,7 @@
 (straight-use-package 'svg-tag-mode)
 (straight-use-package 'tabbar)
 (straight-use-package 'treepy)
+(straight-use-package 'ts) ;; A bunch of nice utilities for time and date parsing, better than the built-ins
 (straight-use-package 'undo-tree) ;; Treat undo history as a tree
 (straight-use-package 'use-package)
 (straight-use-package 'visual-regexp) ;; A regexp/replace command for Emacs with interactive visual feedback
