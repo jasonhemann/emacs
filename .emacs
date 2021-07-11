@@ -173,6 +173,7 @@
 (straight-use-package 'org-dropbox)
 (straight-use-package 'org-doing)
 (straight-use-package 'org-dotemacs)
+
 (straight-use-package 'org-inline-pdf)
 (straight-use-package 'org-jekyll)
 (straight-use-package 'org-journal)
@@ -609,11 +610,10 @@
  '(eclim-eclipse-dirs
    '("/Applications/eclipse" "/usr/lib/eclipse" "/usr/local/lib/eclipse" "/usr/share/eclipse" "/Applications/Eclipse.app/Contents/Eclipse/" "/Applications/Eclipse Java.app/Contents/Eclipse/"))
  '(fill-column 110)
- '(flyspell-issue-welcome-flag nil t)
+ '(flyspell-issue-welcome-flag nil)
  '(fringe-mode 2 nil (fringe))
- '(global-flycheck-mode t)
  '(global-display-line-numbers-mode t)
-;;  '(global-nlinum-mode t) %% with emacs 26 built-in line numbering, not needed
+ '(global-flycheck-mode t)
  '(helm-ff-search-library-in-sexp t)
  '(helm-move-to-line-cycle-in-source t)
  '(helm-scroll-amount 8)
@@ -622,7 +622,7 @@
  '(initial-scratch-message nil)
  '(ispell-highlight-face 'highlight)
  '(ispell-highlight-p t)
- '(ispell-program-name "aspell" t)
+ '(ispell-program-name "aspell")
  '(langtool-autoshow-message-function 'langtool-autoshow-detail-popup)
  '(langtool-default-language "en-US")
  '(langtool-language-tool-jar "~/LanguageTool-3.4/languagetool-commandline.jar")
@@ -640,6 +640,7 @@
  '(org-log-done 'time)
  '(org-src-tab-acts-natively t)
  '(org-support-shift-select t)
+ '(org-time-stamp-custom-formats '("<%m/%d/%y %a>" . "<%a %_B %_d, %H:%M>"))
  '(org-trello-current-prefix-keybinding "C-c o")
  '(org-use-speed-commands t)
  '(package-selected-packages
@@ -841,6 +842,8 @@
               :map org-mode-map
               (("C-c n i" . org-roam-insert))
               (("C-c n I" . org-roam-insert-immediate))))
+(setq org-roam-graph-executable "/usr/local/bin/dot")
+
 
 ;; default to mononoki
 (set-face-attribute 'default nil
