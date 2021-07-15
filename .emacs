@@ -205,7 +205,7 @@
 (straight-use-package 'scheme-complete)
 (straight-use-package 'semi)
 (straight-use-package 'sh-script) ;; The major mode for editing Unix and GNU/Linux shell script code
-(straight-use-package 'simple-httpd)
+(straight-use-package '(simple-httpd :type git :host github :repo "skeeto/emacs-web-server" :local-repo "simple-httpd"))
 (straight-use-package 'smartscan) ;; Quickly jumps between other symbols found at point in Emacs
 (straight-use-package 'sml-mode)
 (straight-use-package 'sml-modeline)
