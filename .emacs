@@ -173,12 +173,14 @@
 (straight-use-package 'org-dropbox)
 (straight-use-package 'org-doing)
 (straight-use-package 'org-dotemacs)
-
 (straight-use-package 'org-inline-pdf)
 (straight-use-package 'org-jekyll)
 (straight-use-package 'org-journal)
 (straight-use-package 'org-ql)
+(straight-use-package 'org-ref)
 (straight-use-package 'org-roam)
+(straight-use-package 'org-roam-bibtex)
+(straight-use-package 'org-roam-server)
 (straight-use-package 'org-rtm)
 (straight-use-package 'org-sidebar)
 (straight-use-package 'org-super-agenda)
@@ -190,6 +192,7 @@
 (straight-use-package 'paredit-everywhere)
 (straight-use-package 'paredit-menu)
 (straight-use-package 'parent-mode)
+(straight-use-package 'pdf-tools)
 (straight-use-package 'popup) ;; Visual Popup Interface Library for Emacs
 (straight-use-package 'powerthesaurus)
 (straight-use-package 'projectile) ;; Project Interaction Library for Emacs http://projectile.readthedocs.io
@@ -584,10 +587,10 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(TeX-auto-save t t)
+ '(TeX-auto-save t)
  '(TeX-auto-untabify t)
  '(TeX-engine 'xetex)
- '(TeX-parse-self t t)
+ '(TeX-parse-self t)
  '(ac-modes
    '(emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode haskell-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode racket-mode Racket-mode racket-repl-mode idris-mode idris-repl-mode ciao-mode))
  '(ad-redefinition-action 'accept)
@@ -638,6 +641,8 @@
  '(org-directory "~/.org")
  '(org-export-backends '(ascii html icalendar latex md org))
  '(org-log-done 'time)
+ '(org-modules
+   '(ol-bbdb ol-bibtex ol-docview ol-doi ol-eww ol-gnus ol-info ol-irc ol-mhe ol-rmail org-tempo ol-w3m org-mac-iCal org-mac-link ol-wl))
  '(org-src-tab-acts-natively t)
  '(org-support-shift-select t)
  '(org-time-stamp-custom-formats '("<%m/%d/%y %a>" . "<%a %_B %_d, %H:%M>"))
@@ -844,6 +849,36 @@
               (("C-c n I" . org-roam-insert-immediate))))
 (setq org-roam-graph-executable "/usr/local/bin/dot")
 
+
+;; Org-ref
+;; Set up bibliography
+;; (setq org-ref-default-bibliography '("~/iCloudDrive/bibliography/myBibliography.bib"))
+;; (setq bibtex-completion-bibliography "~/iCloudDrive/bibliography/myBibliography.bib")
+(global-set-key (kbd "<f6>") #'org-ref-helm-insert-cite-link)
+
+;; Org-roam-bibtex
+(require `org-roam-bibtex)
+(add-hook 'after-init-hook #'org-roam-bibtex-mode)
+(define-key org-roam-bibtex-mode-map (kbd "C-c n a") #'orb-note-actions)
+;; This one does not seem to be needed unless You use reftex.
+;; (setq reftex-default-bibliography '("~/iCloudDrive/bibliography/myBibliography.bib"))
+
+(pdf-tools-install) ;; if this slows things down try (pdf-loader-install)
+
+(require 'org-protocol)
+(require 'org-roam-protocol)
+
+
+(require 'org-roam-server)
+(setq org-roam-server-host "127.0.0.1"
+       org-roam-server-port 8080
+       org-roam-server-export-inline-images t
+       org-roam-server-authenticate nil
+       org-roam-server-network-poll t
+       org-roam-server-network-arrows nil
+       org-roam-server-network-label-truncate t
+       org-roam-server-network-label-truncate-length 60
+       org-roam-server-network-label-wrap-length 20)
 
 ;; default to mononoki
 (set-face-attribute 'default nil
