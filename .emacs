@@ -24,6 +24,8 @@
 
 (add-hook 'find-file-hook (lambda () (ruler-mode 1)))
 
+;; Need to resolve that duplicate httpd and emacs-web-server issue.
+
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 (straight-use-package 'ac-math)
