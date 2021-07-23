@@ -229,6 +229,7 @@
 (straight-use-package 'wordnut)
 (straight-use-package 'wordsmith-mode)
 (straight-use-package 'wrap-region) ;; Emacs minor mode to wrap region with tag or punctuations
+(straight-use-package 'writegood-mode)
 (straight-use-package 'ws-butler) ;; Unobtrusively trim extraneous white-space *ONLY* in lines edited.
 (straight-use-package 'yafolding) ;; Yet another folding extension for Emacs
 (straight-use-package 'yaml-mode) ;; The emacs major mode for editing files in the YAML data serialization format.
@@ -589,10 +590,10 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(TeX-auto-save t)
+ '(TeX-auto-save t t)
  '(TeX-auto-untabify t)
  '(TeX-engine 'xetex)
- '(TeX-parse-self t)
+ '(TeX-parse-self t t)
  '(ac-modes
    '(emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode haskell-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode racket-mode Racket-mode racket-repl-mode idris-mode idris-repl-mode ciao-mode))
  '(ad-redefinition-action 'accept)
@@ -614,7 +615,6 @@
  '(ebib-bibtex-dialect 'biblatex)
  '(eclim-eclipse-dirs
    '("/Applications/eclipse" "/usr/lib/eclipse" "/usr/local/lib/eclipse" "/usr/share/eclipse" "/Applications/Eclipse.app/Contents/Eclipse/" "/Applications/Eclipse Java.app/Contents/Eclipse/"))
- '(fill-column 110)
  '(flyspell-issue-welcome-flag nil)
  '(fringe-mode 2 nil (fringe))
  '(global-display-line-numbers-mode t)
