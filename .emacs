@@ -170,6 +170,7 @@
 (straight-use-package 'mustache)
 (straight-use-package 'neotree) ;; A emacs tree plugin like NerdTree for Vim.
 ;; (straight-use-package 'nlinum) %% with emacs 26 built-in line numbering, not needed
+(straight-use-package 'ob-browser)
 (straight-use-package 'org-ac)
 (straight-use-package 'org-bullets)
 (straight-use-package 'org-dropbox)
@@ -235,6 +236,32 @@
 (straight-use-package 'yaml-mode) ;; The emacs major mode for editing files in the YAML data serialization format.
 (straight-use-package 'zones)
 (straight-use-package 'zygospore)
+
+(use-package org-roam
+      :ensure t
+      :hook (after-init . org-roam-mode)
+      :custom
+      (org-roam-directory (file-truename "~/.org/"))
+      :bind (:map org-roam-mode-map
+              (("C-c n l" . org-roam)
+               ("C-c n f" . org-roam-find-file)
+               ("C-c n g" . org-roam-graph))
+              :map org-mode-map
+              (("C-c n i" . org-roam-insert))
+              (("C-c n I" . org-roam-insert-immediate))))
+
+(use-package org-roam-ui
+  :straight
+    (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
+    :after org-roam
+    :hook (after-init . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
+
+(add-hook 'after-init-hook 'org-roam-mode)
 
 (global-set-key (kbd "M-;") 'comment-dwim-2)
 (global-set-key (kbd "C-z") #'company-try-hard)
@@ -645,6 +672,7 @@
  '(org-log-done 'time)
  '(org-modules
    '(ol-bbdb ol-bibtex ol-docview ol-doi ol-eww ol-gnus ol-info ol-irc ol-mhe ol-rmail org-tempo ol-w3m org-mac-iCal org-mac-link ol-wl))
+ '(org-roam-directory "~/org-roam/" nil nil "Customized with use-package org-roam")
  '(org-src-tab-acts-natively t)
  '(org-support-shift-select t)
  '(org-time-stamp-custom-formats '("<%m/%d/%y %a>" . "<%a %_B %_d, %H:%M>"))
@@ -781,6 +809,8 @@
 ;; In org-mode C-' on a table.el table lets you edit it nicely, like that.
 ;; C-h r for the manual, then g (for "goto node").
 ;; M-x table-capture https://www.gnu.org/software/emacs/manual/html_node/emacs/Table-Conversion.html
+;; M-x list-processes
+;; 
 
 ;; Right now, this is busted in the agda-mode repository. 13/12/15
 ;; (when (eq system-type 'darwin)
@@ -835,20 +865,6 @@
 
 (define-key org-mode-map (kbd "M-;") 'org-comment-dwim-2)
 (define-key company-active-map (kbd "C-z") #'company-try-hard)
-
-(use-package org-roam
-      :ensure t
-      :hook
-      (after-init . org-roam-mode)
-      :custom
-      (org-roam-directory (file-truename "~/.org/"))
-      :bind (:map org-roam-mode-map
-              (("C-c n l" . org-roam)
-               ("C-c n f" . org-roam-find-file)
-               ("C-c n g" . org-roam-graph))
-              :map org-mode-map
-              (("C-c n i" . org-roam-insert))
-              (("C-c n I" . org-roam-insert-immediate))))
 (setq org-roam-graph-executable "/usr/local/bin/dot")
 
 
