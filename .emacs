@@ -24,8 +24,6 @@
 
 (add-hook 'find-file-hook (lambda () (ruler-mode 1)))
 
-
-
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 (straight-use-package 'ac-math)
@@ -147,6 +145,7 @@
 (straight-use-package 'helm-system-packages)
 (straight-use-package 'helm-tramp)
 (straight-use-package 'helm-wordnet)
+(straight-use-package 'helpful)
 (straight-use-package 'ht)
 ;; https://github.com/coldnew/coldnew-emacs#hydra
 (straight-use-package 'hydra) ;; tie related commands into a family of short bindings w/a common prefix.
@@ -183,7 +182,7 @@
 (straight-use-package 'org-ref)
 (straight-use-package 'org-roam)
 (straight-use-package 'org-roam-bibtex)
-(straight-use-package 'org-roam-server)
+;;(straight-use-package 'org-roam-server)
 (straight-use-package 'org-rtm)
 (straight-use-package 'org-sidebar)
 (straight-use-package 'org-super-agenda)
@@ -542,6 +541,15 @@
 (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
 (add-hook 'LaTeX-mode-hook 'LaTeX-preview-setup)
 
+(global-set-key (kbd "C-h f") #'helpful-callable)
+(global-set-key (kbd "C-h v") #'helpful-variable)
+(global-set-key (kbd "C-h k") #'helpful-key)
+
+(global-set-key (kbd "C-c C-d") #'helpful-at-point)
+
+(global-set-key (kbd "C-h F") #'helpful-function)
+(global-set-key (kbd "C-h C") #'helpful-command)
+
 ;; Only sometimes works!
 ;; must be after font locking is set up for the buffer on!
 ;; (add-hook 'find-file-hook 'TeX-fold-buffer t)
@@ -886,17 +894,16 @@
 (require 'org-protocol)
 (require 'org-roam-protocol)
 
-
-(require 'org-roam-server)
-(setq org-roam-server-host "127.0.0.1"
-       org-roam-server-port 8080
-       org-roam-server-export-inline-images t
-       org-roam-server-authenticate nil
-       org-roam-server-network-poll t
-       org-roam-server-network-arrows nil
-       org-roam-server-network-label-truncate t
-       org-roam-server-network-label-truncate-length 60
-       org-roam-server-network-label-wrap-length 20)
+;; (require 'org-roam-server)
+;; (setq org-roam-server-host "127.0.0.1"
+;;       org-roam-server-port 8080
+;;       org-roam-server-export-inline-images t
+;;       org-roam-server-authenticate nil
+;;       org-roam-server-network-poll t
+;;       org-roam-server-network-arrows nil
+;;       org-roam-server-network-label-truncate t
+;;       org-roam-server-network-label-truncate-length 60
+;;       org-roam-server-network-label-wrap-length 20)
 
 ;; default to mononoki
 (set-face-attribute 'default nil
