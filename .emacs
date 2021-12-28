@@ -583,6 +583,8 @@
 (add-to-list 'auto-mode-alist '("\\.rkt\\'" . racket-mode))
 (add-to-list 'auto-mode-alist '("\\.agda\\'" . agda2-mode))
 (add-to-list 'auto-mode-alist '("\\.lagda.md\\'" . agda2-mode))
+(add-to-list 'auto-mode-alist '("\\.pl\\'" . prolog-mode))
+
 
 (autoload 'coq-mode "coq" "Major mode for editing Coq vernacular." t)
 (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
@@ -636,7 +638,7 @@
  '(TeX-engine 'xetex)
  '(TeX-parse-self t t)
  '(ac-modes
-   '(emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode haskell-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode racket-mode Racket-mode racket-repl-mode idris-mode idris-repl-mode )) ;; ciao-mode
+   '(emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode haskell-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode racket-mode Racket-mode racket-repl-mode idris-mode idris-repl-mode))
  '(ad-redefinition-action 'accept)
  '(auto-save-interval 75)
  '(auto-save-timeout 10)
@@ -656,7 +658,8 @@
  '(ebib-bibtex-dialect 'biblatex)
  '(eclim-eclipse-dirs
    '("/Applications/eclipse" "/usr/lib/eclipse" "/usr/local/lib/eclipse" "/usr/share/eclipse" "/Applications/Eclipse.app/Contents/Eclipse/" "/Applications/Eclipse Java.app/Contents/Eclipse/"))
- '(flyspell-issue-welcome-flag nil)
+ '(ediprolog-program "scryer-prolog")
+ '(flyspell-issue-welcome-flag nil t)
  '(fringe-mode 2 nil (fringe))
  '(global-display-line-numbers-mode t)
  '(global-flycheck-mode t)
@@ -668,7 +671,7 @@
  '(initial-scratch-message nil)
  '(ispell-highlight-face 'highlight)
  '(ispell-highlight-p t)
- '(ispell-program-name "aspell")
+ '(ispell-program-name "aspell" t)
  '(langtool-autoshow-message-function 'langtool-autoshow-detail-popup)
  '(langtool-default-language "en-US")
  '(langtool-language-tool-jar "~/LanguageTool-3.4/languagetool-commandline.jar")
