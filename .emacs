@@ -82,6 +82,7 @@
 (straight-use-package 'duplicate-thing) ;; duplicate current line
 (straight-use-package 'easy-jekyll)
 (straight-use-package 'eclim)
+(straight-use-package 'ediprolog)
 (straight-use-package 'eldoc) ;; the argument list of the function call you are currently writing
 ;; The following package requires some set-up to work with org-mode or w/e.
 (straight-use-package 'elmacro) ;; https://github.com/Silex/elmacro#elmacro-processors
@@ -260,6 +261,11 @@
           org-roam-ui-update-on-save t
           org-roam-ui-open-on-start t))
 
+
+
+(require 'ediprolog)
+(global-set-key [f10] 'ediprolog-dwim)
+
 (add-hook 'after-init-hook 'org-roam-mode)
 
 (global-set-key (kbd "M-;") 'comment-dwim-2)
@@ -334,8 +340,8 @@
 
 ;; https://cliplab.org/~clip/Software/Ciao/ciao-1.15.0.html/CiaoMode.html#Installation%20of%20the%20Ciao%20emacs%20interface
 ;; https://github.com/ciao-lang/ciao_emacs
-(if (file-exists-p "/usr/local/lib/ciao/ciao-mode-init.el")
-    (load-file "/usr/local/lib/ciao/ciao-mode-init.el"))
+;; (if (file-exists-p "/usr/local/lib/ciao/ciao-mode-init.el")
+;;     (load-file "/usr/local/lib/ciao/ciao-mode-init.el"))
 
 ;; I should want maven, I think, tbqh
 (add-hook 'java-mode-hook '(lambda() (gradle-mode 1)))
@@ -630,7 +636,7 @@
  '(TeX-engine 'xetex)
  '(TeX-parse-self t t)
  '(ac-modes
-   '(emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode haskell-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode racket-mode Racket-mode racket-repl-mode idris-mode idris-repl-mode ciao-mode))
+   '(emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode haskell-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode racket-mode Racket-mode racket-repl-mode idris-mode idris-repl-mode )) ;; ciao-mode
  '(ad-redefinition-action 'accept)
  '(auto-save-interval 75)
  '(auto-save-timeout 10)
