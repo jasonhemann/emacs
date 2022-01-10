@@ -190,6 +190,7 @@
 (straight-use-package 'org-trello)
 (straight-use-package 'org2web)
 (straight-use-package 'ox-jekyll-md)
+(straight-use-package 'ox-latex)
 (straight-use-package 'ox-pandoc)
 (straight-use-package 'paradox)
 (straight-use-package 'paredit-everywhere)
@@ -429,6 +430,8 @@
 (add-hook 'text-mode-hook 'flyspell-mode)
 (add-hook 'tex-mode-hook (function (lambda () (setq ispell-parser 'tex))))
 (add-hook 'tex-mode-hook 'auxtex-mode)
+(add-hook 'tex-mode-hook 'cdlatex-mode)
+(add-hook 'tex-mode-hook 'reftex-mode)
 
 (add-hook 'tex-mode-hook (lambda () (define-key tex-mode-map (kbd "C-c C-k") 'compile)))
 (add-hook 'tex-mode-hook (lambda () (define-key tex-mode-map (kbd "C-c |") 'align-current)))
@@ -884,6 +887,14 @@
 (define-key company-active-map (kbd "C-z") #'company-try-hard)
 (setq org-roam-graph-executable "/usr/local/bin/dot")
 
+(with-eval-after-load 'ox-latex
+   (add-to-list 'org-latex-classes
+                '("report"
+                  "\\documentclass{report}"
+                  ("\\chapter{%s}" . "\\chapter*{%s}")
+                  ("\\section{%s}" . "\\section*{%s}")
+                  ("\\subsection{%s}" . "\\subsection*{%s}")
+                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
 
 ;; Org-ref
 ;; Set up bibliography
