@@ -26,7 +26,6 @@
 (add-hook 'find-file-hook (lambda () (ruler-mode 1)))
 
 (defalias 'yes-or-no-p 'y-or-n-p)
-
 (straight-use-package 'org-roam)
 (straight-use-package 'ac-math)
 (straight-use-package 'academic-phrases)
@@ -38,7 +37,7 @@
 (straight-use-package 'auctex-latexmk)
 (straight-use-package 'auto-compile) ;; Automatically compile Emacs Lisp libraries
 ;; Auto complete is for most things strictly worse than company-mode
-;; (straight-use-package 'auto-complete) ;; Dunno, but I had it before
+;; (straight-use-package 'auto-complete)
 ;; (straight-use-package 'auto-complete-auctex)
 (straight-use-package 'auto-package-update)
 (straight-use-package 'autopair)
@@ -83,6 +82,7 @@
 (straight-use-package 'dtrt-indent) ;; A minor mode that guesses the indentation offset originally used for creating source code
 (straight-use-package 'duplicate-thing) ;; duplicate current line
 (straight-use-package 'easy-jekyll)
+(straight-use-package 'ebib)
 (straight-use-package 'eclim)
 (straight-use-package 'ediprolog)
 (straight-use-package 'eldoc) ;; the argument list of the function call you are currently writing
@@ -358,10 +358,10 @@
 ;;     (load-file "/usr/local/lib/ciao/ciao-mode-init.el"))
 
 ;; I should want maven, I think, tbqh
-(add-hook 'java-mode-hook '(lambda() (gradle-mode 1)))
+(add-hook 'java-mode-hook '(lambda () (gradle-mode 1)))
 (add-hook 'java-mode-hook 'eclim-mode)
 
-;; Take a look at what he has here 
+;; Take a look at what he has here
 ;; (load "~/Documents/eliemacs/eliemacs")
 
 ;; Probably package.el related doohickuses
@@ -434,8 +434,8 @@
 
 (if (eq system-type 'darwin)
     (add-hook 'text-mode-hook 'wordsmith-mode)) ;; Because this depends on OSX tooling specifically
-
 ;; (add-hook 'text-mode-hook 'writegood-mode)
+
 (add-hook 'text-mode-hook 'artbollocks-mode)
 (add-hook 'text-mode-hook 'flyspell-mode)
 (add-hook 'tex-mode-hook (function (lambda () (setq ispell-parser 'tex))))
@@ -451,11 +451,13 @@
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 
+;; Can I set these for any lisp mode?
 ;; (add-hook 'scheme-mode-hook                        'flylisp-mode)
 ;; (add-hook 'inferior-scheme-mode-hook               'flylisp-mode)
+
+;; Can I set these globally, always? 
 (add-hook 'scheme-mode-hook                        'multiple-cursors-mode)
 (add-hook 'inferior-scheme-mode-hook               'multiple-cursors-mode)
-
 
 (global-flycheck-mode)
 (global-company-mode)
@@ -793,7 +795,7 @@
 (global-set-key "\C-x4c" 'langtool-correct-buffer)
 
 (defun langtool-autoshow-detail-popup (overlays)
-  ""
+  "OVERLAYS."
   (when (require 'popup nil t)
     ;; Do not interrupt current popup
     (unless (or popup-instances
