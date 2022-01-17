@@ -19,13 +19,15 @@
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
- 
-(straight-pull-recipe-repositories '(org-elpa melpa gnu-elpa-mirror el-get emacsmirror-mirror))
+
+
+(straight-pull-recipe-repositories '(melpa org-elpa gnu-elpa-mirror el-get emacsmirror-mirror))
 
 (add-hook 'find-file-hook (lambda () (ruler-mode 1)))
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
+(straight-use-package 'org-roam)
 (straight-use-package 'ac-math)
 (straight-use-package 'academic-phrases)
 (straight-use-package 'artbollocks-mode)
@@ -151,6 +153,7 @@
 ;; https://github.com/coldnew/coldnew-emacs#hydra
 (straight-use-package 'hydra) ;; tie related commands into a family of short bindings w/a common prefix.
 (straight-use-package 'ibuffer-vc) ;; Let Emacs' ibuffer-mode group files by git project etc., and show file state
+;; Not needed, I use helm.
 ;; (straight-use-package 'ido-vertical-mode) ;; makes ido-mode display vertically
 (straight-use-package 'iedit) ;; Emacs minor mode and allows you to edit one occurrence of some text in a buffer
 (straight-use-package 'j-mode)
@@ -158,6 +161,7 @@
 (straight-use-package 'jump) ;; build functions which contextually jump between files
 (straight-use-package 'langtool)
 (straight-use-package 'lean-mode)
+(straight-use-package 'loadhist)
 (straight-use-package 'magit-filenotify)
 (straight-use-package 'magit-gerrit) ;; gerrit mode for emacs
 (straight-use-package 'magit-popup)
@@ -181,18 +185,16 @@
 (straight-use-package 'org-journal)
 (straight-use-package 'org-ql)
 (straight-use-package 'org-ref)
-(straight-use-package 'org-roam)
 (straight-use-package 'org-roam-bibtex)
-;;(straight-use-package 'org-roam-server)
 (straight-use-package 'org-rtm)
 (straight-use-package 'org-sidebar)
 (straight-use-package 'org-super-agenda)
 (straight-use-package 'org-trello)
 (straight-use-package 'org2web)
 (straight-use-package 'ox-jekyll-md)
-(straight-use-package 'ox-latex)
 (straight-use-package 'ox-pandoc)
 (straight-use-package 'paradox)
+(straight-use-package 'paredit)
 (straight-use-package 'paredit-everywhere)
 (straight-use-package 'paredit-menu)
 (straight-use-package 'parent-mode)
@@ -209,7 +211,6 @@
 (straight-use-package 'scheme-complete)
 (straight-use-package 'semi)
 (straight-use-package 'sh-script) ;; The major mode for editing Unix and GNU/Linux shell script code
-(straight-use-package '(simple-httpd :type git :host github :repo "skeeto/emacs-web-server" :local-repo "simple-httpd"))
 (straight-use-package 'smartscan) ;; Quickly jumps between other symbols found at point in Emacs
 (straight-use-package 'sml-mode)
 (straight-use-package 'sml-modeline)
@@ -238,18 +239,20 @@
 (straight-use-package 'zones)
 (straight-use-package 'zygospore)
 
-(use-package org-roam
-      :ensure t
-      :hook (after-init . org-roam-mode)
-      :custom
-      (org-roam-directory (file-truename "~/.org/"))
-      :bind (:map org-roam-mode-map
-              (("C-c n l" . org-roam)
-               ("C-c n f" . org-roam-find-file)
-               ("C-c n g" . org-roam-graph))
-              :map org-mode-map
-              (("C-c n i" . org-roam-insert))
-              (("C-c n I" . org-roam-insert-immediate))))
+;; TODO change org-roam to use these customizations
+;; (straight-use-package 'org-roam)
+;; (use-package org-roam
+;;       :ensure t
+;;       :hook (after-init . org-roam-mode)
+;;       :custom
+;;       (org-roam-directory (file-truename "~/.org/"))
+;;       :bind (:map org-roam-mode-map
+;;               (("C-c n l" . org-roam)
+;;                ("C-c n f" . org-roam-find-file)
+;;                ("C-c n g" . org-roam-graph))
+;;               :map org-mode-map
+;;               (("C-c n i" . org-roam-insert))
+;;               (("C-c n I" . org-roam-insert-immediate))))
 
 (use-package org-roam-ui
   :straight
@@ -262,12 +265,22 @@
           org-roam-ui-update-on-save t
           org-roam-ui-open-on-start t))
 
+;; Org mode defaults
+(global-set-key (kbd "C-c l") 'org-store-link)
+(global-set-key (kbd "C-c a") 'org-agenda)
+(global-set-key (kbd "C-c c") 'org-capture)
 
-
-(require 'ediprolog)
+(require 'ox-latex)
 (global-set-key [f10] 'ediprolog-dwim)
 
-(add-hook 'after-init-hook 'org-roam-mode)
+(add-hook 'after-init-hook 'org-roam-db-autosync-mode)
+
+(add-to-list 'display-buffer-alist
+               '("\\*org-roam\\*"
+                  (display-buffer-in-direction)
+                  (direction . right)
+                  (window-width . 0.33)
+                  (window-height . fit-window-to-buffer)))
 
 (global-set-key (kbd "M-;") 'comment-dwim-2)
 (global-set-key (kbd "C-z") #'company-try-hard)
@@ -348,6 +361,7 @@
 (add-hook 'java-mode-hook '(lambda() (gradle-mode 1)))
 (add-hook 'java-mode-hook 'eclim-mode)
 
+;; Take a look at what he has here 
 ;; (load "~/Documents/eliemacs/eliemacs")
 
 ;; Probably package.el related doohickuses
@@ -356,7 +370,6 @@
 ;; (unless package-archive-contents
 ;;    (package-refresh-contents))
 
-(require 'racket-xp) ;; Don't know what this is but I think it's not a package
 (add-hook 'racket-mode-hook #'racket-xp-mode)
 
 (global-set-key (kbd "C-x g") 'magit-status)
@@ -380,9 +393,6 @@
 (global-set-key (kbd "C-c h") 'helm-command-prefix)
 (global-unset-key (kbd "C-x c"))
 
-(require 'paredit)
-(require 'calfw)
-(require 'calfw-cal)
 (require 'helm-config)
 
 (global-set-key (kbd "C-x b") 'helm-buffers-list) ;; helm-buffers-list: provides enhanced buffers listing.
@@ -691,7 +701,7 @@
  '(org-export-backends '(ascii html icalendar latex md org))
  '(org-log-done 'time)
  '(org-modules
-   '(ol-bbdb ol-bibtex ol-docview ol-doi ol-eww ol-gnus ol-info ol-irc ol-mhe ol-rmail org-tempo ol-w3m org-mac-iCal org-mac-link ol-wl))
+   '(ol-bbdb ol-bibtex ol-docview ol-doi ol-eww ol-gnus ol-info ol-irc ol-mhe ol-rmail ol-w3m))
  '(org-roam-directory "~/org-roam/" nil nil "Customized with use-package org-roam")
  '(org-src-tab-acts-natively t)
  '(org-support-shift-select t)
@@ -880,21 +890,21 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(diary ((t (:foreground "dark red")))))
-(require 'company-try-hard)
-(require 'comment-dwim-2)
+
 
 (define-key org-mode-map (kbd "M-;") 'org-comment-dwim-2)
 (define-key company-active-map (kbd "C-z") #'company-try-hard)
 (setq org-roam-graph-executable "/usr/local/bin/dot")
 
-(with-eval-after-load 'ox-latex
-   (add-to-list 'org-latex-classes
-                '("report"
-                  "\\documentclass{report}"
-                  ("\\chapter{%s}" . "\\chapter*{%s}")
-                  ("\\section{%s}" . "\\section*{%s}")
-                  ("\\subsection{%s}" . "\\subsection*{%s}")
-                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
+;; Should be forced after ox-latex, but that doesn't seem to be a thing, so this errors on start-up
+;; (with-eval-after-load 'ox-latex
+;;    (add-to-list 'org-latex-classes
+;;                 '("letter"
+;;                   "\\documentclass{report}"
+;;                   ("\\chapter{%s}" . "\\chapter*{%s}")
+;;                   ("\\section{%s}" . "\\section*{%s}")
+;;                   ("\\subsection{%s}" . "\\subsection*{%s}")
+;;                   ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
 
 ;; Org-ref
 ;; Set up bibliography
@@ -903,7 +913,6 @@
 (global-set-key (kbd "<f6>") #'org-ref-helm-insert-cite-link)
 
 ;; Org-roam-bibtex
-(require `org-roam-bibtex)
 (add-hook 'after-init-hook #'org-roam-bibtex-mode)
 (define-key org-roam-bibtex-mode-map (kbd "C-c n a") #'orb-note-actions)
 ;; This one does not seem to be needed unless You use reftex.
@@ -914,6 +923,27 @@
 (require 'org-protocol)
 (require 'org-roam-protocol)
 
+(use-package ob-racket
+  :after org
+  :config
+  (add-hook 'ob-racket-pre-runtime-library-load-hook
+	      #'ob-racket-raco-make-runtime-library)
+  :straight (ob-racket
+	       :type git :host github :repo "togakangaroo/ob-racket"
+	       :files ("*.el" "*.rkt")))
+
+;; default to mononoki
+(set-face-attribute 'default nil
+                    :family "mononoki"
+                    :height 120
+                    :weight 'normal
+                    :width  'normal)
+
+(define-key org-roam-mode-map [mouse-1] #'org-roam-visit-thing)
+
+;; ERROR. CANNOT WORK WITH IT CANNOT WORK WITHOUT IT SIMPLE-HTTPD
+;; (straight-use-package '(simple-httpd :type git :host github :repo "skeeto/emacs-web-server" :local-repo "simple-httpd"))
+;; (straight-use-package 'org-roam-server)
 ;; (require 'org-roam-server)
 ;; (setq org-roam-server-host "127.0.0.1"
 ;;       org-roam-server-port 8080
@@ -925,12 +955,11 @@
 ;;       org-roam-server-network-label-truncate-length 60
 ;;       org-roam-server-network-label-wrap-length 20)
 
-;; default to mononoki
-(set-face-attribute 'default nil
-                    :family "mononoki"
-                    :height 120
-                    :weight 'normal
-                    :width  'normal)
+
+;; (file-dependents (feature-file 'cl))
+
+ ;; '(org-modules
+ ;;   '(ol-bbdb ol-bibtex org-ctags ol-docview ol-doi ol-eww ol-gnus ol-info org-inlinetask ol-irc ol-mhe ol-rmail org-tempo ol-w3m org-checklist org-learn org-mac-iCal org-mac-link org-notify org-registry))
 
 (provide '.emacs)
 ;;; .emacs ends here
