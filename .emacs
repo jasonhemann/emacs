@@ -270,7 +270,7 @@
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key (kbd "C-c c") 'org-capture)
 
-(require 'ox-latex)
+
 (global-set-key [f10] 'ediprolog-dwim)
 
 (add-hook 'after-init-hook 'org-roam-db-autosync-mode)
@@ -893,11 +893,11 @@
  ;; If there is more than one, they won't work right.
  '(diary ((t (:foreground "dark red")))))
 
-
 (define-key org-mode-map (kbd "M-;") 'org-comment-dwim-2)
 (define-key company-active-map (kbd "C-z") #'company-try-hard)
 (setq org-roam-graph-executable "/usr/local/bin/dot")
 
+;; (require 'ox-latex)
 ;; Should be forced after ox-latex, but that doesn't seem to be a thing, so this errors on start-up
 ;; (with-eval-after-load 'ox-latex
 ;;    (add-to-list 'org-latex-classes
