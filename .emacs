@@ -20,6 +20,7 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
+(defvar curr-f-list features)
 
 (straight-pull-recipe-repositories '(melpa org-elpa gnu-elpa-mirror el-get emacsmirror-mirror))
 
@@ -674,7 +675,7 @@
  '(eclim-eclipse-dirs
    '("/Applications/eclipse" "/usr/lib/eclipse" "/usr/local/lib/eclipse" "/usr/share/eclipse" "/Applications/Eclipse.app/Contents/Eclipse/" "/Applications/Eclipse Java.app/Contents/Eclipse/"))
  '(ediprolog-program "scryer-prolog")
- '(flyspell-issue-welcome-flag nil t)
+ '(flyspell-issue-welcome-flag nil)
  '(fringe-mode 2 nil (fringe))
  '(global-display-line-numbers-mode t)
  '(global-flycheck-mode t)
@@ -686,7 +687,7 @@
  '(initial-scratch-message nil)
  '(ispell-highlight-face 'highlight)
  '(ispell-highlight-p t)
- '(ispell-program-name "aspell" t)
+ '(ispell-program-name "aspell")
  '(langtool-autoshow-message-function 'langtool-autoshow-detail-popup)
  '(langtool-default-language "en-US")
  '(langtool-language-tool-jar "~/LanguageTool-3.4/languagetool-commandline.jar")
@@ -699,8 +700,10 @@
  '(org-agenda-include-diary t)
  '(org-agenda-start-with-log-mode 'only)
  '(org-babel-load-languages '((scheme . t)))
+ '(org-catch-invisible-edits 'smart)
  '(org-directory "~/.org")
  '(org-export-backends '(ascii html icalendar latex md org))
+ '(org-list-allow-alphabetical t)
  '(org-log-done 'time)
  '(org-modules
    '(ol-bbdb ol-bibtex ol-docview ol-doi ol-eww ol-gnus ol-info ol-irc ol-mhe ol-rmail ol-w3m))
@@ -842,7 +845,7 @@
 ;; C-h r for the manual, then g (for "goto node").
 ;; M-x table-capture https://www.gnu.org/software/emacs/manual/html_node/emacs/Table-Conversion.html
 ;; M-x list-processes
-;; 
+;; C-s search C-q C-i a literal tab character
 
 ;; Right now, this is busted in the agda-mode repository. 13/12/15
 ;; (when (eq system-type 'darwin)
@@ -915,7 +918,7 @@
 (global-set-key (kbd "<f6>") #'org-ref-helm-insert-cite-link)
 
 ;; Org-roam-bibtex
-(add-hook 'after-init-hook #'org-roam-bibtex-mode)
+(org-roam-bibtex-mode)
 (define-key org-roam-bibtex-mode-map (kbd "C-c n a") #'orb-note-actions)
 ;; This one does not seem to be needed unless You use reftex.
 ;; (setq reftex-default-bibliography '("~/iCloudDrive/bibliography/myBibliography.bib"))
@@ -924,6 +927,16 @@
 
 (require 'org-protocol)
 (require 'org-roam-protocol)
+
+; Draw tabs with the same color as trailing whitespace
+(add-hook 'font-lock-mode-hook
+  '(lambda ()
+     (font-lock-add-keywords
+       nil
+        '(("\t" 0 'trailing-whitespace prepend))
+     )
+   )
+)
 
 (use-package ob-racket
   :after org
