@@ -948,15 +948,15 @@
 (require 'org-protocol)
 (require 'org-roam-protocol)
 
-; Draw tabs with the same color as trailing whitespace
-(add-hook 'font-lock-mode-hook
-  '(lambda ()
-     (font-lock-add-keywords
-       nil
-        '(("\t" 0 'trailing-whitespace prepend))
-     )
-   )
-)
+;; Draw tabs with the same color as trailing whitespace
+;; (add-hook 'font-lock-mode-hook
+;;   '(lambda ()
+;;      (font-lock-add-keywords
+;;        nil
+;;         '(("\t" 0 'trailing-whitespace prepend))
+;;      )
+;;    )
+;; )
 
 (use-package ob-racket
   :after org
