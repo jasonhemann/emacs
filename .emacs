@@ -157,6 +157,7 @@
 ;; Not needed, I use helm.
 ;; (straight-use-package 'ido-vertical-mode) ;; makes ido-mode display vertically
 (straight-use-package 'iedit) ;; Emacs minor mode and allows you to edit one occurrence of some text in a buffer
+(straight-use-package 'info+) ;; Package that enhances some info menus
 (straight-use-package 'j-mode)
 (straight-use-package 'jeison)
 (straight-use-package 'jump) ;; build functions which contextually jump between files
@@ -230,6 +231,7 @@
 (straight-use-package 'volatile-highlights) ;; Minor mode for visual feedback on some operations.
 (straight-use-package 'w3m)
 (straight-use-package 'wanderlust)
+(straight-use-package 'which-key)
 (straight-use-package 'wordnut)
 (straight-use-package 'wordsmith-mode)
 (straight-use-package 'wrap-region) ;; Emacs minor mode to wrap region with tag or punctuations
@@ -240,24 +242,31 @@
 (straight-use-package 'zones)
 (straight-use-package 'zygospore)
 
-;; TODO change org-roam to use these customizations
-;; (straight-use-package 'org-roam)
-;; (use-package org-roam
-;;       :ensure t
-;;       :hook (after-init . org-roam-mode)
-;;       :custom
-;;       (org-roam-directory (file-truename "~/.org/"))
-;;       :bind (:map org-roam-mode-map
-;;               (("C-c n l" . org-roam)
-;;                ("C-c n f" . org-roam-find-file)
-;;                ("C-c n g" . org-roam-graph))
-;;               :map org-mode-map
-;;               (("C-c n i" . org-roam-insert))
-;;               (("C-c n I" . org-roam-insert-immediate))))
+
+
+
+(use-package all-the-icons-dired
+  :hook (dired-mode . all-the-icons-dired-mode)
+  :config (setq all-the-icons-dired-monochrome nil))
+
+(use-package dired-collapse
+  :hook (dired-mode . dired-collapse-mode))
+
+
+(use-package org-roam
+      :hook (after-init . org-roam-mode)
+      :custom
+      (org-roam-directory (file-truename "~/.org/"))
+      :bind (:map org-roam-mode-map
+              (("C-c n l" . org-roam)
+               ("C-c n f" . org-roam-find-file)
+               ("C-c n g" . org-roam-graph))
+              :map org-mode-map
+              (("C-c n i" . org-roam-insert))
+              (("C-c n I" . org-roam-insert-immediate))))
 
 (use-package org-roam-ui
-  :straight
-    (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
+    :straight (org-roam-ui :host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
     :after org-roam
     :hook (after-init . org-roam-ui-mode)
     :config
@@ -285,6 +294,7 @@
 
 (global-set-key (kbd "M-;") 'comment-dwim-2)
 (global-set-key (kbd "C-z") #'company-try-hard)
+
 
 ;; A minor mode for Emacs that deals with parens pairs and tries to be smart about it.
 ;; I think paredit probably does everything I need
@@ -683,7 +693,7 @@
  '(helm-move-to-line-cycle-in-source t)
  '(helm-scroll-amount 8)
  '(helm-split-window-inside-p t)
- '(inhibit-startup-screen t)
+ '(inhib-startup-screen t)
  '(initial-scratch-message nil)
  '(ispell-highlight-face 'highlight)
  '(ispell-highlight-p t)
@@ -880,6 +890,16 @@
 ;; https://www.reddit.com/r/emacs/comments/47aq53/best_way_to_set_up_package_dependencies_in_initel/
 ;; to simplify the .emacs
 
+;; From https://github.com/Vidianos-Giannitsis/Dotfiles/tree/master/emacs/.emacs.d
+;; I believe, how to do things in GUI and non-GUI mode 
+;; (if (daemonp)
+;;     (add-hook 'after-make-frame-functions
+;; 		(lambda (frame)
+;; 		  (setq doom-modeline-icon t)
+;; 		  (with-selected-frame frame
+;; 		    (set-font-faces))))
+;;   (set-font-faces))
+
 ;; Spacing with parens in various non-lisp modes that you use w/paredit mode.
 
 ;; Turn off C-z behavior that hides window
@@ -942,7 +962,7 @@
   :after org
   :config
   (add-hook 'ob-racket-pre-runtime-library-load-hook
-	      #'ob-racket-raco-make-runtime-library)
+	    #'ob-racket-raco-make-runtime-library)
   :straight (ob-racket
 	       :type git :host github :repo "togakangaroo/ob-racket"
 	       :files ("*.el" "*.rkt")))
@@ -970,11 +990,8 @@
 ;;       org-roam-server-network-label-truncate-length 60
 ;;       org-roam-server-network-label-wrap-length 20)
 
-
 ;; (file-dependents (feature-file 'cl))
 
- ;; '(org-modules
- ;;   '(ol-bbdb ol-bibtex org-ctags ol-docview ol-doi ol-eww ol-gnus ol-info org-inlinetask ol-irc ol-mhe ol-rmail org-tempo ol-w3m org-checklist org-learn org-mac-iCal org-mac-link org-notify org-registry))
 
 (provide '.emacs)
 ;;; .emacs ends here
