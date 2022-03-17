@@ -35,6 +35,7 @@
 (straight-use-package 'agda2-mode)
 (straight-use-package 'anzu) ;; displays current match and total matches information
 (straight-use-package 'apel)
+(straight-use-package 'auctex) ;; Not sure if I need w/dependency but trying just in case
 (straight-use-package 'auctex-latexmk)
 (straight-use-package 'auto-compile) ;; Automatically compile Emacs Lisp libraries
 ;; Auto complete is for most things strictly worse than company-mode
@@ -76,6 +77,7 @@
 (straight-use-package 'dash) ;; A modern list library for Emacs
 (straight-use-package 'dash-functional)
 (straight-use-package 'dictionary)
+(straight-use-package 'dired-collapse)
 (straight-use-package 'dired+)
 (straight-use-package 'discover) ;; discover more of Emacs
 (straight-use-package 'discover-my-major) ;; Discover key bindings and their meaning for the current Emacs major mode
@@ -445,17 +447,6 @@
 
 (if (eq system-type 'darwin)
     (add-hook 'text-mode-hook 'wordsmith-mode)) ;; Because this depends on OSX tooling specifically
-;; (add-hook 'text-mode-hook 'writegood-mode)
-
-(add-hook 'text-mode-hook 'artbollocks-mode)
-(add-hook 'text-mode-hook 'flyspell-mode)
-(add-hook 'tex-mode-hook (function (lambda () (setq ispell-parser 'tex))))
-(add-hook 'tex-mode-hook 'auxtex-mode)
-(add-hook 'tex-mode-hook 'cdlatex-mode)
-(add-hook 'tex-mode-hook 'reftex-mode)
-
-(add-hook 'tex-mode-hook (lambda () (define-key tex-mode-map (kbd "C-c C-k") 'compile)))
-(add-hook 'tex-mode-hook (lambda () (define-key tex-mode-map (kbd "C-c |") 'align-current)))
 
 (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
 (global-set-key (kbd "C->") 'mc/mark-next-like-this)
@@ -518,7 +509,7 @@
 (global-set-key "\C-x4c" 'langtool-correct-buffer)
 
 (defun langtool-autoshow-detail-popup (overlays)
-  ""
+  ". OVERLAYS."
   (when (require 'popup nil t)
     ;; Do not interrupt current popup
     (unless (or popup-instances
@@ -560,6 +551,18 @@
 
 (add-hook 'latex-mode-hook 'turn-on-cdlatex)  ; with Emacs latex mode
 (add-hook 'latex-mode-hook 'turn-on-reftex)   ; with Emacs latex mode
+(add-hook 'text-mode-hook 'artbollocks-mode)
+(add-hook 'text-mode-hook 'writegood-mode)
+(add-hook 'text-mode-hook 'flyspell-mode)
+(add-hook 'TeX-mode-hook (function (lambda () (setq ispell-parser 'tex))))
+;; (add-hook 'tex-mode-hook 'auxtex-mode)
+
+(add-hook 'tex-mode-hook (lambda () (define-key tex-mode-map (kbd "C-c C-k") 'compile)))
+(add-hook 'tex-mode-hook (lambda () (define-key tex-mode-map (kbd "C-c |") 'align-current)))
+
+
+(add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+(add-hook 'LaTeX-mode-hook 'LaTeX-preview-setup)
 
 (add-hook 'TeX-mode-hook 'turn-on-reftex)   ; with AUCTeX LaTeX mode
 (add-hook 'TeX-mode-hook 'turn-on-cdlatex)  ; with AUCTeX LaTeX mode
@@ -659,10 +662,10 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(TeX-auto-save t t)
+ '(TeX-auto-save t)
  '(TeX-auto-untabify t)
  '(TeX-engine 'xetex)
- '(TeX-parse-self t t)
+ '(TeX-parse-self t)
  '(ac-modes
    '(emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode haskell-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode racket-mode Racket-mode racket-repl-mode idris-mode idris-repl-mode))
  '(ad-redefinition-action 'accept)
@@ -687,12 +690,14 @@
  '(ediprolog-program "scryer-prolog")
  '(flyspell-issue-welcome-flag nil)
  '(fringe-mode 2 nil (fringe))
+ '(global-auto-revert-non-file-buffers t)
  '(global-display-line-numbers-mode t)
  '(global-flycheck-mode t)
  '(helm-ff-search-library-in-sexp t)
  '(helm-move-to-line-cycle-in-source t)
  '(helm-scroll-amount 8)
  '(helm-split-window-inside-p t)
+ '(history-length 50)
  '(inhib-startup-screen t)
  '(initial-scratch-message nil)
  '(ispell-highlight-face 'highlight)
@@ -748,6 +753,7 @@
 	       (setq compile-command
 		     (concat "make -C " tt-root-directory)))
 	     (setq default-directory tt-root-directory)))))
+ '(save-place-mode t)
  '(savehist-mode t)
  '(scheme-program-name "scheme")
  '(scroll-bar-mode 'right)
@@ -856,6 +862,7 @@
 ;; M-x table-capture https://www.gnu.org/software/emacs/manual/html_node/emacs/Table-Conversion.html
 ;; M-x list-processes
 ;; C-s search C-q C-i a literal tab character
+;; custom-file is the variable to set location of customizations 
 
 ;; Right now, this is busted in the agda-mode repository. 13/12/15
 ;; (when (eq system-type 'darwin)
