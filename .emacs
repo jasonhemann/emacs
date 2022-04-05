@@ -865,7 +865,7 @@
 ;; C-s search C-q C-i a literal tab character
 ;; custom-file is the variable to set location of customizations 
 ;; M-x custom-enabled-themes to describe the current theme(s) loaded 
-
+;; M-x describe-theme gives the deets on whatever theme is running 
 
 ;; Right now, this is busted in the agda-mode repository. 13/12/15
 ;; (when (eq system-type 'darwin)
