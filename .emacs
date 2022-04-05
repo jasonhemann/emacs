@@ -441,6 +441,7 @@
 (global-set-key (kbd "C-c C-x )") (lambda () (interactive) (insert "(－‸ლ)")))
 (global-set-key (kbd "C-c C-x x") (lambda () (interactive) (insert "!(•̀ᴗ•́)و ̑̑")))
 
+(defun prime-it () (interactive (insert "′")))
 
 ;; ebib mode for latex
 (global-set-key "\C-ce" 'ebib)
@@ -863,6 +864,8 @@
 ;; M-x list-processes
 ;; C-s search C-q C-i a literal tab character
 ;; custom-file is the variable to set location of customizations 
+;; M-x custom-enabled-themes to describe the current theme(s) loaded 
+
 
 ;; Right now, this is busted in the agda-mode repository. 13/12/15
 ;; (when (eq system-type 'darwin)
