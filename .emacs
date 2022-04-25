@@ -1,4 +1,4 @@
-;;; Package --- Summary
+;;; Package --- Summary -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -7,6 +7,10 @@
 ;;; packages from homebrew, and a number of other downloaded files and hard-coded directories.
 
 ;;; Code:
+
+;; Need to be set before we load straight.el, to correct a flycheck incompatibility.
+(setq straight-fix-flycheck t)
+
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -24,15 +28,42 @@
 
 (straight-pull-recipe-repositories '(melpa org-elpa gnu-elpa-mirror el-get emacsmirror-mirror))
 
-(add-hook 'find-file-hook (lambda () (ruler-mode 1)))
+;; JBH 4/6/22 disabling because it was seeming slow
+;; (add-hook 'find-file-hook (lambda () (ruler-mode 1)))
 
 (defalias 'yes-or-no-p 'y-or-n-p)
-(straight-use-package 'org-roam)
+(straight-use-package 'use-package)
+(straight-use-package 'org)
+(straight-use-package '(agda2-mode :includes (eri annotation)))
+(straight-use-package '(simple-httpd :type git :host github :repo "skeeto/emacs-web-server" :includes web-server))
+
+(use-package org-roam
+      :demand t
+      :config (org-roam-db-autosync-mode)
+      :straight t
+      :custom (org-roam-directory (file-truename "~/.org/"))
+      :bind (:map org-roam-mode-map
+              (("C-c n l" . org-roam)
+               ("C-c n f" . org-roam-find-file)
+               ("C-c n g" . org-roam-graph))
+              :map org-mode-map
+              (("C-c n i" . org-roam-insert))
+              (("C-c n I" . org-roam-insert-immediate))))
+
+(use-package org-roam-ui
+    :straight (org-roam-ui :host github :repo "org-roam/org-roam-ui")
+    :after org-roam
+    :hook (after-init . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
+
 (straight-use-package 'ac-math)
 (straight-use-package 'academic-phrases)
 (straight-use-package 'artbollocks-mode)
 (straight-use-package 'ace-jump-mode)
-(straight-use-package 'agda2-mode)
 (straight-use-package 'anzu) ;; displays current match and total matches information
 (straight-use-package 'apel)
 (straight-use-package 'auctex) ;; Not sure if I need w/dependency but trying just in case
@@ -41,7 +72,7 @@
 ;; Auto complete is for most things strictly worse than company-mode
 ;; (straight-use-package 'auto-complete)
 ;; (straight-use-package 'auto-complete-auctex)
-(straight-use-package 'auto-package-update)
+;; (straight-use-package 'auto-package-update) ;; straight has this feature already
 (straight-use-package 'autopair)
 (straight-use-package 'bbdb) ;; Emacs address book
 (straight-use-package 'biblio)
@@ -71,6 +102,7 @@
 (straight-use-package 'company-bibtex)
 (straight-use-package 'company-try-hard)
 (straight-use-package 'company-fuzzy)
+(straight-use-package 'consult) ;; the counsel equivalent for selectrum
 (straight-use-package 'coq-commenter)
 (straight-use-package 'crux) ;; collection of emacs extensions
 (straight-use-package 'cyberpunk-theme)
@@ -97,12 +129,13 @@
 (straight-use-package 'expand-region) ;; Increase selected region by semantic units
 (straight-use-package 'f) ;; Modern API for working with files and directories in Emacs
 (straight-use-package 'flim)
+(straight-use-package 'flycheck)
 (straight-use-package '(flycheck-textlint :type git :host github :repo "kisaragi-hiu/flycheck-textlint" :fork nil))
-;; Straight can't find the package
-;; (straight-use-package 'flylisp-mode) ;; Add highlighting to mismatched parentheses, so you can see the mistake
-(straight-use-package 'flymake-easy)
-(straight-use-package 'flymake-racket)
-(straight-use-package 'flymd)
+(straight-use-package 'flylisp) ;; Add highlighting to mismatched parentheses, so you can see the mistake
+;; No need to use these, as flycheck is better
+;; (straight-use-package 'flymake-easy)
+;; (straight-use-package 'flymake-racket)
+;; (straight-use-package 'flymd) No longer works w/FF >= 68
 (straight-use-package 'flyspell-lazy)
 (straight-use-package '(flyspell-popup :type git :host github :repo "xuchunyang/flyspell-popup" :fork nil))
 (straight-use-package 'fullframe) ;; Advice commands to execute fullscreen, restoring the window setup when exiting.
@@ -116,41 +149,40 @@
 (straight-use-package 'green-phosphor-theme)
 (straight-use-package 'hc-zenburn-theme)
 
+;; These helm commands I commented because they seemed annoyeing when I used them. 
 ;; helm-browse-project: handles project files and buffers; defaults to current directory; works with helm-find-files; recommended with helm-ls-git, helm-ls-hg and helm-ls-svn for a better handling of version control files. Each time a project under version control is visited it is added to helm-browse-project-history and can be visted with helm-projects-history.
 ;; helm-dabbrev: enhanced dabbrev implementation with helm completion; does not use emacs code.
 ;; helm-imenu and helm-imenu-in-all-buffers: provide imenus for current or all buffers.
 ;; helm-etags-select: enhanced etags with helm-completion; usable everywhere with helm-find-files.
-
 ;; Grep: launch from any helm file commands; supports back-ends grep, ack-grep, git-grep, ag and custom implementation of pt.
-
 ;; helm-gid: Helm interface for gid from id-utils.
-
 ;; helm-show-kill-ring: A helm browser for kill ring.
 ;; helm-all-mark-rings: A helm browser for mark ring; retrieves last positions in buffers.
 ;; helm-filtered-bookmarks: enhanced browser for bookmarks.
 ;; helm-list-elisp-packages: enhanced browser for elisp package management.
 
-(straight-use-package 'helm)
-(straight-use-package 'helm-addressbook)
-(straight-use-package 'helm-bibtex)
-(straight-use-package 'helm-chrome)
-(straight-use-package 'helm-company)
-(straight-use-package 'helm-descbinds)
-(straight-use-package 'helm-dictionary)
-(straight-use-package 'helm-dirset)
-(straight-use-package 'helm-emms)
-(straight-use-package 'helm-eww)
-(straight-use-package 'helm-firefox)
-(straight-use-package 'helm-fuzzy)
-(straight-use-package 'helm-google)
-(straight-use-package 'helm-idris)
-(straight-use-package 'helm-lean)
-(straight-use-package 'helm-ls-git)
-(straight-use-package 'helm-mu)
-(straight-use-package 'helm-shell)
-(straight-use-package 'helm-system-packages)
-(straight-use-package 'helm-tramp)
-(straight-use-package 'helm-wordnet)
+;; These helm commands I commented becauseI wanted to try without helm, and try selectrum instead.
+;; (straight-use-package 'helm)
+;; (straight-use-package 'helm-addressbook)
+;; (straight-use-package 'helm-bibtex)
+;; (straight-use-package 'helm-chrome)
+;; (straight-use-package 'helm-company)
+;; (straight-use-package 'helm-descbinds)
+;; (straight-use-package 'helm-dictionary)
+;; (straight-use-package 'helm-dirset)
+;; (straight-use-package 'helm-emms)
+;; (straight-use-package 'helm-eww)
+;; (straight-use-package 'helm-firefox)
+;; (straight-use-package 'helm-fuzzy)
+;; (straight-use-package 'helm-google)
+;; (straight-use-package 'helm-idris)
+;; (straight-use-package 'helm-lean)
+;; (straight-use-package 'helm-ls-git)
+;; (straight-use-package 'helm-mu)
+;; (straight-use-package 'helm-shell)
+;; (straight-use-package 'helm-system-packages)
+;; (straight-use-package 'helm-tramp)
+;; (straight-use-package 'helm-wordnet)
 (straight-use-package 'helpful)
 (straight-use-package 'ht)
 ;; https://github.com/coldnew/coldnew-emacs#hydra
@@ -159,6 +191,7 @@
 ;; Not needed, I use helm.
 ;; (straight-use-package 'ido-vertical-mode) ;; makes ido-mode display vertically
 (straight-use-package 'iedit) ;; Emacs minor mode and allows you to edit one occurrence of some text in a buffer
+(straight-use-package 'impatient-mode) ;; replacement for flymd 
 (straight-use-package 'info+) ;; Package that enhances some info menus
 (straight-use-package 'j-mode)
 (straight-use-package 'jeison)
@@ -213,6 +246,8 @@
 (straight-use-package 's) ;; The long lost Emacs string manipulation library.
 (straight-use-package 'savehist)
 (straight-use-package 'scheme-complete)
+(straight-use-package 'selectrum)
+(straight-use-package 'selectrum-prescient)
 (straight-use-package 'semi)
 (straight-use-package 'sh-script) ;; The major mode for editing Unix and GNU/Linux shell script code
 (straight-use-package 'smartscan) ;; Quickly jumps between other symbols found at point in Emacs
@@ -244,38 +279,21 @@
 (straight-use-package 'zones)
 (straight-use-package 'zygospore)
 
+;; to make sorting and filtering more intelligent
+(selectrum-prescient-mode +1)
 
+;; to save your command history on disk, so the sorting gets more intelligent over time
+(prescient-persist-mode +1)
 
+(straight-use-package 'all-the-icons-dired)
 
-(use-package all-the-icons-dired
-  :hook (dired-mode . all-the-icons-dired-mode)
-  :config (setq all-the-icons-dired-monochrome nil))
+;; (use-package all-the-icons-dired
+;;   :hook (dired-mode )
+;;   :config )
 
 (use-package dired-collapse
-  :hook (dired-mode . dired-collapse-mode))
+  :hook (dired-mode dired-collapse-mode))
 
-
-(use-package org-roam
-      :hook (after-init . org-roam-mode)
-      :custom
-      (org-roam-directory (file-truename "~/.org/"))
-      :bind (:map org-roam-mode-map
-              (("C-c n l" . org-roam)
-               ("C-c n f" . org-roam-find-file)
-               ("C-c n g" . org-roam-graph))
-              :map org-mode-map
-              (("C-c n i" . org-roam-insert))
-              (("C-c n I" . org-roam-insert-immediate))))
-
-(use-package org-roam-ui
-    :straight (org-roam-ui :host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
-    :after org-roam
-    :hook (after-init . org-roam-ui-mode)
-    :config
-    (setq org-roam-ui-sync-theme t
-          org-roam-ui-follow t
-          org-roam-ui-update-on-save t
-          org-roam-ui-open-on-start t))
 
 ;; Org mode defaults
 (global-set-key (kbd "C-c l") 'org-store-link)
@@ -284,8 +302,10 @@
 
 
 (global-set-key [f10] 'ediprolog-dwim)
+; (setq all-the-icons-dired-monochrome nil)
+(add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
 
-(add-hook 'after-init-hook 'org-roam-db-autosync-mode)
+(org-roam-db-autosync-mode)
 
 (add-to-list 'display-buffer-alist
                '("\\*org-roam\\*"
@@ -297,6 +317,11 @@
 (global-set-key (kbd "M-;") 'comment-dwim-2)
 (global-set-key (kbd "C-z") #'company-try-hard)
 
+;; UTF-8 as default encoding
+(set-language-environment "utf-8")
+(prefer-coding-system 'utf-8)
+(setq coding-system-for-read 'utf-8)
+(setq coding-system-for-write 'utf-8)
 
 ;; A minor mode for Emacs that deals with parens pairs and tries to be smart about it.
 ;; I think paredit probably does everything I need
@@ -304,63 +329,65 @@
 
 ;; (straight-use-package '(eldoro "pjones/eldoro")
 
+
+;; Disabling because I don't have mail handling in emacs right now 
 ;; Wanderlust doesn't seem to work w/Google 2FA.
-(autoload 'wl "wl" "Wanderlust" t)
-(autoload 'wl-other-frame "wl" "Wanderlust on new frame." t)
-(autoload 'wl-draft "wl-draft" "Write draft with Wanderlust." t)
+;; (autoload 'wl "wl" "Wanderlust" t)
+;; (autoload 'wl-other-frame "wl" "Wanderlust on new frame." t)
+;; (autoload 'wl-draft "wl-draft" "Write draft with Wanderlust." t)
 
-;; IMAP
-(setq elmo-imap4-default-server "imap.gmail.com")
-(setq elmo-imap4-default-user "jason.hemann@gmail.com")
-(setq elmo-imap4-default-authenticate-type 'clear)
-(setq elmo-imap4-default-port '993)
-(setq elmo-imap4-default-stream-type 'ssl)
+;; ;; IMAP
+;; (setq elmo-imap4-default-server "imap.gmail.com")
+;; (setq elmo-imap4-default-user "jason.hemann@gmail.com")
+;; (setq elmo-imap4-default-authenticate-type 'clear)
+;; (setq elmo-imap4-default-port '993)
+;; (setq elmo-imap4-default-stream-type 'ssl)
 
-(setq elmo-imap4-use-modified-utf7 t)
+;; (setq elmo-imap4-use-modified-utf7 t)
 
-;; SMTP
-(setq wl-smtp-connection-type 'starttls)
-(setq wl-smtp-posting-port 587)
-(setq wl-smtp-authenticate-type "plain")
-(setq wl-smtp-posting-user "jason.hemann")
-(setq wl-smtp-posting-server "smtp.gmail.com")
-(setq wl-local-domain "gmail.com")
-(setq wl-message-id-domain "smtp.gmail.com")
+;; ;; SMTP
+;; (setq wl-smtp-connection-type 'starttls)
+;; (setq wl-smtp-posting-port 587)
+;; (setq wl-smtp-authenticate-type "plain")
+;; (setq wl-smtp-posting-user "jason.hemann")
+;; (setq wl-smtp-posting-server "smtp.gmail.com")
+;; (setq wl-local-domain "gmail.com")
+;; (setq wl-message-id-domain "smtp.gmail.com")
 
-(setq wl-default-folder "%inbox")
-(setq wl-default-spec "%")
-(setq wl-draft-folder "%[Gmail]/Drafts") ; Gmail IMAP
-(setq wl-trash-folder "%[Gmail]/Trash")
-(setq mail-user-agent 'wl-user-agent)
-(setq wl-folder-check-async t)
+;; (setq wl-default-folder "%inbox")
+;; (setq wl-default-spec "%")
+;; (setq wl-draft-folder "%[Gmail]/Drafts") ; Gmail IMAP
+;; (setq wl-trash-folder "%[Gmail]/Trash")
+;; (setq mail-user-agent 'wl-user-agent)
+;; (setq wl-folder-check-async t)
 
-(setq wl-from "Jason Hemann <jason.hemann@gmail.com>"
-      ;; All system folders (draft, trash, spam, etc) are placed in the
-      ;; [Gmail]-folder, except inbox. "%" means it's an IMAP-folder
-      wl-default-folder "%inbox"
-      wl-draft-folder   "%[Gmail]/Drafts"
-      wl-trash-folder   "%[Gmail]/Trash"
-      ;; The below is not necessary when you send mail through Gmail's SMTP server,
-      ;; see https://support.google.com/mail/answer/78892?hl=en&rd=1
-      ;; wl-fcc            "%[Gmail]/Sent"
+;; (setq wl-from "Jason Hemann <jason.hemann@gmail.com>"
+;;       ;; All system folders (draft, trash, spam, etc) are placed in the
+;;       ;; [Gmail]-folder, except inbox. "%" means it's an IMAP-folder
+;;       wl-default-folder "%inbox"
+;;       wl-draft-folder   "%[Gmail]/Drafts"
+;;       wl-trash-folder   "%[Gmail]/Trash"
+;;       ;; The below is not necessary when you send mail through Gmail's SMTP server,
+;;       ;; see https://support.google.com/mail/answer/78892?hl=en&rd=1
+;;       ;; wl-fcc            "%[Gmail]/Sent"
 
-      ;; Mark sent messages as read (sent messages get sent back to you and
-      ;; placed in the folder specified by wl-fcc)
-      wl-fcc-force-as-read t
+;;       ;; Mark sent messages as read (sent messages get sent back to you and
+;;       ;; placed in the folder specified by wl-fcc)
+;;       wl-fcc-force-as-read t
 
-      ;; For auto-completing foldernames
-      wl-default-spec "%")
+;;       ;; For auto-completing foldernames
+;;       wl-default-spec "%")
 
-(autoload 'wl-user-agent-compose "wl-draft" nil t)
-(if (boundp 'mail-user-agent)
-    (setq mail-user-agent 'wl-user-agent))
-(if (fboundp 'define-mail-user-agent)
-    (define-mail-user-agent
-      'wl-user-agent
-      'wl-user-agent-compose
-      'wl-draft-send
-      'wl-draft-kill
-      'mail-send-hook))
+;; (autoload 'wl-user-agent-compose "wl-draft" nil t)
+;; (if (boundp 'mail-user-agent)
+;;     (setq mail-user-agent 'wl-user-agent))
+;; (if (fboundp 'define-mail-user-agent)
+;;     (define-mail-user-agent
+;;       'wl-user-agent
+;;       'wl-user-agent-compose
+;;       'wl-draft-send
+;;       'wl-draft-kill
+;;       'mail-send-hook))
 
 (if (file-exists-p "/Users/jhemann/Documents/acl2/scripts-master/.lisp.el")
     (load-file "/Users/jhemann/Documents/acl2/scripts-master/.lisp.el"))
@@ -394,34 +421,35 @@
 
 (global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows)
 
+(require 'straight-x) ;; Adds the straight-x commands to clean up straight install
+
 ;; (ac-mode 1)
 ;; (require 'auto-complete-config)
 
-(helm-mode 1)
-
+;; (helm-mode 1)
 
 ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
-;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
+
 ;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
-(global-set-key (kbd "C-c h") 'helm-command-prefix)
-(global-unset-key (kbd "C-x c"))
+;; (global-set-key (kbd "C-c h") 'helm-command-prefix)
+;; (global-unset-key (kbd "C-x c"))
 
-(require 'helm-config)
+;; (require 'helm-config)
 
-(global-set-key (kbd "C-x b") 'helm-buffers-list) ;; helm-buffers-list: provides enhanced buffers listing.
-(global-set-key (kbd "C-h a") 'helm-apropos) ;; enhanced apropos for functions and variables that C-h commands provide.
-(global-set-key (kbd "C-c h o") 'helm-occur) ;; helm-occur: enhanced occur for one or more buffers; launch from helm-buffers-list or current-buffer.
-(global-set-key (kbd "M-x") 'helm-M-x)
-(global-set-key (kbd "C-x C-f") 'helm-find-files) ;; helm-find-files: one command that handles all the files related commands
-(global-set-key (kbd "M-y") 'helm-show-kill-ring)
-(global-set-key (kbd "C-x r b") 'helm-filtered-bookmarks)
+;; (global-set-key (kbd "C-x b") 'helm-buffers-list) ;; helm-buffers-list: provides enhanced buffers listing.
+;; (global-set-key (kbd "C-h a") 'helm-apropos) ;; enhanced apropos for functions and variables that C-h commands provide.
+;; (global-set-key (kbd "C-c h o") 'helm-occur) ;; helm-occur: enhanced occur for one or more buffers; launch from helm-buffers-list or current-buffer.
+;; (global-set-key (kbd "M-x") 'helm-M-x)
+;; (global-set-key (kbd "C-x C-f") 'helm-find-files) ;; helm-find-files: one command that handles all the files related commands
+;; (global-set-key (kbd "M-y") 'helm-show-kill-ring)
+;; (global-set-key (kbd "C-x r b") 'helm-filtered-bookmarks)
 
-(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
-(define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
-(define-key helm-map (kbd "C-z") 'helm-select-action) ; list actions using C-z
+;; (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
+;; (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
+;; (define-key helm-map (kbd "C-z") 'helm-select-action) ; list actions using C-z
 
-(when (executable-find "curl")
-  (setq helm-google-suggest-use-curl-p t))
+;; (when (executable-find "curl")
+;;   (setq helm-google-suggest-use-curl-p t))
 
 (add-hook 'racket-mode-hook (lambda () (define-key racket-mode-map (kbd "C-c r") 'racket-run)))
 
@@ -648,6 +676,9 @@
 (when (memq window-system '(mac ns))
   (exec-path-from-shell-initialize))
 
+;; So that I can find scryer-prolog
+(add-to-list 'exec-path (expand-file-name (substitute-in-file-name "$HOME/.cargo/bin")))
+
 ;; (setq window-themes-list '(wheatgrass manoj-dark cyberpunk tango-dark deeper-blue green-phosphor gotham solarized))
 
 (mapc (lambda (pr) (put (car pr) 'racket-indent-function (cdr pr)))
@@ -658,15 +689,23 @@
         (run . 2)
 	(letrec . 0)))
 
+;; From https://stackoverflow.com/questions/36183071/how-can-i-preview-markdown-in-emacs-in-real-time/36189456
+;; For use with impatient-mode
+(defun markdown-html (buffer)
+  "BUFFER that we should use w/impatient mode to render md in weblike-form."
+  (princ (with-current-buffer buffer
+    (format "<!DOCTYPE html><html><title>Impatient Markdown</title><xmp theme=\"united\" style=\"display:none;\"> %s  </xmp><script src=\"http://strapdownjs.com/v/0.2/strapdown.js\"></script></html>" (buffer-substring-no-properties (point-min) (point-max))))
+  (current-buffer)))
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(TeX-auto-save t)
+ '(TeX-auto-save t t)
  '(TeX-auto-untabify t)
  '(TeX-engine 'xetex)
- '(TeX-parse-self t)
+ '(TeX-parse-self t t)
  '(ac-modes
    '(emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode haskell-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode racket-mode Racket-mode racket-repl-mode idris-mode idris-repl-mode))
  '(ad-redefinition-action 'accept)
@@ -689,15 +728,13 @@
  '(eclim-eclipse-dirs
    '("/Applications/eclipse" "/usr/lib/eclipse" "/usr/local/lib/eclipse" "/usr/share/eclipse" "/Applications/Eclipse.app/Contents/Eclipse/" "/Applications/Eclipse Java.app/Contents/Eclipse/"))
  '(ediprolog-program "scryer-prolog")
+ '(find-file-visit-truename t)
+ '(flyspell-issue-message-flag nil)
  '(flyspell-issue-welcome-flag nil)
  '(fringe-mode 2 nil (fringe))
  '(global-auto-revert-non-file-buffers t)
  '(global-display-line-numbers-mode t)
  '(global-flycheck-mode t)
- '(helm-ff-search-library-in-sexp t)
- '(helm-move-to-line-cycle-in-source t)
- '(helm-scroll-amount 8)
- '(helm-split-window-inside-p t)
  '(history-length 50)
  '(inhib-startup-screen t)
  '(initial-scratch-message nil)
@@ -723,14 +760,13 @@
  '(org-log-done 'time)
  '(org-modules
    '(ol-bbdb ol-bibtex ol-docview ol-doi ol-eww ol-gnus ol-info ol-irc ol-mhe ol-rmail ol-w3m))
- '(org-roam-directory "~/org-roam/" nil nil "Customized with use-package org-roam")
  '(org-src-tab-acts-natively t)
  '(org-support-shift-select t)
  '(org-time-stamp-custom-formats '("<%m/%d/%y %a>" . "<%a %_B %_d, %H:%M>"))
  '(org-trello-current-prefix-keybinding "C-c o")
  '(org-use-speed-commands t)
  '(package-selected-packages
-   '(flycheck-gradle flymake-gradle gradle-mode company-emacs-eclim ac-emacs-eclim eclim prescient bind-key font-utils fontawesome flyspell-correct-popup flyspell-popup flycheck writegood-mode ediprolog ebib el-get el-init el-init-viewer el-mock el-patch el2org pdf-tools latex-unicode-math-mode htmlize auctex artbollocks-mode www-synonyms x-dict cyberpunk-theme langtool racket-mode flymake-racket wordsmith-mode tabbar dr-racket-like-unicode biblio org-doing org-dotemacs org-rtm paredit-menu paredit-everywhere org-ac magit-filenotify hc-zenburn-theme elscreen-separate-buffer-list dictionary color-theme calfw-gcal autopair ace-jump-mode ac-math helm-flyspell helm-wordnet helm-idris helm-dictionary))
+   '(flycheck-gradle flymake-gradle gradle-mode company-emacs-eclim ac-emacs-eclim eclim prescient bind-key font-utils fontawesome flyspell-correct-popup flyspell-popup flycheck writegood-mode ediprolog ebib el-get el-init el-init-viewer el-mock el-patch el2org pdf-tools latex-unicode-math-mode htmlize auctex artbollocks-mode www-synonyms x-dict cyberpunk-theme langtool racket-mode flymake-racket wordsmith-mode tabbar dr-racket-like-unicode biblio org-doing org-dotemacs org-rtm paredit-menu paredit-everywhere org-ac magit-filenotify hc-zenburn-theme elscreen-separate-buffer-list dictionary color-theme calfw-gcal autopair ace-jump-mode ac-math))
  '(preview-auto-cache-preamble t)
  '(racket-program "racket")
  '(reftex-cite-format 'biblatex)
@@ -771,6 +807,9 @@
  '(vc-make-backup-files t)
  '(version-control t)
  '(visible-bell t))
+
+
+
 
 (flycheck-define-checker proselint
   "A linter for prose."
@@ -838,6 +877,7 @@
 ;; Pre-load Andromeda
 (require 'andromeda-autoloads)
 
+
 ;; For 311, to make continuations RI.
 ;; Assumes k has some formal parameters
 ;; Leave mark at end of last match line in apply-k.
@@ -866,7 +906,11 @@
 ;; custom-file is the variable to set location of customizations 
 ;; M-x custom-enabled-themes to describe the current theme(s) loaded 
 ;; M-x describe-theme gives the deets on whatever theme is running 
+;; M-x straight-normalize-all
+;; M-x find-library to a bunch of libraries in their locations
+;; M-x show-char to get a whole bunch of char info incl. overlays
 
+;;
 ;; Right now, this is busted in the agda-mode repository. 13/12/15
 ;; (when (eq system-type 'darwin)
 ;;   (load-file
@@ -883,22 +927,9 @@
 ;; Emacs desiderata
 ;; Setup emacs calendar to sync with google calendar
 
-;; Set a higher default font size (point size).
-;; Make it Windows 7/8/10 appropriate. --- see Google Keep
-
 ;; Get code to color parens again for latex files.
 ;; Setup package-pinned-packages, so as to draw from the correct package repo.
 ;; Set up paradox -- if that's still a good idea. Cf straight-use-package, etc. etc.
-;; Automatically remove obsolete packages
-
-;; (unless (package-installed-p 'use-package)
-;;   (progn
-;;     (unless package-archive-contents
-;;       (package-refresh-contents))
-;;     (package-install 'use-package)))
-;; On another yak-shave, use the following:
-;; https://www.reddit.com/r/emacs/comments/47aq53/best_way_to_set_up_package_dependencies_in_initel/
-;; to simplify the .emacs
 
 ;; From https://github.com/Vidianos-Giannitsis/Dotfiles/tree/master/emacs/.emacs.d
 ;; I believe, how to do things in GUI and non-GUI mode 
@@ -945,7 +976,8 @@
 ;; Set up bibliography
 ;; (setq org-ref-default-bibliography '("~/iCloudDrive/bibliography/myBibliography.bib"))
 ;; (setq bibtex-completion-bibliography "~/iCloudDrive/bibliography/myBibliography.bib")
-(global-set-key (kbd "<f6>") #'org-ref-helm-insert-cite-link)
+
+;; (global-set-key (kbd "<f6>") #'org-ref-helm-insert-cite-link)
 
 ;; Org-roam-bibtex
 (org-roam-bibtex-mode)
@@ -987,21 +1019,37 @@
 (define-key org-roam-mode-map [mouse-1] #'org-roam-visit-thing)
 
 ;; ERROR. CANNOT WORK WITH IT CANNOT WORK WITHOUT IT SIMPLE-HTTPD
-;; (straight-use-package '(simple-httpd :type git :host github :repo "skeeto/emacs-web-server" :local-repo "simple-httpd"))
-;; (straight-use-package 'org-roam-server)
-;; (require 'org-roam-server)
-;; (setq org-roam-server-host "127.0.0.1"
-;;       org-roam-server-port 8080
-;;       org-roam-server-export-inline-images t
-;;       org-roam-server-authenticate nil
-;;       org-roam-server-network-poll t
-;;       org-roam-server-network-arrows nil
-;;       org-roam-server-network-label-truncate t
-;;       org-roam-server-network-label-truncate-length 60
-;;       org-roam-server-network-label-wrap-length 20)
+(use-package org-roam-server
+  ;; :preface (message "I'm here at byte-compile and load time.")
+  ;; :init (message "I'm always here at startup")
+  :straight t
+  :config
+  (setq org-roam-server-host "127.0.0.1"
+	org-roam-server-port 8080
+	org-roam-server-export-inline-images t
+	org-roam-server-authenticate nil
+	org-roam-server-network-poll t
+	org-roam-server-network-arrows nil
+	org-roam-server-network-label-truncate t
+	org-roam-server-network-label-truncate-length 60
+	org-roam-server-network-label-wrap-length 20)
+  ;; (message "I'm always here after the package is loaded")
+  ;; (error "Oops")
+  ;; Don't try to (require 'example), this is just an example!
+  :no-require t
+  :catch (lambda (keyword err)
+           (message (error-message-string err))))
 
 ;; (file-dependents (feature-file 'cl))
 
+; @begin(39781165)@ - Do not edit these lines - added automatically!
+(if (file-exists-p "/Users/jhemann/Documents/ciao/ciao_emacs/elisp/ciao-site-file.el")
+  (load-file "/Users/jhemann/Documents/ciao/ciao_emacs/elisp/ciao-site-file.el"))
+; @end(39781165)@ - End of automatically added lines.
+
+;; Start the emacs server, so that I can use emacsclient to connect to the existing emacs instance
+;; I need another way to do this. To instead have an Emacs.app -like thing do it 
+;; (server-start) 
 
 (provide '.emacs)
 ;;; .emacs ends here
