@@ -26,7 +26,16 @@
 
 (defvar curr-f-list features)
 
+;; This is probably not good, b/c what if we are not online 
 (straight-pull-recipe-repositories '(melpa org-elpa gnu-elpa-mirror el-get emacsmirror-mirror))
+
+
+(setq straight-check-for-modifications '(check-on-save find-when-checking))
+
+;; Don't ask me about following symlinks.
+(setq vc-follow-symlinks t)
+
+
 
 ;; JBH 4/6/22 disabling because it was seeming slow
 ;; (add-hook 'find-file-hook (lambda () (ruler-mode 1)))
@@ -35,7 +44,10 @@
 (straight-use-package 'use-package)
 (straight-use-package 'org)
 (straight-use-package '(agda2-mode :includes (eri annotation)))
-(straight-use-package '(simple-httpd :type git :host github :repo "skeeto/emacs-web-server" :includes web-server))
+;; (straight-use-package 'simple-httpd)
+(straight-use-package 'impatient-mode) ;; replacement for flymd 
+
+
 
 (use-package org-roam
       :demand t
@@ -131,8 +143,8 @@
 (straight-use-package 'flim)
 (straight-use-package 'flycheck)
 (straight-use-package '(flycheck-textlint :type git :host github :repo "kisaragi-hiu/flycheck-textlint" :fork nil))
-(straight-use-package 'flylisp) ;; Add highlighting to mismatched parentheses, so you can see the mistake
 ;; No need to use these, as flycheck is better
+;; (straight-use-package 'flylisp) ;; Add highlighting to mismatched parentheses, so you can see the mistake
 ;; (straight-use-package 'flymake-easy)
 ;; (straight-use-package 'flymake-racket)
 ;; (straight-use-package 'flymd) No longer works w/FF >= 68
@@ -191,7 +203,6 @@
 ;; Not needed, I use helm.
 ;; (straight-use-package 'ido-vertical-mode) ;; makes ido-mode display vertically
 (straight-use-package 'iedit) ;; Emacs minor mode and allows you to edit one occurrence of some text in a buffer
-(straight-use-package 'impatient-mode) ;; replacement for flymd 
 (straight-use-package 'info+) ;; Package that enhances some info menus
 (straight-use-package 'j-mode)
 (straight-use-package 'jeison)
@@ -245,12 +256,13 @@
 (straight-use-package 'refine)
 (straight-use-package 's) ;; The long lost Emacs string manipulation library.
 (straight-use-package 'savehist)
-(straight-use-package 'scheme-complete)
+(straight-use-package 'scheme-complete) ;; Unclear if I need it — Asked Alex Shinn 
 (straight-use-package 'selectrum)
 (straight-use-package 'selectrum-prescient)
 (straight-use-package 'semi)
 (straight-use-package 'sh-script) ;; The major mode for editing Unix and GNU/Linux shell script code
 (straight-use-package 'smartscan) ;; Quickly jumps between other symbols found at point in Emacs
+;; (straight-use-package  'smartparens) ;; A minor mode for parens pairs; paredit probably does all I need
 (straight-use-package 'sml-mode)
 (straight-use-package 'sml-modeline)
 (straight-use-package 'smog)
@@ -282,28 +294,26 @@
 ;; to make sorting and filtering more intelligent
 (selectrum-prescient-mode +1)
 
-;; to save your command history on disk, so the sorting gets more intelligent over time
+;; For selectrum, save your command history on disk, so the sorting gets more intelligent over time
 (prescient-persist-mode +1)
 
-(straight-use-package 'all-the-icons-dired)
-
-;; (use-package all-the-icons-dired
-;;   :hook (dired-mode )
-;;   :config )
+;; Currently not working because of some fonting problems
+;; https://github.com/domtronn/all-the-icons.el#troubleshooting
+;; Also, does this need to be graphics-only, like all-the-icons?
+;; https://github.com/domtronn/all-the-icons.el#installation
+;; (use-package all-the-icons–dired
+;;   :hook (dired-mode . all-the-icons-dired-mode)
+;;   :config (setq all-the-icons-dired-monochrome nil))
 
 (use-package dired-collapse
-  :hook (dired-mode dired-collapse-mode))
-
+  :hook (dired-mode . dired-collapse-mode))
 
 ;; Org mode defaults
 (global-set-key (kbd "C-c l") 'org-store-link)
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key (kbd "C-c c") 'org-capture)
 
-
 (global-set-key [f10] 'ediprolog-dwim)
-; (setq all-the-icons-dired-monochrome nil)
-(add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
 
 (org-roam-db-autosync-mode)
 
@@ -322,10 +332,6 @@
 (prefer-coding-system 'utf-8)
 (setq coding-system-for-read 'utf-8)
 (setq coding-system-for-write 'utf-8)
-
-;; A minor mode for Emacs that deals with parens pairs and tries to be smart about it.
-;; I think paredit probably does everything I need
-;; (straight-use-package  'smartparens)
 
 ;; (straight-use-package '(eldoro "pjones/eldoro")
 
@@ -481,10 +487,6 @@
 (global-set-key (kbd "C->") 'mc/mark-next-like-this)
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
-
-;; Can I set these for any lisp mode?
-;; (add-hook 'scheme-mode-hook                        'flylisp-mode)
-;; (add-hook 'inferior-scheme-mode-hook               'flylisp-mode)
 
 ;; Can I set these globally, always? 
 (add-hook 'scheme-mode-hook                        'multiple-cursors-mode)
@@ -770,8 +772,10 @@
  '(preview-auto-cache-preamble t)
  '(racket-program "racket")
  '(reftex-cite-format 'biblatex)
- '(reftex-extra-bindings t t)
- '(reftex-plug-into-AUCTeX t t)
+ '(reftex-extra-bindings t)
+ '(reftex-plug-into-AUCTeX t)
+ '(require-final-newline t nil nil "Add an EOL to files when I save them.")
+ '(revert-without-query '("'(\".*\")"))
  '(ring-bell-function 'ignore)
  '(safe-local-variable-values
    '((TeX-command-extra-options . "-shell-escape")
@@ -792,7 +796,7 @@
 	     (setq default-directory tt-root-directory)))))
  '(save-place-mode t)
  '(savehist-mode t)
- '(scheme-program-name "scheme")
+ '(scheme-program-name "scheme" nil nil "scheme defaults to chez scheme on my system.")
  '(scroll-bar-mode 'right)
  '(select-enable-clipboard t)
  '(sentence-end-double-space nil)
