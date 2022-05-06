@@ -27,7 +27,7 @@
 (defvar curr-f-list features)
 
 ;; This is probably not good, b/c what if we are not online 
-(straight-pull-recipe-repositories '(melpa org-elpa gnu-elpa-mirror el-get emacsmirror-mirror))
+;; (straight-pull-recipe-repositories '(melpa org-elpa gnu-elpa-mirror el-get emacsmirror-mirror))
 
 
 (setq straight-check-for-modifications '(check-on-save find-when-checking))
@@ -913,6 +913,11 @@
 ;; M-x straight-normalize-all
 ;; M-x find-library to a bunch of libraries in their locations
 ;; M-x show-char to get a whole bunch of char info incl. overlays
+;; M-x proced is the emacs ps replacement 
+;; M-x find-grep is an improved way to use find and grep together
+;; M-x find-grep-dired is like that but it opens in a dired buffer
+
+
 
 ;;
 ;; Right now, this is busted in the agda-mode repository. 13/12/15
