@@ -27,15 +27,13 @@
 (defvar curr-f-list features)
 
 ;; This is probably not good, b/c what if we are not online 
-;; (straight-pull-recipe-repositories '(melpa org-elpa gnu-elpa-mirror el-get emacsmirror-mirror))
+(straight-pull-recipe-repositories '(melpa org-elpa gnu-elpa-mirror el-get emacsmirror-mirror))
 
 
 (setq straight-check-for-modifications '(check-on-save find-when-checking))
 
-;; Don't ask me about following symlinks.
+;; Don't ask me about following symlinks to version-controlled files.
 (setq vc-follow-symlinks t)
-
-
 
 ;; JBH 4/6/22 disabling because it was seeming slow
 ;; (add-hook 'find-file-hook (lambda () (ruler-mode 1)))
@@ -44,9 +42,10 @@
 (straight-use-package 'use-package)
 (straight-use-package 'org)
 (straight-use-package '(agda2-mode :includes (eri annotation)))
-;; (straight-use-package 'simple-httpd)
+(straight-use-package 'simple-httpd)
 (straight-use-package 'impatient-mode) ;; replacement for flymd 
-
+(straight-use-package '(faceup :type built-in)) ;; b/c this is newer than the one from straight, lexical binding 
+(straight-use-package '(let-alist :type built-in))
 
 
 (use-package org-roam
@@ -121,7 +120,7 @@
 (straight-use-package 'dash) ;; A modern list library for Emacs
 (straight-use-package 'dash-functional)
 (straight-use-package 'dictionary)
-(straight-use-package 'dired-collapse)
+(straight-use-package '(dired-collapse :host github :repo "jasonhemann/dired-hacks")) ;; Maybe this is now correct
 (straight-use-package 'dired+)
 (straight-use-package 'discover) ;; discover more of Emacs
 (straight-use-package 'discover-my-major) ;; Discover key bindings and their meaning for the current Emacs major mode
@@ -475,7 +474,9 @@
 (global-set-key (kbd "C-c C-x )") (lambda () (interactive) (insert "(－‸ლ)")))
 (global-set-key (kbd "C-c C-x x") (lambda () (interactive) (insert "!(•̀ᴗ•́)و ̑̑")))
 
-(defun prime-it () (interactive (insert "′")))
+(defun prime-it ()
+  "A function to add a prime character."
+  (interactive (insert "′")))
 
 ;; ebib mode for latex
 (global-set-key "\C-ce" 'ebib)
@@ -488,7 +489,7 @@
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 
-;; Can I set these globally, always? 
+;; Can I set these globally, always? I should look into this.
 (add-hook 'scheme-mode-hook                        'multiple-cursors-mode)
 (add-hook 'inferior-scheme-mode-hook               'multiple-cursors-mode)
 
@@ -732,7 +733,7 @@
  '(ediprolog-program "scryer-prolog")
  '(find-file-visit-truename t)
  '(flyspell-issue-message-flag nil)
- '(flyspell-issue-welcome-flag nil)
+ '(flyspell-issue-welcome-flag nil t)
  '(fringe-mode 2 nil (fringe))
  '(global-auto-revert-non-file-buffers t)
  '(global-display-line-numbers-mode t)
@@ -742,13 +743,14 @@
  '(initial-scratch-message nil)
  '(ispell-highlight-face 'highlight)
  '(ispell-highlight-p t)
- '(ispell-program-name "aspell")
+ '(ispell-program-name "aspell" t) ;; There are many configuration options for aspell. Relevant? Dunno.  
  '(langtool-autoshow-message-function 'langtool-autoshow-detail-popup)
  '(langtool-default-language "en-US")
  '(langtool-language-tool-jar "~/LanguageTool-3.4/languagetool-commandline.jar")
  '(langtool-mother-tongue "en")
  '(load-home-init-file t t)
  '(ls-lisp-dirs-first t)
+ '(mac-system-move-file-to-trash-use-finder t)
  '(make-backup-files nil)
  '(ns-alternate-modifier '(:ordinary meta :mouse alt))
  '(org-agenda-files '("tasks.org"))
@@ -912,11 +914,11 @@
 ;; M-x describe-theme gives the deets on whatever theme is running 
 ;; M-x straight-normalize-all
 ;; M-x find-library to a bunch of libraries in their locations
-;; M-x show-char to get a whole bunch of char info incl. overlays
-;; M-x proced is the emacs ps replacement 
+;; C-x = to get a whole bunch of char info incl. overlays
+;; M-x proced is the emacs ps replacement
 ;; M-x find-grep is an improved way to use find and grep together
 ;; M-x find-grep-dired is like that but it opens in a dired buffer
-
+;; Diminish mode will help me clean up my modeline 
 
 
 ;;
@@ -1058,7 +1060,7 @@
 
 ;; Start the emacs server, so that I can use emacsclient to connect to the existing emacs instance
 ;; I need another way to do this. To instead have an Emacs.app -like thing do it 
-;; (server-start) 
+;; (server"-start) 
 
 (provide '.emacs)
 ;;; .emacs ends here
