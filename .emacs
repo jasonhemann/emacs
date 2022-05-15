@@ -26,7 +26,7 @@
 
 (defvar curr-f-list features)
 
-;; This is probably not good, b/c what if we are not online 
+;; This is probably not good, b/c what if we are not online
 (straight-pull-recipe-repositories '(melpa org-elpa gnu-elpa-mirror el-get emacsmirror-mirror))
 
 
@@ -43,9 +43,10 @@
 (straight-use-package 'org)
 (straight-use-package '(agda2-mode :includes (eri annotation)))
 (straight-use-package 'simple-httpd)
-(straight-use-package 'impatient-mode) ;; replacement for flymd 
-(straight-use-package '(faceup :type built-in)) ;; b/c this is newer than the one from straight, lexical binding 
+(straight-use-package 'impatient-mode) ;; replacement for flymd
+(straight-use-package '(faceup :type built-in)) ;; b/c this is newer than the one from straight, lexical binding
 (straight-use-package '(let-alist :type built-in))
+(straight-use-package '(which-key :custom (which-key-mode)))
 
 
 (use-package org-roam
@@ -246,6 +247,18 @@
 (straight-use-package 'paredit-menu)
 (straight-use-package 'parent-mode)
 (straight-use-package 'pdf-tools)
+;; (use-package pdf-tools :straight t
+;; ;;  :after (pdf-annot fullframe)
+;; ;;  :magic ("%PDF" . pdf-view-mode)
+;;   :bind (:map pdf-view-mode-map
+;;               ("h"   . 'pdf-annot-add-highlight-markup-annotation)
+;;               ("t"   . 'pdf-annot-add-text-annotation)
+;;               ("D"   . 'pdf-annot-delete)
+;;               ("C-s" . 'isearch-forward)
+;;               ;; ("m"   . 'mrb/mailfile)
+;;               :map pdf-annot-edit-contents-minor-mode-map
+;;               ("<return>"   . 'pdf-annot-edit-contents-commit)
+;;               ("<S-return>" .  'newline)))
 (straight-use-package 'popup) ;; Visual Popup Interface Library for Emacs
 (straight-use-package 'powerthesaurus)
 (straight-use-package 'projectile) ;; Project Interaction Library for Emacs http://projectile.readthedocs.io
@@ -255,7 +268,7 @@
 (straight-use-package 'refine)
 (straight-use-package 's) ;; The long lost Emacs string manipulation library.
 (straight-use-package 'savehist)
-(straight-use-package 'scheme-complete) ;; Unclear if I need it — Asked Alex Shinn 
+(straight-use-package 'scheme-complete) ;; Unclear if I need it — Asked Alex Shinn
 (straight-use-package 'selectrum)
 (straight-use-package 'selectrum-prescient)
 (straight-use-package 'semi)
@@ -335,7 +348,7 @@
 ;; (straight-use-package '(eldoro "pjones/eldoro")
 
 
-;; Disabling because I don't have mail handling in emacs right now 
+;; Disabling because I don't have mail handling in emacs right now
 ;; Wanderlust doesn't seem to work w/Google 2FA.
 ;; (autoload 'wl "wl" "Wanderlust" t)
 ;; (autoload 'wl-other-frame "wl" "Wanderlust on new frame." t)
@@ -586,6 +599,8 @@
 (add-hook 'text-mode-hook 'artbollocks-mode)
 (add-hook 'text-mode-hook 'writegood-mode)
 (add-hook 'text-mode-hook 'flyspell-mode)
+(add-hook 'text-mode-hook 'visual-line-mode)
+
 (add-hook 'TeX-mode-hook (function (lambda () (setq ispell-parser 'tex))))
 ;; (add-hook 'tex-mode-hook 'auxtex-mode)
 
@@ -733,17 +748,18 @@
  '(ediprolog-program "scryer-prolog")
  '(find-file-visit-truename t)
  '(flyspell-issue-message-flag nil)
- '(flyspell-issue-welcome-flag nil t)
+ '(flyspell-issue-welcome-flag nil)
  '(fringe-mode 2 nil (fringe))
  '(global-auto-revert-non-file-buffers t)
  '(global-display-line-numbers-mode t)
  '(global-flycheck-mode t)
  '(history-length 50)
+ '(indicate-empty-lines t)
  '(inhib-startup-screen t)
  '(initial-scratch-message nil)
  '(ispell-highlight-face 'highlight)
  '(ispell-highlight-p t)
- '(ispell-program-name "aspell" t) ;; There are many configuration options for aspell. Relevant? Dunno.  
+ '(ispell-program-name "aspell")
  '(langtool-autoshow-message-function 'langtool-autoshow-detail-popup)
  '(langtool-default-language "en-US")
  '(langtool-language-tool-jar "~/LanguageTool-3.4/languagetool-commandline.jar")
@@ -804,7 +820,12 @@
  '(sentence-end-double-space nil)
  '(show-paren-delay 0)
  '(show-paren-mode 1)
+ '(show-trailing-whitespace t)
  '(sort-fold-case t t)
+ '(straight-host-usernames
+   '((gitlab . "jasonhemann")
+     (github . "jasonhemann")
+     (bitbucket . "jhemann")))
  '(straight-use-package-by-default t)
  '(tab-always-indent 'complete)
  '(tool-bar-mode nil)
