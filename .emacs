@@ -10,6 +10,7 @@
 
 ;; Need to be set before we load straight.el, to correct a flycheck incompatibility.
 (setq straight-fix-flycheck t)
+(setq load-prefer-newer t)
 
 (defvar bootstrap-version)
 (let ((bootstrap-file
@@ -28,7 +29,6 @@
 
 ;; This is probably not good, b/c what if we are not online
 (straight-pull-recipe-repositories '(melpa org-elpa gnu-elpa-mirror el-get emacsmirror-mirror))
-
 
 (setq straight-check-for-modifications '(check-on-save find-when-checking))
 
@@ -61,7 +61,7 @@
 (straight-use-package 'use-package)
 (straight-use-package 'org)
 (straight-use-package '(agda2-mode :includes (eri annotation)))
-(straight-use-package '(simple-httpd :includes web-server))
+(straight-use-package '(simple-httpd :includes web-server :files ("*.el")))
 (straight-use-package 'impatient-mode) ;; replacement for flymd
 (straight-use-package '(faceup :type built-in)) ;; b/c this is newer than the one from straight, lexical binding
 (straight-use-package '(let-alist :type built-in))
@@ -82,7 +82,7 @@
               (("C-c n I" . org-roam-insert-immediate))))
 
 (use-package org-roam-ui
-    :straight (:host github :repo "org-roam/org-roam-ui")
+    :straight (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out"))
     :after org-roam
     :hook (after-init . org-roam-ui-mode)
     :config
@@ -264,7 +264,7 @@
 (straight-use-package 'org-jekyll)
 (straight-use-package 'org-journal)
 (straight-use-package 'org-ql)
-(straight-use-package 'org-ref)
+(straight-use-package 'org-ref) 
 (straight-use-package 'org-roam-bibtex)
 ;; (straight-use-package 'org-roam-server) Not useful, org-roam-ui is the good one
 (straight-use-package 'org-rtm)
@@ -279,19 +279,20 @@
 (straight-use-package 'paredit-everywhere)
 (straight-use-package 'paredit-menu)
 (straight-use-package 'parent-mode)
-(straight-use-package 'pdf-tools)
-;; (use-package pdf-tools :straight t
-;; ;;  :after (pdf-annot fullframe)
-;; ;;  :magic ("%PDF" . pdf-view-mode)
-;;   :bind (:map pdf-view-mode-map
-;;               ("h"   . 'pdf-annot-add-highlight-markup-annotation)
-;;               ("t"   . 'pdf-annot-add-text-annotation)
-;;               ("D"   . 'pdf-annot-delete)
-;;               ("C-s" . 'isearch-forward)
-;;               ;; ("m"   . 'mrb/mailfile)
-;;               :map pdf-annot-edit-contents-minor-mode-map
-;;               ("<return>"   . 'pdf-annot-edit-contents-commit)
-;;               ("<S-return>" .  'newline)))
+;;(straight-use-package 'pdf-tools)
+(use-package pdf-tools :straight t
+;;  :after (pdf-annot fullframe)
+;;  :magic ("%PDF" . pdf-view-mode)
+  :bind (:map pdf-view-mode-map
+              ("h"   . 'pdf-annot-add-highlight-markup-annotation)
+              ("t"   . 'pdf-annot-add-text-annotation)
+              ("D"   . 'pdf-annot-delete)
+              ("C-s" . 'isearch-forward)
+              ;; ("m"   . 'mrb/mailfile)
+              ;; :map pdf-annot-edit-contents-minor-mode-map
+              ;; ("<return>"   . 'pdf-annot-edit-contents-commit)
+              ;; ("<S-return>" .  'newline)
+	      ))
 (straight-use-package 'popup) ;; Visual Popup Interface Library for Emacs
 (straight-use-package 'powerthesaurus)
 (straight-use-package 'projectile) ;; Project Interaction Library for Emacs http://projectile.readthedocs.io
@@ -320,6 +321,7 @@
 (straight-use-package 'ts) ;; A bunch of nice utilities for time and date parsing, better than the built-ins
 (straight-use-package 'undo-tree) ;; Treat undo history as a tree
 (straight-use-package 'use-package)
+;; vertigo
 (straight-use-package 'visual-regexp) ;; A regexp/replace command for Emacs with interactive visual feedback
 (straight-use-package 'visual-regexp-steroids) ;; Extends visual-regexp to support other regexp engines
 (straight-use-package 'volatile-highlights) ;; Minor mode for visual feedback on some operations.
@@ -336,16 +338,20 @@
 (straight-use-package 'zones)
 (straight-use-package 'zygospore)
 
+;; To turn on selectrum
+(selectrum-mode +1)
 ;; to make sorting and filtering more intelligent
 (selectrum-prescient-mode +1)
 
 ;; For selectrum, save your command history on disk, so the sorting gets more intelligent over time
 (prescient-persist-mode +1)
 
+(straight-use-package '(all-the-icons :type git :flavor melpa :files (:defaults "data" "all-the-icons-pkg.el") :host github :repo "domtronn/all-the-icons.el"))
+
 ;; Also, does this need to be graphics-only, like all-the-icons?
 ;; https://github.com/domtronn/all-the-icons.el#installation
 (use-package all-the-icons–dired
-  :straight '(:repo "/wyuenho/all-the-icons-dired")
+  :straight '(:host github :repo "wyuenho/all-the-icons-dired")
   :hook (dired-mode . all-the-icons-dired-mode)
   :config (setq all-the-icons-dired-monochrome nil))
 
@@ -356,7 +362,7 @@
 
 (global-set-key [f10] 'ediprolog-dwim)
 
-(org-roam-db-autosync-mode)
+;; (org-roam-db-autosync-mode)
 
 (add-to-list 'display-buffer-alist
                '("\\*org-roam\\*"
@@ -759,18 +765,18 @@
  '(ediprolog-program "scryer-prolog")
  '(find-file-visit-truename t)
  '(flyspell-issue-message-flag nil)
- '(flyspell-issue-welcome-flag nil)
+ '(flyspell-issue-welcome-flag nil t)
  '(fringe-mode 2 nil (fringe))
  '(global-auto-revert-non-file-buffers t)
  '(global-display-line-numbers-mode t)
  '(global-flycheck-mode t)
  '(history-length 50)
  '(indicate-empty-lines t)
- '(inhib-startup-screen t)
+ '(inhibit-startup-screen t)
  '(initial-scratch-message nil)
  '(ispell-highlight-face 'highlight)
  '(ispell-highlight-p t)
- '(ispell-program-name "aspell")
+ '(ispell-program-name "aspell" t)
  '(langtool-autoshow-message-function 'langtool-autoshow-detail-popup)
  '(langtool-default-language "en-US")
  '(langtool-language-tool-jar "~/LanguageTool-3.4/languagetool-commandline.jar")
@@ -799,8 +805,8 @@
  '(preview-auto-cache-preamble t)
  '(racket-program "racket")
  '(reftex-cite-format 'biblatex)
- '(reftex-extra-bindings t)
- '(reftex-plug-into-AUCTeX t)
+ '(reftex-extra-bindings t t)
+ '(reftex-plug-into-AUCTeX t t)
  '(require-final-newline t nil nil "Add an EOL to files when I save them.")
  '(revert-without-query '("'(\".*\")"))
  '(ring-bell-function 'ignore)
@@ -1010,8 +1016,8 @@
 
 ;; Org-ref
 ;; Set up bibliography
-;; (setq org-ref-default-bibliography '("~/iCloudDrive/bibliography/myBibliography.bib"))
-;; (setq bibtex-completion-bibliography "~/iCloudDrive/bibliography/myBibliography.bib")
+(setq org-ref-default-bibliography '("~/iCloudDrive/bibliography/myBibliography.bib"))
+(setq bibtex-completion-bibliography "~/iCloudDrive/bibliography/myBibliography.bib")
 
 ;; (global-set-key (kbd "<f6>") #'org-ref-helm-insert-cite-link)
 
