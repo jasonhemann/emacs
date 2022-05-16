@@ -266,6 +266,7 @@
 (straight-use-package 'org-ql)
 (straight-use-package 'org-ref)
 (straight-use-package 'org-roam-bibtex)
+;; (straight-use-package 'org-roam-server) Not useful, org-roam-ui is the good one
 (straight-use-package 'org-rtm)
 (straight-use-package 'org-sidebar)
 (straight-use-package 'org-super-agenda)
@@ -1051,28 +1052,6 @@
                     :width  'normal)
 
 (define-key org-roam-mode-map [mouse-1] #'org-roam-visit-thing)
-
-;; org-roam-server replaced with org-roam-ui
-;; (use-package org-roam-server
-;;   ;; :preface (message "I'm here at byte-compile and load time.")
-;;   ;; :init (message "I'm always here at startup")
-;;   :straight t
-;;   :config
-;;   (setq org-roam-server-host "127.0.0.1"
-;; 	org-roam-server-port 8080
-;; 	org-roam-server-export-inline-images t
-;; 	org-roam-server-authenticate nil
-;; 	org-roam-server-network-poll t
-;; 	org-roam-server-network-arrows nil
-;; 	org-roam-server-network-label-truncate t
-;; 	org-roam-server-network-label-truncate-length 60
-;; 	org-roam-server-network-label-wrap-length 20)
-;;   ;; (message "I'm always here after the package is loaded")
-;;   ;; (error "Oops")
-;;   ;; Don't try to (require 'example), this is just an example!
-;;   :no-require t
-;;   :catch (lambda (keyword err)
-;;            (message (error-message-string err))))
 
 ;; (file-dependents (feature-file 'cl))
 
