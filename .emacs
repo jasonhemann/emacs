@@ -1,4 +1,4 @@
-;;; Package --- Summary -*- lexical-binding: t; -*-
+
 
 ;;; Commentary:
 
@@ -38,16 +38,35 @@
 ;; JBH 4/6/22 disabling because it was seeming slow
 ;; (add-hook 'find-file-hook (lambda () (ruler-mode 1)))
 
+;; From my package.el days
+;; To be investigated further; most already dismissed
+'(package-selected-packages
+  '(company-emacs-eclim
+    ac-emacs-eclim
+    font-utils
+    fontawesome
+    el-init
+    el-init-viewer
+    el-mock
+    el-patch
+    el2org
+    latex-unicode-math-mode
+    htmlize
+    www-synonyms
+    x-dict
+    magit-filenotify
+    dictionary))
+
 (defalias 'yes-or-no-p 'y-or-n-p)
 (straight-use-package 'use-package)
 (straight-use-package 'org)
 (straight-use-package '(agda2-mode :includes (eri annotation)))
-(straight-use-package 'simple-httpd)
+(straight-use-package '(simple-httpd :includes web-server))
 (straight-use-package 'impatient-mode) ;; replacement for flymd
 (straight-use-package '(faceup :type built-in)) ;; b/c this is newer than the one from straight, lexical binding
 (straight-use-package '(let-alist :type built-in))
 (straight-use-package '(which-key :custom (which-key-mode)))
-
+(straight-use-package '(helm :files ("*.el" "emacs-helm.sh" (:exclude "helm-lib.el" "helm-source.el" "helm-multi-match.el" "helm-core.el" "helm-core-pkg.el") "helm-pkg.el")))
 
 (use-package org-roam
       :demand t
@@ -89,6 +108,13 @@
 (straight-use-package 'bbdb) ;; Emacs address book
 (straight-use-package 'biblio)
 (straight-use-package 'bibtex-completion)
+;; ~bind-key~ adds a keybinding
+;; ~bind-key*~ overrides minor-mode
+;; ~unbind-key~ removes
+;; M-x describe-key-bindings gives the full list
+(use-package bind-key
+  :straight t
+  :bind ("C-h B" . describe-personal-keybindings))
 (straight-use-package 'bog)
 (straight-use-package 'buffer-move) ;; used for rotating buffers. buf-move-left
 (straight-use-package 'calfw)
@@ -96,6 +122,7 @@
 (straight-use-package 'calfw-gcal)
 (straight-use-package 'calfw-ical)
 (straight-use-package 'calfw-org)
+;; No need for howm-mode; org-mode + roam for me
 ;; (straight-use-package 'calfw-howm)
 (straight-use-package 'cbm) ;; cycle by major mode
 (straight-use-package 'cdlatex)
@@ -121,9 +148,11 @@
 (straight-use-package 'dash) ;; A modern list library for Emacs
 (straight-use-package 'dash-functional)
 (straight-use-package 'dictionary)
-(straight-use-package '(dired-collapse :host github :repo "jasonhemann/dired-hacks")) ;; Maybe this is now correct
+(use-package dired-collapse
+  :straight '(dired-collapse :host github :repo "jasonhemann/dired-hacks") ;; Maybe this is now correct
+  :hook (dired-mode . dired-collapse-mode))
 (straight-use-package 'dired+)
-(straight-use-package 'discover) ;; discover more of Emacs
+;; (straight-use-package 'discover) ;; discover more of Emacs. Sadly, moribund
 (straight-use-package 'discover-my-major) ;; Discover key bindings and their meaning for the current Emacs major mode
 (straight-use-package 'dr-racket-like-unicode)
 (straight-use-package 'dtrt-indent) ;; A minor mode that guesses the indentation offset originally used for creating source code
@@ -143,13 +172,15 @@
 (straight-use-package 'flim)
 (straight-use-package 'flycheck)
 (straight-use-package '(flycheck-textlint :type git :host github :repo "kisaragi-hiu/flycheck-textlint" :fork nil))
+(straight-use-package 'flycheck-gradle)
 ;; No need to use these, as flycheck is better
 ;; (straight-use-package 'flylisp) ;; Add highlighting to mismatched parentheses, so you can see the mistake
 ;; (straight-use-package 'flymake-easy)
+;; (straight-use-package 'flymake-gradle)
 ;; (straight-use-package 'flymake-racket)
 ;; (straight-use-package 'flymd) No longer works w/FF >= 68
 (straight-use-package 'flyspell-lazy)
-(straight-use-package '(flyspell-popup :type git :host github :repo "xuchunyang/flyspell-popup" :fork nil))
+(straight-use-package '(flyspell-popup :type git :host github :repo "xuchunyang/flyspell-popup"))
 (straight-use-package 'fullframe) ;; Advice commands to execute fullscreen, restoring the window setup when exiting.
 (straight-use-package 'gh-md)
 (straight-use-package 'ghub)
@@ -161,7 +192,7 @@
 (straight-use-package 'green-phosphor-theme)
 (straight-use-package 'hc-zenburn-theme)
 
-;; These helm commands I commented because they seemed annoyeing when I used them. 
+;; These helm commands I commented because they seemed annoying when I used them.
 ;; helm-browse-project: handles project files and buffers; defaults to current directory; works with helm-find-files; recommended with helm-ls-git, helm-ls-hg and helm-ls-svn for a better handling of version control files. Each time a project under version control is visited it is added to helm-browse-project-history and can be visted with helm-projects-history.
 ;; helm-dabbrev: enhanced dabbrev implementation with helm completion; does not use emacs code.
 ;; helm-imenu and helm-imenu-in-all-buffers: provide imenus for current or all buffers.
@@ -172,8 +203,7 @@
 ;; helm-all-mark-rings: A helm browser for mark ring; retrieves last positions in buffers.
 ;; helm-filtered-bookmarks: enhanced browser for bookmarks.
 ;; helm-list-elisp-packages: enhanced browser for elisp package management.
-
-;; These helm commands I commented becauseI wanted to try without helm, and try selectrum instead.
+;; These helm commands I commented because I wanted to try without helm, and try selectrum instead.
 ;; (straight-use-package 'helm)
 ;; (straight-use-package 'helm-addressbook)
 ;; (straight-use-package 'helm-bibtex)
@@ -309,16 +339,12 @@
 ;; For selectrum, save your command history on disk, so the sorting gets more intelligent over time
 (prescient-persist-mode +1)
 
-;; Currently not working because of some fonting problems
-;; https://github.com/domtronn/all-the-icons.el#troubleshooting
 ;; Also, does this need to be graphics-only, like all-the-icons?
 ;; https://github.com/domtronn/all-the-icons.el#installation
-;; (use-package all-the-icons–dired
-;;   :hook (dired-mode . all-the-icons-dired-mode)
-;;   :config (setq all-the-icons-dired-monochrome nil))
-
-(use-package dired-collapse
-  :hook (dired-mode . dired-collapse-mode))
+(use-package all-the-icons–dired
+  :straight '(all-the-icons-dired :repo "/wyuenho/all-the-icons-dired")
+  :hook (dired-mode . all-the-icons-dired-mode)
+  :config (setq all-the-icons-dired-monochrome nil))
 
 ;; Org mode defaults
 (global-set-key (kbd "C-c l") 'org-store-link)
@@ -345,8 +371,7 @@
 (setq coding-system-for-read 'utf-8)
 (setq coding-system-for-write 'utf-8)
 
-;; (straight-use-package '(eldoro "pjones/eldoro")
-
+(straight-use-package '(eldoro :host github :repo "pjones/eldoro"))
 
 ;; Disabling because I don't have mail handling in emacs right now
 ;; Wanderlust doesn't seem to work w/Google 2FA.
@@ -422,12 +447,6 @@
 ;; Take a look at what he has here
 ;; (load "~/Documents/eliemacs/eliemacs")
 
-;; Probably package.el related doohickuses
-;; (package-initialize)
-;; (add-to-list 'load-path "~/.emacs.d/lisp/")
-;; (unless package-archive-contents
-;;    (package-refresh-contents))
-
 (add-hook 'racket-mode-hook #'racket-xp-mode)
 
 (global-set-key (kbd "C-x g") 'magit-status)
@@ -445,13 +464,10 @@
 ;; (require 'auto-complete-config)
 
 ;; (helm-mode 1)
-
 ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
-
 ;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
 ;; (global-set-key (kbd "C-c h") 'helm-command-prefix)
 ;; (global-unset-key (kbd "C-x c"))
-
 ;; (require 'helm-config)
 
 ;; (global-set-key (kbd "C-x b") 'helm-buffers-list) ;; helm-buffers-list: provides enhanced buffers listing.
@@ -471,10 +487,6 @@
 
 (add-hook 'racket-mode-hook (lambda () (define-key racket-mode-map (kbd "C-c r") 'racket-run)))
 
-;; These don't work.
-;; (add-hook 'auto-package-update-minor-mode-hook 'package-menu-mark-obsolete-for-deletion)
-;; (add-hook 'auto-package-update-minor-mode-hook 'package-menu-execute)
-;; (auto-package-update-maybe)
 
 ;; JBH
 ;; (ac-config-default)
@@ -602,11 +614,10 @@
 (add-hook 'text-mode-hook 'visual-line-mode)
 
 (add-hook 'TeX-mode-hook (function (lambda () (setq ispell-parser 'tex))))
-;; (add-hook 'tex-mode-hook 'auxtex-mode)
+(add-hook 'tex-mode-hook 'auxtex-mode)
 
 (add-hook 'tex-mode-hook (lambda () (define-key tex-mode-map (kbd "C-c C-k") 'compile)))
 (add-hook 'tex-mode-hook (lambda () (define-key tex-mode-map (kbd "C-c |") 'align-current)))
-
 
 (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
 (add-hook 'LaTeX-mode-hook 'LaTeX-preview-setup)
@@ -661,7 +672,6 @@
 (add-to-list 'auto-mode-alist '("\\.lagda.md\\'" . agda2-mode))
 (add-to-list 'auto-mode-alist '("\\.pl\\'" . prolog-mode))
 
-
 (autoload 'coq-mode "coq" "Major mode for editing Coq vernacular." t)
 (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
 
@@ -696,8 +706,6 @@
 
 ;; So that I can find scryer-prolog
 (add-to-list 'exec-path (expand-file-name (substitute-in-file-name "$HOME/.cargo/bin")))
-
-;; (setq window-themes-list '(wheatgrass manoj-dark cyberpunk tango-dark deeper-blue green-phosphor gotham solarized))
 
 (mapc (lambda (pr) (put (car pr) 'racket-indent-function (cdr pr)))
       '((conde . 0)
@@ -785,8 +793,6 @@
  '(org-time-stamp-custom-formats '("<%m/%d/%y %a>" . "<%a %_B %_d, %H:%M>"))
  '(org-trello-current-prefix-keybinding "C-c o")
  '(org-use-speed-commands t)
- '(package-selected-packages
-   '(flycheck-gradle flymake-gradle gradle-mode company-emacs-eclim ac-emacs-eclim eclim prescient bind-key font-utils fontawesome flyspell-correct-popup flyspell-popup flycheck writegood-mode ediprolog ebib el-get el-init el-init-viewer el-mock el-patch el2org pdf-tools latex-unicode-math-mode htmlize auctex artbollocks-mode www-synonyms x-dict cyberpunk-theme langtool racket-mode flymake-racket wordsmith-mode tabbar dr-racket-like-unicode biblio org-doing org-dotemacs org-rtm paredit-menu paredit-everywhere org-ac magit-filenotify hc-zenburn-theme elscreen-separate-buffer-list dictionary color-theme calfw-gcal autopair ace-jump-mode ac-math))
  '(preview-auto-cache-preamble t)
  '(racket-program "racket")
  '(reftex-cite-format 'biblatex)
@@ -930,17 +936,17 @@
 ;; M-x table-capture https://www.gnu.org/software/emacs/manual/html_node/emacs/Table-Conversion.html
 ;; M-x list-processes
 ;; C-s search C-q C-i a literal tab character
-;; custom-file is the variable to set location of customizations 
-;; M-x custom-enabled-themes to describe the current theme(s) loaded 
-;; M-x describe-theme gives the deets on whatever theme is running 
+;; custom-file is the variable to set location of customizations
+;; M-x custom-enabled-themes to describe the current theme(s) loaded
+;; M-x describe-theme gives the deets on whatever theme is running
 ;; M-x straight-normalize-all
 ;; M-x find-library to a bunch of libraries in their locations
 ;; C-x = to get a whole bunch of char info incl. overlays
 ;; M-x proced is the emacs ps replacement
 ;; M-x find-grep is an improved way to use find and grep together
 ;; M-x find-grep-dired is like that but it opens in a dired buffer
-;; Diminish mode will help me clean up my modeline 
-
+;; Diminish mode will help me clean up my modeline
+;; straight--build-cache has the dependencies listed
 
 ;;
 ;; Right now, this is busted in the agda-mode repository. 13/12/15
@@ -957,14 +963,20 @@
 ;;        '((default :height 5.0))))
 
 ;; Emacs desiderata
-;; Setup emacs calendar to sync with google calendar
+
 
 ;; Get code to color parens again for latex files.
 ;; Setup package-pinned-packages, so as to draw from the correct package repo.
 ;; Set up paradox -- if that's still a good idea. Cf straight-use-package, etc. etc.
+;; Setup emacs calendar to sync with google calendar
+;; Spacing with parens in various non-lisp modes that you use w/paredit mode.
+;; Turn off C-z behavior that hides window
+;; use David's .emacs as a sample, to set things up properly.
+;; Add a separate file with my private information like git stuff etc, that folk can setup and add.
+;; Set things up so langtool will either be automatically downloaded or suggest that it be downloaded.
 
 ;; From https://github.com/Vidianos-Giannitsis/Dotfiles/tree/master/emacs/.emacs.d
-;; I believe, how to do things in GUI and non-GUI mode 
+;; I believe, how to do things in GUI and non-GUI mode
 ;; (if (daemonp)
 ;;     (add-hook 'after-make-frame-functions
 ;; 		(lambda (frame)
@@ -972,15 +984,6 @@
 ;; 		  (with-selected-frame frame
 ;; 		    (set-font-faces))))
 ;;   (set-font-faces))
-
-;; Spacing with parens in various non-lisp modes that you use w/paredit mode.
-
-;; Turn off C-z behavior that hides window
-
-;; use David's .emacs as a sample, to set things up properly.
-;; Add a separate file with my private information like git stuff etc, that folk can setup and add.
-;; Set things up so langtool will either be automatically downloaded or suggest that it be downloaded.
-;; Perhaps instead set these things up as an emacs 24 package.
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -993,16 +996,14 @@
 (define-key company-active-map (kbd "C-z") #'company-try-hard)
 (setq org-roam-graph-executable "/usr/local/bin/dot")
 
-;; (require 'ox-latex)
-;; Should be forced after ox-latex, but that doesn't seem to be a thing, so this errors on start-up
-;; (with-eval-after-load 'ox-latex
-;;    (add-to-list 'org-latex-classes
-;;                 '("letter"
-;;                   "\\documentclass{report}"
-;;                   ("\\chapter{%s}" . "\\chapter*{%s}")
-;;                   ("\\section{%s}" . "\\section*{%s}")
-;;                   ("\\subsection{%s}" . "\\subsection*{%s}")
-;;                   ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
+(with-eval-after-load 'ox-latex
+   (add-to-list 'org-latex-classes
+                '("letter"
+                  "\\documentclass{report}"
+                  ("\\chapter{%s}" . "\\chapter*{%s}")
+                  ("\\section{%s}" . "\\section*{%s}")
+                  ("\\subsection{%s}" . "\\subsection*{%s}")
+                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
 
 ;; Org-ref
 ;; Set up bibliography
@@ -1015,7 +1016,7 @@
 (org-roam-bibtex-mode)
 (define-key org-roam-bibtex-mode-map (kbd "C-c n a") #'orb-note-actions)
 ;; This one does not seem to be needed unless You use reftex.
-;; (setq reftex-default-bibliography '("~/iCloudDrive/bibliography/myBibliography.bib"))
+(setq reftex-default-bibliography '("~/old-microKanren.bib"))
 
 (pdf-tools-install) ;; if this slows things down try (pdf-loader-install)
 
@@ -1080,8 +1081,8 @@
 ; @end(39781165)@ - End of automatically added lines.
 
 ;; Start the emacs server, so that I can use emacsclient to connect to the existing emacs instance
-;; I need another way to do this. To instead have an Emacs.app -like thing do it 
-;; (server"-start) 
+;; I need another way to do this. To instead have an Emacs.app -like thing do it
+;; (server-start)
 
 (provide '.emacs)
 ;;; .emacs ends here
