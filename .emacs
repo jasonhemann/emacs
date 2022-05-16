@@ -82,7 +82,7 @@
               (("C-c n I" . org-roam-insert-immediate))))
 
 (use-package org-roam-ui
-    :straight (org-roam-ui :host github :repo "org-roam/org-roam-ui")
+    :straight (:host github :repo "org-roam/org-roam-ui")
     :after org-roam
     :hook (after-init . org-roam-ui-mode)
     :config
@@ -148,8 +148,10 @@
 (straight-use-package 'dash) ;; A modern list library for Emacs
 (straight-use-package 'dash-functional)
 (straight-use-package 'dictionary)
+(straight-use-package '(dired-hacks-utils :host github :repo "Fuco1/dired-hacks" :fork (:host github :repo "jasonhemann/dired-hacks")))
 (use-package dired-collapse
-  :straight '(dired-collapse :host github :repo "jasonhemann/dired-hacks") ;; Maybe this is now correct
+  :straight '(:host github :repo "Fuco1/dired-hacks"
+		    :fork (:host github :repo "jasonhemann/dired-hacks")) ;; This is now correct
   :hook (dired-mode . dired-collapse-mode))
 (straight-use-package 'dired+)
 ;; (straight-use-package 'discover) ;; discover more of Emacs. Sadly, moribund
@@ -342,7 +344,7 @@
 ;; Also, does this need to be graphics-only, like all-the-icons?
 ;; https://github.com/domtronn/all-the-icons.el#installation
 (use-package all-the-icons–dired
-  :straight '(all-the-icons-dired :repo "/wyuenho/all-the-icons-dired")
+  :straight '(:repo "/wyuenho/all-the-icons-dired")
   :hook (dired-mode . all-the-icons-dired-mode)
   :config (setq all-the-icons-dired-monochrome nil))
 
@@ -1038,9 +1040,8 @@
   :config
   (add-hook 'ob-racket-pre-runtime-library-load-hook
 	    #'ob-racket-raco-make-runtime-library)
-  :straight (ob-racket
-	       :type git :host github :repo "togakangaroo/ob-racket"
-	       :files ("*.el" "*.rkt")))
+  :straight (:type git :host github :repo "togakangaroo/ob-racket"
+		   :files ("*.el" "*.rkt")))
 
 ;; default to mononoki
 (set-face-attribute 'default nil
@@ -1051,27 +1052,27 @@
 
 (define-key org-roam-mode-map [mouse-1] #'org-roam-visit-thing)
 
-;; ERROR. CANNOT WORK WITH IT CANNOT WORK WITHOUT IT SIMPLE-HTTPD
-(use-package org-roam-server
-  ;; :preface (message "I'm here at byte-compile and load time.")
-  ;; :init (message "I'm always here at startup")
-  :straight t
-  :config
-  (setq org-roam-server-host "127.0.0.1"
-	org-roam-server-port 8080
-	org-roam-server-export-inline-images t
-	org-roam-server-authenticate nil
-	org-roam-server-network-poll t
-	org-roam-server-network-arrows nil
-	org-roam-server-network-label-truncate t
-	org-roam-server-network-label-truncate-length 60
-	org-roam-server-network-label-wrap-length 20)
-  ;; (message "I'm always here after the package is loaded")
-  ;; (error "Oops")
-  ;; Don't try to (require 'example), this is just an example!
-  :no-require t
-  :catch (lambda (keyword err)
-           (message (error-message-string err))))
+;; org-roam-server replaced with org-roam-ui
+;; (use-package org-roam-server
+;;   ;; :preface (message "I'm here at byte-compile and load time.")
+;;   ;; :init (message "I'm always here at startup")
+;;   :straight t
+;;   :config
+;;   (setq org-roam-server-host "127.0.0.1"
+;; 	org-roam-server-port 8080
+;; 	org-roam-server-export-inline-images t
+;; 	org-roam-server-authenticate nil
+;; 	org-roam-server-network-poll t
+;; 	org-roam-server-network-arrows nil
+;; 	org-roam-server-network-label-truncate t
+;; 	org-roam-server-network-label-truncate-length 60
+;; 	org-roam-server-network-label-wrap-length 20)
+;;   ;; (message "I'm always here after the package is loaded")
+;;   ;; (error "Oops")
+;;   ;; Don't try to (require 'example), this is just an example!
+;;   :no-require t
+;;   :catch (lambda (keyword err)
+;;            (message (error-message-string err))))
 
 ;; (file-dependents (feature-file 'cl))
 
