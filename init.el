@@ -634,7 +634,7 @@
 (add-hook 'TeX-mode-hook 'turn-on-reftex)   ; with AUCTeX LaTeX mode
 (add-hook 'TeX-mode-hook 'turn-on-cdlatex)  ; with AUCTeX LaTeX mode
 (add-hook 'TeX-mode-hook 'visual-line-mode)
-(add-hook 'TeX-mode-hook 'flyspell-preprocess-buffer) ;; somehow void
+;; (add-hook 'TeX-mode-hook 'flyspell-preprocess-buffer) ;; somehow void
 (add-hook 'TeX-mode-hook 'TeX-source-correlate-mode)
 (add-hook 'TeX-mode-hook 'TeX-PDF-mode)
 (add-hook 'TeX-mode-hook 'TeX-fold-mode)
