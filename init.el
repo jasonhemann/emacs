@@ -9,8 +9,11 @@
 
 ;; Need to be set before we load straight.el, to correct a flycheck incompatibility.
 (setq straight-fix-flycheck t)
+
+;; Configuration for how straight.el should load.
 (setq load-prefer-newer t)
 
+;; The straight.el bootstrap code.
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -48,8 +51,7 @@
     el-mock
     el-patch
     el2org
-    htmlize
-    www-synonyms
+;;  htmlize seems unnecessary. Org and markdown are all I would use it for and those are already supported elsewhere. 
     x-dict
     dictionary))
 
