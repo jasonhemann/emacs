@@ -43,16 +43,10 @@
 ;; From my package.el days
 ;; To be investigated further; most already dismissed
 '(package-selected-packages
-  '(company-emacs-eclim
-    ac-emacs-eclim
-    font-utils
-    el-init
-    el-init-viewer
-    el-mock
-    el-patch
-    el2org
-;;  htmlize seems unnecessary. Org and markdown are all I would use it for and those are already supported elsewhere. 
-    x-dict
+  '(
+
+;;  htmlize seems unnecessary. Org and markdown are all I would use it for and those are already supported elsewhere.
+;;  x-dict emacs attic, so no need.
     dictionary))
 
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -68,6 +62,8 @@
 (straight-use-package '(let-alist :type built-in))
 (straight-use-package '(which-key :custom (which-key-mode)))
 (straight-use-package '(helm :files ("*.el" "emacs-helm.sh" (:exclude "helm-lib.el" "helm-source.el" "helm-multi-match.el" "helm-core.el" "helm-core-pkg.el") "helm-pkg.el")))
+
+(straight-use-package 'font-utils) ;; Nice for working w/fonts in emacs
 
 ;; In order to
 (use-package www-synonyms
@@ -170,8 +166,12 @@
 (straight-use-package 'duplicate-thing) ;; duplicate current line
 (straight-use-package 'easy-jekyll)
 (straight-use-package 'ebib)
-(straight-use-package 'eclim)
 (straight-use-package 'ediprolog)
+(straight-use-package 'el2org)
+(straight-use-package 'el-init)
+(straight-use-package 'el-init-viewer)
+;;  el-mock Maybe I need it, but I don't think so.
+(straight-use-package 'el-patch)
 (straight-use-package 'eldoc) ;; the argument list of the function call you are currently writing
 ;; The following package requires some set-up to work with org-mode or w/e.
 (straight-use-package 'elmacro) ;; https://github.com/Silex/elmacro#elmacro-processors
@@ -246,6 +246,7 @@
 ;; (straight-use-package 'ido-vertical-mode) ;; makes ido-mode display vertically
 (straight-use-package 'iedit) ;; Emacs minor mode and allows you to edit one occurrence of some text in a buffer
 (straight-use-package 'info+) ;; Package that enhances some info menus
+;; (straight-use-package 'init-loader) ;; No, b/c el-init is better for split init files
 (straight-use-package 'j-mode)
 (straight-use-package 'jeison)
 (straight-use-package 'jump) ;; build functions which contextually jump between files
@@ -284,6 +285,7 @@
 (straight-use-package 'org-super-agenda)
 (straight-use-package 'org-trello)
 (straight-use-package 'org2web)
+(straight-use-package 'ox-gfm) ;; for el2org, instead of ox-md fallback cf https://github.com/tumashu/el2org
 (straight-use-package 'ox-jekyll-md)
 (straight-use-package 'ox-pandoc)
 (straight-use-package 'paradox)
@@ -463,7 +465,9 @@
 
 ;; I should want maven, I think, tbqh
 (add-hook 'java-mode-hook '(lambda () (gradle-mode 1)))
-(add-hook 'java-mode-hook 'eclim-mode)
+
+;; All eclim abandoned and better use java-lsp.
+;; no company-emacs-eclim ac-emacs-eclim either
 
 ;; Take a look at what he has here
 ;; (load "~/Documents/eliemacs/eliemacs")
@@ -666,6 +670,7 @@
 
 ;; Only sometimes works!
 ;; must be after font locking is set up for the buffer on!
+;; ... whatever that means
 ;; (add-hook 'find-file-hook 'TeX-fold-buffer t)
 
 
@@ -749,10 +754,10 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(TeX-auto-save t)
+ '(TeX-auto-save t t)
  '(TeX-auto-untabify t)
  '(TeX-engine 'xetex)
- '(TeX-parse-self t)
+ '(TeX-parse-self t t)
  '(ac-modes
    '(emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode haskell-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode racket-mode Racket-mode racket-repl-mode idris-mode idris-repl-mode))
  '(ad-redefinition-action 'accept)
@@ -768,7 +773,8 @@
  '(custom-safe-themes t)
  '(debug-on-quit t)
  '(default-input-method "TeX")
- '(dired-listing-switches "-al --group-directories-first --time-style=long-iso")
+ '(dired-listing-switches "-alGh1v --group-directories-first --time-style=long-iso" nil nil "long format, w/hidden files, w/o group information, w/good numeric sorting human-readable sizes, and w/directories first")
+ '(dired-recursive-copies 'always nil nil "I shouldn't be prompted to recursively copy dirs")
  '(display-time-day-and-date t)
  '(display-time-mode t)
  '(ebib-bibtex-dialect 'biblatex)
@@ -817,8 +823,8 @@
  '(preview-auto-cache-preamble t)
  '(racket-program "racket")
  '(reftex-cite-format 'biblatex)
- '(reftex-extra-bindings t)
- '(reftex-plug-into-AUCTeX t)
+ '(reftex-extra-bindings t t)
+ '(reftex-plug-into-AUCTeX t t)
  '(require-final-newline t nil nil "Add an EOL to files when I save them.")
  '(revert-without-query '("'(\".*\")"))
  '(ring-bell-function 'ignore)
@@ -949,7 +955,7 @@
 ;; point-to-register C-x r SPC
 ;; jump-to-register C-x r j
 ;; M-x LaTeX-math-cal Ret <the letter>
-;; M-x smog-check-region
+;; M-x smog-check, smog-check-region I thought used to exist but must not be autoloaded
 ;; C-h a does apropos
 ;; M-v custom-enabled-themes tells you what themes are in force.
 ;; In org-mode C-' on a table.el table lets you edit it nicely, like that.
