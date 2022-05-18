@@ -27,6 +27,8 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
+(require 'straight-x) ;; Adds the straight-x commands to clean up straight install
+
 (defvar curr-f-list features)
 
 ;; This is probably not good, b/c what if we are not online
@@ -510,10 +512,6 @@
 (let ((gnu-ls-path (executable-find "gls")))
   (when gnu-ls-path
     (setq insert-directory-program gnu-ls-path)))
-
-
-
-(require 'straight-x) ;; Adds the straight-x commands to clean up straight install
 
 ;; (ac-mode 1)
 ;; (require 'auto-complete-config)
