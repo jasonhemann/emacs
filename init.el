@@ -42,16 +42,17 @@
 
 ;; From my package.el days
 ;; To be investigated further; most already dismissed
-'(package-selected-packages
-  '(
-
-;;  htmlize seems unnecessary. Org and markdown are all I would use it for and those are already supported elsewhere.
-;;  x-dict emacs attic, so no need.
-    dictionary))
+;; (package-selected-packages
+;;  '(
+;; ;;  htmlize seems unnecessary. Org and markdown are all I would use it for and those are already supported elsewhere.
+;; ;;  x-dict emacs attic, so no need.
+;; ;;  dictionary is also a emacs 21 era thing, so no need.
+;;   ))
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 (straight-use-package 'use-package)
 
+;; So that I can publicly VC my config w/o leaking secret keys &c.
 (straight-use-package '(use-package-secret :host github :repo "emacswatcher/use-package-secret"))
 
 (straight-use-package 'org)
@@ -65,13 +66,12 @@
 
 (straight-use-package 'font-utils) ;; Nice for working w/fonts in emacs
 
-;; In order to
+;; In order to search for synonyms.
 (use-package www-synonyms
   :straight t
   :secret api-key
   :config
   (setq www-synonyms-key api-key))
-
 
 (use-package org-roam
       :demand t
@@ -100,7 +100,12 @@
 (straight-use-package 'academic-phrases)
 (straight-use-package 'artbollocks-mode)
 (straight-use-package 'ace-jump-mode)
-(straight-use-package 'anzu) ;; displays current match and total matches information
+;; displays current match and total matches information
+;; global search count mode
+(use-package anzu
+  :straight t
+  :config
+  (global-anzu-mode +1))
 (straight-use-package 'apel)
 (straight-use-package 'auctex) ;; Not sure if I need w/dependency but trying just in case
 (straight-use-package 'auctex-latexmk)
@@ -152,7 +157,6 @@
 (straight-use-package 'cyberpunk-theme)
 (straight-use-package 'dash) ;; A modern list library for Emacs
 (straight-use-package 'dash-functional)
-(straight-use-package 'dictionary)
 (straight-use-package '(dired-hacks-utils :host github :repo "Fuco1/dired-hacks" :fork (:host github :repo "jasonhemann/dired-hacks")))
 (use-package dired-collapse
   :straight '(:host github :repo "Fuco1/dired-hacks"
@@ -165,8 +169,18 @@
 (straight-use-package 'dtrt-indent) ;; A minor mode that guesses the indentation offset originally used for creating source code
 (straight-use-package 'duplicate-thing) ;; duplicate current line
 (straight-use-package 'easy-jekyll)
-(straight-use-package 'ebib)
-(straight-use-package 'ediprolog)
+
+(use-package ebib
+  :straight t
+  :config
+  (setq ebib-bibtex-dialect 'biblatex)
+  (global-set-key "\C-ce" 'ebib)) ;; ebib mode, for latex
+
+(use-package ediprolog
+  :straight t
+  :config
+  (setq ediprolog-program "scryer-prolog")
+  (global-set-key [f10] 'ediprolog-dwim))
 (straight-use-package 'el2org)
 (straight-use-package 'el-init)
 (straight-use-package 'el-init-viewer)
@@ -237,7 +251,15 @@
 ;; (straight-use-package 'helm-system-packages)
 ;; (straight-use-package 'helm-tramp)
 ;; (straight-use-package 'helm-wordnet)
-(straight-use-package 'helpful)
+(use-package helpful
+  :straight t
+  :config
+  (global-set-key (kbd "C-h f") #'helpful-callable)
+  (global-set-key (kbd "C-h v") #'helpful-variable)
+  (global-set-key (kbd "C-h k") #'helpful-key)
+  (global-set-key (kbd "C-c C-d") #'helpful-at-point)
+  (global-set-key (kbd "C-h F") #'helpful-function)
+  (global-set-key (kbd "C-h C") #'helpful-command))
 (straight-use-package 'ht)
 ;; https://github.com/coldnew/coldnew-emacs#hydra
 (straight-use-package 'hydra) ;; tie related commands into a family of short bindings w/a common prefix.
@@ -254,6 +276,9 @@
 (straight-use-package 'lean-mode)
 (straight-use-package 'latex-unicode-math-mode)
 (straight-use-package 'loadhist)
+(use-package magit
+  :straight t
+  :config (global-set-key (kbd "C-x g") 'magit-status))
 (straight-use-package 'magit-filenotify) ;; if magit feels slow, disable this.
 (add-hook 'magit-status-mode-hook 'magit-filenotify-mode)
 (straight-use-package 'magit-gerrit) ;; gerrit mode for emacs
@@ -277,7 +302,7 @@
 (straight-use-package 'org-jekyll)
 (straight-use-package 'org-journal)
 (straight-use-package 'org-ql)
-(straight-use-package 'org-ref) 
+(straight-use-package 'org-ref)
 (straight-use-package 'org-roam-bibtex)
 ;; (straight-use-package 'org-roam-server) Not useful, org-roam-ui is the good one
 (straight-use-package 'org-rtm)
@@ -294,7 +319,8 @@
 (straight-use-package 'paredit-menu)
 (straight-use-package 'parent-mode)
 ;;(straight-use-package 'pdf-tools)
-(use-package pdf-tools :straight t
+(use-package pdf-tools
+  :straight t
 ;;  :after (pdf-annot fullframe)
 ;;  :magic ("%PDF" . pdf-view-mode)
   :bind (:map pdf-view-mode-map
@@ -331,7 +357,7 @@
 (straight-use-package 'sx) ;; Stackoverflow mode ;-)
 (straight-use-package 'svg-tag-mode)
 (straight-use-package 'tabbar)
-(straight-use-package 'treepy)
+(straight-use-package 'treepy) ;; tree-walk functionality like a clojure library implementation
 (straight-use-package 'ts) ;; A bunch of nice utilities for time and date parsing, better than the built-ins
 (straight-use-package 'undo-tree) ;; Treat undo history as a tree
 (straight-use-package 'use-package)
@@ -350,7 +376,10 @@
 (straight-use-package 'yafolding) ;; Yet another folding extension for Emacs
 (straight-use-package 'yaml-mode) ;; The emacs major mode for editing files in the YAML data serialization format.
 (straight-use-package 'zones)
-(straight-use-package 'zygospore)
+
+(use-package zygospore
+  :straight t
+  :config (global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows))
 
 ;; To turn on selectrum
 (selectrum-mode +1)
@@ -374,7 +403,6 @@
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key (kbd "C-c c") 'org-capture)
 
-(global-set-key [f10] 'ediprolog-dwim)
 
 ;; (org-roam-db-autosync-mode)
 
@@ -386,7 +414,10 @@
                   (window-height . fit-window-to-buffer)))
 
 (global-set-key (kbd "M-;") 'comment-dwim-2)
+
 (global-set-key (kbd "C-z") #'company-try-hard)
+;; global-set-key is a shortcut here for:
+;; (define-key (current-global-map) (kbd "C-z") #'company-try-hard)
 
 ;; UTF-8 as default encoding
 (set-language-environment "utf-8")
@@ -474,14 +505,13 @@
 
 (add-hook 'racket-mode-hook #'racket-xp-mode)
 
-(global-set-key (kbd "C-x g") 'magit-status)
 (global-set-key [C-M-tab] 'clang-format-region)
 
 (let ((gnu-ls-path (executable-find "gls")))
   (when gnu-ls-path
     (setq insert-directory-program gnu-ls-path)))
 
-(global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows)
+
 
 (require 'straight-x) ;; Adds the straight-x commands to clean up straight install
 
@@ -528,11 +558,10 @@
   "A function to add a prime character."
   (interactive (insert "′")))
 
-;; ebib mode for latex
-(global-set-key "\C-ce" 'ebib)
 
-(if (eq system-type 'darwin)
-    (add-hook 'text-mode-hook 'wordsmith-mode)) ;; Because this depends on OSX tooling specifically
+;; Because this depends on OSX tooling specifically
+(when (and (eq system-type 'darwin) (executable-find "syn"))
+  (add-hook 'text-mode-hook 'wordsmith-mode))
 
 (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
 (global-set-key (kbd "C->") 'mc/mark-next-like-this)
@@ -545,7 +574,7 @@
 
 (global-flycheck-mode)
 (global-company-mode)
-(global-anzu-mode +1) ;; global search count mode
+
 
 (flycheck-define-checker proselint
   "A linter for prose."
@@ -659,14 +688,6 @@
 (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
 (add-hook 'LaTeX-mode-hook 'LaTeX-preview-setup)
 
-(global-set-key (kbd "C-h f") #'helpful-callable)
-(global-set-key (kbd "C-h v") #'helpful-variable)
-(global-set-key (kbd "C-h k") #'helpful-key)
-
-(global-set-key (kbd "C-c C-d") #'helpful-at-point)
-
-(global-set-key (kbd "C-h F") #'helpful-function)
-(global-set-key (kbd "C-h C") #'helpful-command)
 
 ;; Only sometimes works!
 ;; must be after font locking is set up for the buffer on!
@@ -777,10 +798,6 @@
  '(dired-recursive-copies 'always nil nil "I shouldn't be prompted to recursively copy dirs")
  '(display-time-day-and-date t)
  '(display-time-mode t)
- '(ebib-bibtex-dialect 'biblatex)
- '(eclim-eclipse-dirs
-   '("/Applications/eclipse" "/usr/lib/eclipse" "/usr/local/lib/eclipse" "/usr/share/eclipse" "/Applications/Eclipse.app/Contents/Eclipse/" "/Applications/Eclipse Java.app/Contents/Eclipse/"))
- '(ediprolog-program "scryer-prolog")
  '(find-file-visit-truename t)
  '(flyspell-issue-message-flag nil)
  '(flyspell-issue-welcome-flag nil)
@@ -1027,7 +1044,7 @@
  '(diary ((t (:foreground "dark red")))))
 
 (define-key org-mode-map (kbd "M-;") 'org-comment-dwim-2)
-(define-key company-active-map (kbd "C-z") #'company-try-hard)
+
 (setq org-roam-graph-executable "/usr/local/bin/dot")
 
 (with-eval-after-load 'ox-latex
