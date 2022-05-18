@@ -1,5 +1,4 @@
 
-
 ;;; Commentary:
 
 ;;; This is Jason Hemann's .emacs setup, intended for OSX and some linux machines. It is currently in an
@@ -44,21 +43,21 @@
   '(company-emacs-eclim
     ac-emacs-eclim
     font-utils
-    fontawesome
     el-init
     el-init-viewer
     el-mock
     el-patch
     el2org
-    latex-unicode-math-mode
     htmlize
     www-synonyms
     x-dict
-    magit-filenotify
     dictionary))
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 (straight-use-package 'use-package)
+
+(straight-use-package '(use-package-secret :host github :repo "emacswatcher/use-package-secret"))
+
 (straight-use-package 'org)
 (straight-use-package '(agda2-mode :includes (eri annotation)))
 (straight-use-package '(simple-httpd :includes web-server :files ("*.el")))
@@ -67,6 +66,14 @@
 (straight-use-package '(let-alist :type built-in))
 (straight-use-package '(which-key :custom (which-key-mode)))
 (straight-use-package '(helm :files ("*.el" "emacs-helm.sh" (:exclude "helm-lib.el" "helm-source.el" "helm-multi-match.el" "helm-core.el" "helm-core-pkg.el") "helm-pkg.el")))
+
+;; In order to
+(use-package www-synonyms
+  :straight t
+  :secret api-key
+  :config
+  (setq www-synonyms-key api-key))
+
 
 (use-package org-roam
       :demand t
@@ -171,6 +178,7 @@
 (straight-use-package 'exec-path-from-shell) ;; Make Emacs use the $PATH set up by the user's shell
 (straight-use-package 'expand-region) ;; Increase selected region by semantic units
 (straight-use-package 'f) ;; Modern API for working with files and directories in Emacs
+;; fontawesome is abandonware
 (straight-use-package 'flim)
 (straight-use-package 'flycheck)
 (straight-use-package '(flycheck-textlint :type git :host github :repo "kisaragi-hiu/flycheck-textlint" :fork nil))
@@ -241,8 +249,10 @@
 (straight-use-package 'jump) ;; build functions which contextually jump between files
 (straight-use-package 'langtool)
 (straight-use-package 'lean-mode)
+(straight-use-package 'latex-unicode-math-mode)
 (straight-use-package 'loadhist)
-(straight-use-package 'magit-filenotify)
+(straight-use-package 'magit-filenotify) ;; if magit feels slow, disable this.
+(add-hook 'magit-status-mode-hook 'magit-filenotify-mode)
 (straight-use-package 'magit-gerrit) ;; gerrit mode for emacs
 (straight-use-package 'magit-popup)
 (straight-use-package 'markdown-mode+)
@@ -737,10 +747,10 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(TeX-auto-save t t)
+ '(TeX-auto-save t)
  '(TeX-auto-untabify t)
  '(TeX-engine 'xetex)
- '(TeX-parse-self t t)
+ '(TeX-parse-self t)
  '(ac-modes
    '(emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode haskell-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode racket-mode Racket-mode racket-repl-mode idris-mode idris-repl-mode))
  '(ad-redefinition-action 'accept)
@@ -765,7 +775,7 @@
  '(ediprolog-program "scryer-prolog")
  '(find-file-visit-truename t)
  '(flyspell-issue-message-flag nil)
- '(flyspell-issue-welcome-flag nil t)
+ '(flyspell-issue-welcome-flag nil)
  '(fringe-mode 2 nil (fringe))
  '(global-auto-revert-non-file-buffers t)
  '(global-display-line-numbers-mode t)
@@ -776,10 +786,10 @@
  '(initial-scratch-message nil)
  '(ispell-highlight-face 'highlight)
  '(ispell-highlight-p t)
- '(ispell-program-name "aspell" t)
+ '(ispell-program-name "aspell")
  '(langtool-autoshow-message-function 'langtool-autoshow-detail-popup)
+ '(langtool-bin "/usr/local/bin/languagetool")
  '(langtool-default-language "en-US")
- '(langtool-language-tool-jar "~/LanguageTool-3.4/languagetool-commandline.jar")
  '(langtool-mother-tongue "en")
  '(load-home-init-file t t)
  '(ls-lisp-dirs-first t)
@@ -790,9 +800,9 @@
  '(org-agenda-include-diary t)
  '(org-agenda-start-with-log-mode 'only)
  '(org-babel-load-languages '((scheme . t)))
- '(org-catch-invisible-edits 'smart)
  '(org-directory "~/.org")
  '(org-export-backends '(ascii html icalendar latex md org))
+ '(org-fold-catch-invisible-edits 'smart)
  '(org-list-allow-alphabetical t)
  '(org-log-done 'time)
  '(org-modules
@@ -805,8 +815,8 @@
  '(preview-auto-cache-preamble t)
  '(racket-program "racket")
  '(reftex-cite-format 'biblatex)
- '(reftex-extra-bindings t t)
- '(reftex-plug-into-AUCTeX t t)
+ '(reftex-extra-bindings t)
+ '(reftex-plug-into-AUCTeX t)
  '(require-final-newline t nil nil "Add an EOL to files when I save them.")
  '(revert-without-query '("'(\".*\")"))
  '(ring-bell-function 'ignore)
@@ -956,6 +966,13 @@
 ;; M-x find-grep-dired is like that but it opens in a dired buffer
 ;; Diminish mode will help me clean up my modeline
 ;; straight--build-cache has the dependencies listed
+;; C-h o ⇒ What’s this thing?
+;; C-h e ⇒ What’d /Emacs/ do?
+;; C-h l ⇒ What’d /I/ do?
+;; C-h ? ⇒ What’re the help topics? —gives possible completions to “C-h ⋯”.
+;; “I accidentally hit a key, which one and what did it do!?” ⇒ C-h e and C-h l, then use C-h o to get more details on the action. ;-)
+;; Finally, C-h d asks nicely what ‘d’ocumentation you’re interested in. After providing a few keywords, the apropos tool yields possible functions and variables that may accomplish my goal.
+
 
 ;;
 ;; Right now, this is busted in the agda-mode repository. 13/12/15
