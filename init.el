@@ -58,7 +58,14 @@
 (straight-use-package '(use-package-secret :host github :repo "emacswatcher/use-package-secret"))
 
 (straight-use-package 'org)
-(straight-use-package '(agda2-mode :includes (eri annotation)))
+
+(use-package agda2-mode
+  :straight '(:includes (eri annotation))
+  :hook (agda2-mode . enable-paredit-mode)
+  :config
+  (add-to-list 'auto-mode-alist '("\\.agda\\'" . agda2-mode))
+  (add-to-list 'auto-mode-alist '("\\.lagda.md\\'" . agda2-mode)))
+
 (straight-use-package '(simple-httpd :includes web-server :files ("*.el")))
 (straight-use-package 'impatient-mode) ;; replacement for flymd
 (straight-use-package '(faceup :type built-in)) ;; b/c this is newer than the one from straight, lexical binding
@@ -100,7 +107,11 @@
 
 (straight-use-package 'ac-math)
 (straight-use-package 'academic-phrases)
-(straight-use-package 'artbollocks-mode)
+
+(use-package artbollocks-mode
+  :straight t
+  :hook (text-mode . artbollocks-mode))
+
 (straight-use-package 'ace-jump-mode)
 ;; displays current match and total matches information
 ;; global search count mode
@@ -108,7 +119,7 @@
   :straight t
   :config
   (global-anzu-mode +1))
-(straight-use-package 'apel)
+(straight-use-package 'apel) ;; portable emacs extensions; unclear how relevant
 (straight-use-package 'auctex) ;; Not sure if I need w/dependency but trying just in case
 (straight-use-package 'auctex-latexmk)
 (straight-use-package 'auto-compile) ;; Automatically compile Emacs Lisp libraries
@@ -127,7 +138,7 @@
 (use-package bind-key
   :straight t
   :bind ("C-h B" . describe-personal-keybindings))
-(straight-use-package 'bog)
+(straight-use-package 'bog) ;; for taking research notes w/org. Cf the more general org-ref that does both notes and writing.
 (straight-use-package 'buffer-move) ;; used for rotating buffers. buf-move-left
 (straight-use-package 'calfw)
 (straight-use-package 'calfw-cal)
@@ -137,11 +148,17 @@
 ;; No need for howm-mode; org-mode + roam for me
 ;; (straight-use-package 'calfw-howm)
 (straight-use-package 'cbm) ;; cycle by major mode
-(straight-use-package 'cdlatex)
+
+(use-package cdlatex
+  :straight t
+  :hook
+  (latex-mode . turn-on-cdlatex)  ; with Emacs latex mode
+  (TeX-mode . turn-on-cdlatex))  ; with AUCTeX LaTeX mode
+
 (straight-use-package 'cl-lib) ;; Properly prefixed CL functions and macros
 (straight-use-package 'clang-format)
 (straight-use-package 'clean-aindent-mode) ;; Emacs extension for simple indent and unindent
-(straight-use-package 'color-theme-modern)
+
 (straight-use-package 'comment-dwim-2) ;; A replacement for the emacs' built-in command comment-dwim
 (straight-use-package 'company) ;; Complete anything ;-)
 (straight-use-package 'company-coq)
@@ -156,7 +173,7 @@
 (straight-use-package 'consult) ;; the counsel equivalent for selectrum
 (straight-use-package 'coq-commenter)
 (straight-use-package 'crux) ;; collection of emacs extensions
-(straight-use-package 'cyberpunk-theme)
+
 (straight-use-package 'dash) ;; A modern list library for Emacs
 (straight-use-package 'dash-functional)
 (straight-use-package '(dired-hacks-utils :host github :repo "Fuco1/dired-hacks" :fork (:host github :repo "jasonhemann/dired-hacks")))
@@ -168,6 +185,10 @@
 ;; (straight-use-package 'discover) ;; discover more of Emacs. Sadly, moribund
 (straight-use-package 'discover-my-major) ;; Discover key bindings and their meaning for the current Emacs major mode
 (straight-use-package 'dr-racket-like-unicode)
+;; Why can't I add these hooks after dr-racket-like-unicode
+(add-hook 'racket-mode-hook #'racket-unicode-input-method-enable)
+(add-hook 'racket-repl-mode #'racket-unicode-input-method-enable)
+
 (straight-use-package 'dtrt-indent) ;; A minor mode that guesses the indentation offset originally used for creating source code
 (straight-use-package 'duplicate-thing) ;; duplicate current line
 (straight-use-package 'easy-jekyll)
@@ -213,10 +234,15 @@
 (straight-use-package 'gh-md)
 (straight-use-package 'ghub)
 (straight-use-package 'git-timemachine) ;; Walk through git revisions of a file
-(straight-use-package 'gotham-theme)
+
 (straight-use-package 'goto-chg) ;; Goto last change in current buffer
 (straight-use-package 'gradle-mode)
 (straight-use-package 'graphql)
+
+;; Themes from packages
+(straight-use-package 'color-theme-modern)
+(straight-use-package 'cyberpunk-theme)
+(straight-use-package 'gotham-theme)
 (straight-use-package 'green-phosphor-theme)
 (straight-use-package 'hc-zenburn-theme)
 
@@ -274,7 +300,7 @@
 (straight-use-package 'j-mode)
 (straight-use-package 'jeison)
 (straight-use-package 'jump) ;; build functions which contextually jump between files
-(straight-use-package 'langtool)
+
 (straight-use-package 'lean-mode)
 (straight-use-package 'latex-unicode-math-mode)
 (straight-use-package 'loadhist)
@@ -339,12 +365,24 @@
 (straight-use-package 'powerthesaurus)
 (straight-use-package 'projectile) ;; Project Interaction Library for Emacs http://projectile.readthedocs.io
 (straight-use-package 'proof-general)
-(straight-use-package 'racket-mode)
+
+(use-package racket-mode
+  :straight t
+  :hook
+  (racket-mode . enable-paredit-mode) ;; should I need the below?
+  (racket-mode . (lambda () (define-key racket-mode-map (kbd "C-c r") 'racket-run)))
+  (racket-mode . racket-xp-mode)
+  (racket-repl-mode . enable-paredit-mode)
+  :config
+  (setq racket-program "racket")
+  (add-to-list 'auto-mode-alist '("\\.rkt\\'" . racket-mode)))
+
 (straight-use-package 'reazon)
 (straight-use-package 'refine)
+
 (straight-use-package 's) ;; The long lost Emacs string manipulation library.
 (straight-use-package 'savehist)
-(straight-use-package 'scheme-complete) ;; Unclear if I need it — Asked Alex Shinn
+;; (straight-use-package 'scheme-complete) ;; Unclear if I need it — Asked Alex Shinn
 (straight-use-package 'selectrum)
 (straight-use-package 'selectrum-prescient)
 (straight-use-package 'semi)
@@ -362,7 +400,6 @@
 (straight-use-package 'treepy) ;; tree-walk functionality like a clojure library implementation
 (straight-use-package 'ts) ;; A bunch of nice utilities for time and date parsing, better than the built-ins
 (straight-use-package 'undo-tree) ;; Treat undo history as a tree
-(straight-use-package 'use-package)
 ;; vertigo
 (straight-use-package 'visual-regexp) ;; A regexp/replace command for Emacs with interactive visual feedback
 (straight-use-package 'visual-regexp-steroids) ;; Extends visual-regexp to support other regexp engines
@@ -373,7 +410,11 @@
 (straight-use-package 'wordnut)
 (straight-use-package 'wordsmith-mode)
 (straight-use-package 'wrap-region) ;; Emacs minor mode to wrap region with tag or punctuations
-(straight-use-package 'writegood-mode)
+
+(use-package writegood-mode
+  :straight t
+  :hook (text-mode . writegood-mode))
+
 (straight-use-package 'ws-butler) ;; Unobtrusively trim extraneous white-space *ONLY* in lines edited.
 (straight-use-package 'yafolding) ;; Yet another folding extension for Emacs
 (straight-use-package 'yaml-mode) ;; The emacs major mode for editing files in the YAML data serialization format.
@@ -397,8 +438,10 @@
 ;; https://github.com/domtronn/all-the-icons.el#installation
 (use-package all-the-icons–dired
   :straight '(:host github :repo "wyuenho/all-the-icons-dired")
-  :hook (dired-mode . all-the-icons-dired-mode)
-  :config (setq all-the-icons-dired-monochrome nil))
+  :hook
+  (dired-mode . all-the-icons-dired-mode)
+  :config
+  (setq all-the-icons-dired-monochrome nil))
 
 ;; Org mode defaults
 (global-set-key (kbd "C-c l") 'org-store-link)
@@ -505,7 +548,7 @@
 ;; Take a look at what he has here
 ;; (load "~/Documents/eliemacs/eliemacs")
 
-(add-hook 'racket-mode-hook #'racket-xp-mode)
+
 
 (global-set-key [C-M-tab] 'clang-format-region)
 
@@ -538,8 +581,6 @@
 ;; (when (executable-find "curl")
 ;;   (setq helm-google-suggest-use-curl-p t))
 
-(add-hook 'racket-mode-hook (lambda () (define-key racket-mode-map (kbd "C-c r") 'racket-run)))
-
 
 ;; JBH
 ;; (ac-config-default)
@@ -570,9 +611,11 @@
 (add-hook 'scheme-mode-hook                        'multiple-cursors-mode)
 (add-hook 'inferior-scheme-mode-hook               'multiple-cursors-mode)
 
-(global-flycheck-mode)
 (global-company-mode)
 
+
+
+(global-flycheck-mode)
 
 (flycheck-define-checker proselint
   "A linter for prose."
@@ -611,11 +654,18 @@
 
 (setq-default ispell-list-command "list")
 
-(global-set-key "\C-x4w" 'langtool-check)
-(global-set-key "\C-x4W" 'langtool-check-done)
-(global-set-key "\C-x4l" 'langtool-switch-default-language)
-(global-set-key "\C-x44" 'langtool-show-message-at-point)
-(global-set-key "\C-x4c" 'langtool-correct-buffer)
+(use-package langtool
+  :straight t
+  :config
+  (global-set-key "\C-x4w" 'langtool-check)
+  (global-set-key "\C-x4W" 'langtool-check-done)
+  (global-set-key "\C-x4l" 'langtool-switch-default-language)
+  (global-set-key "\C-x44" 'langtool-show-message-at-point)
+  (global-set-key "\C-x4c" 'langtool-correct-buffer)
+  (setq langtool-autoshow-message-function 'langtool-autoshow-detail-popup
+	langtool-bin "/usr/local/bin/languagetool"
+	langtool-default-language "en-US"
+	langtool-mother-tongue "en"))
 
 (defun langtool-autoshow-detail-popup (overlays)
   ". OVERLAYS."
@@ -629,8 +679,10 @@
 
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
-(setq-default TeX-master nil) ;; (setq-default TeX-master "master") ; set a master for in the future.
-;; (setq reftex-label-alist '(AMSTeX)) ;; For if I'm getting parens around my references
+;; (setq-default TeX-master "master") ; set a master for in the future.
+(setq-default TeX-master nil)
+
+(setq reftex-default-bibliography '("~/old-microKanren.bib"))
 (setq reftex-plug-into-AUCTeX t)
 (setq reftex-extra-bindings t)
 (setq bib-cite-use-reftex-view-crossref t)
@@ -658,10 +710,8 @@
 
 ;; TeX-latex-mode, LaTeX-mode, TeX-mode, tex-mode, latex-mode, auxtex-mode
 
-(add-hook 'latex-mode-hook 'turn-on-cdlatex)  ; with Emacs latex mode
+
 (add-hook 'latex-mode-hook 'turn-on-reftex)   ; with Emacs latex mode
-(add-hook 'text-mode-hook 'artbollocks-mode)
-(add-hook 'text-mode-hook 'writegood-mode)
 (add-hook 'text-mode-hook 'flyspell-mode)
 (add-hook 'text-mode-hook 'visual-line-mode)
 
@@ -675,7 +725,6 @@
 (add-hook 'LaTeX-mode-hook 'LaTeX-preview-setup)
 
 (add-hook 'TeX-mode-hook 'turn-on-reftex)   ; with AUCTeX LaTeX mode
-(add-hook 'TeX-mode-hook 'turn-on-cdlatex)  ; with AUCTeX LaTeX mode
 (add-hook 'TeX-mode-hook 'visual-line-mode)
 ;; (add-hook 'TeX-mode-hook 'flyspell-preprocess-buffer) ;; somehow void
 (add-hook 'TeX-mode-hook 'TeX-source-correlate-mode)
@@ -706,22 +755,12 @@
 ;;     (setq eldoc-documentation-function 'scheme-get-current-symbol-info)
 ;;     (eldoc-mode)))
 
-;; (define-key flyspell-mode-map (kbd "C-;") #'flyspell-popup-correct)
-;; You can also enable flyspell-popup-auto-correct-mode to popup that
-;; Popup Menu automatically with a delay (default 1.6 seconds):
-;; (add-hook 'flyspell-mode-hook #'flyspell-popup-auto-correct-mode)
-
 (add-to-list 'auto-mode-alist '("\\.v$" . coq-mode))
-(add-to-list 'auto-mode-alist '("\\.rkt\\'" . racket-mode))
-(add-to-list 'auto-mode-alist '("\\.agda\\'" . agda2-mode))
-(add-to-list 'auto-mode-alist '("\\.lagda.md\\'" . agda2-mode))
+
 (add-to-list 'auto-mode-alist '("\\.pl\\'" . prolog-mode))
 
 (autoload 'coq-mode "coq" "Major mode for editing Coq vernacular." t)
 (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
-
-(add-hook 'racket-mode-hook      #'racket-unicode-input-method-enable)
-(add-hook 'racket-repl-mode-hook #'racket-unicode-input-method-enable)
 
 ;; Paredit-everywhere-mode is a liar.
 ;; It turns on *some* of the paredit keybindings but not all, and it doesn't let you choose
@@ -733,18 +772,15 @@
 (add-hook 'lisp-interaction-mode-hook              #'enable-paredit-mode)
 (add-hook 'scheme-mode-hook                        #'enable-paredit-mode)
 (add-hook 'inferior-scheme-mode-hook               #'enable-paredit-mode)
-(add-hook 'racket-mode-hook                        #'enable-paredit-mode)
-(add-hook 'racket-repl-mode-hook                   #'enable-paredit-mode)
+
+
 (add-hook 'idris-mode-hook                         #'enable-paredit-mode)
 (add-hook 'idris-repl-mode-hook                    #'enable-paredit-mode)
-(add-hook 'agda2-mode-hook                         #'enable-paredit-mode)
 ;; (add-hook 'ciao-mode-hook                          #'enable-paredit-mode) ;; not til fix paren space issue.
 ;; tex-mode has paredit-mode issue too.
 (add-hook 'idris-prover-script-mode-hook           #'enable-paredit-mode)
 
 (global-set-key (kbd "{") 'paredit-open-curly)
-;; (add-hook 'racket-mode-hook      #'flylisp-mode)
-;; (add-hook 'racket-repl-mode-hook #'flylisp-mode)
 
 (when (memq window-system '(mac ns))
   (exec-path-from-shell-initialize))
@@ -790,15 +826,12 @@
  '(calendar-week-start-day 1)
  '(column-number-mode t)
  '(custom-safe-themes t)
- '(debug-on-quit t)
  '(default-input-method "TeX")
  '(dired-listing-switches "-alGh1v --group-directories-first --time-style=long-iso" nil nil "long format, w/hidden files, w/o group information, w/good numeric sorting human-readable sizes, and w/directories first")
  '(dired-recursive-copies 'always nil nil "I shouldn't be prompted to recursively copy dirs")
  '(display-time-day-and-date t)
  '(display-time-mode t)
  '(find-file-visit-truename t)
- '(flyspell-issue-message-flag nil)
- '(flyspell-issue-welcome-flag nil)
  '(fringe-mode 2 nil (fringe))
  '(global-auto-revert-non-file-buffers t)
  '(global-display-line-numbers-mode t)
@@ -810,10 +843,6 @@
  '(ispell-highlight-face 'highlight)
  '(ispell-highlight-p t)
  '(ispell-program-name "aspell")
- '(langtool-autoshow-message-function 'langtool-autoshow-detail-popup)
- '(langtool-bin "/usr/local/bin/languagetool")
- '(langtool-default-language "en-US")
- '(langtool-mother-tongue "en")
  '(load-home-init-file t t)
  '(ls-lisp-dirs-first t)
  '(mac-system-move-file-to-trash-use-finder t)
@@ -836,7 +865,6 @@
  '(org-trello-current-prefix-keybinding "C-c o")
  '(org-use-speed-commands t)
  '(preview-auto-cache-preamble t)
- '(racket-program "racket")
  '(reftex-cite-format 'biblatex)
  '(reftex-extra-bindings t t)
  '(reftex-plug-into-AUCTeX t t)
@@ -898,6 +926,16 @@
 (add-to-list 'flycheck-checkers 'proselint)
 
 (global-set-key (kbd "<f8>") 'ispell-word)
+
+
+(define-key flyspell-mode-map (kbd "C-;") #'flyspell-popup-correct)
+;; You can also enable flyspell-popup-auto-correct-mode to popup that
+;; Popup Menu automatically with a delay (default 1.6 seconds):
+(add-hook 'flyspell-mode-hook #'flyspell-popup-auto-correct-mode)
+
+
+(setq flyspell-issue-message-flag nil)
+(setq flyspell-issue-welcome-flag nil)
 (global-set-key (kbd "C-S-<f8>") 'flyspell-mode)
 (global-set-key (kbd "C-M-<f8>") 'flyspell-buffer)
 (global-set-key (kbd "C-<f8>") 'flyspell-check-previous-highlighted-word)
@@ -938,20 +976,14 @@
       (let ((msg (langtool-details-error-message overlays)))
         (popup-tip msg)))))
 
-(setq-default TeX-master nil)
-;; (setq-default TeX-master "master") ; set a master for in the future.
-;;'(reftex-label-alist '(AMSTeX)) ;; For if I'm getting parens around my references
-
-(if window-system
-  (load-theme (nth (cl-random (length (custom-available-themes))) (custom-available-themes)) t) ;; To have it always remember this is safe
-  (load-theme 'wombat t))
+(load-theme (nth (cl-random (length (custom-available-themes))) (custom-available-themes)) t)    ;; To have it always remember this is safe
 
  ;; Add opam emacs directory to the load-path
 (setq opam-share (substring (shell-command-to-string "opam config var share 2> /dev/null") 0 -1))
 (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
+
 ;; Pre-load Andromeda
 (require 'andromeda-autoloads)
-
 
 ;; For 311, to make continuations RI.
 ;; Assumes k has some formal parameters
@@ -989,20 +1021,12 @@
 ;; M-x find-grep-dired is like that but it opens in a dired buffer
 ;; Diminish mode will help me clean up my modeline
 ;; straight--build-cache has the dependencies listed
-;; C-h o ⇒ What’s this thing?
-;; C-h e ⇒ What’d /Emacs/ do?
-;; C-h l ⇒ What’d /I/ do?
-;; C-h ? ⇒ What’re the help topics? —gives possible completions to “C-h ⋯”.
+;; C-h o ⇒ What's this thing?
+;; C-h e ⇒ What'd /Emacs/ do?
+;; C-h l ⇒ What'd /I/ do?
+;; C-h ? ⇒ What're the help topics? —gives possible completions to “C-h ⋯”.
 ;; “I accidentally hit a key, which one and what did it do!?” ⇒ C-h e and C-h l, then use C-h o to get more details on the action. ;-)
-;; Finally, C-h d asks nicely what ‘d’ocumentation you’re interested in. After providing a few keywords, the apropos tool yields possible functions and variables that may accomplish my goal.
-
-
-;;
-;; Right now, this is busted in the agda-mode repository. 13/12/15
-;; (when (eq system-type 'darwin)
-;;   (load-file
-;;     (let ((coding-system-for-read 'utf-8))
-;;       (shell-command-to-string "agda-mode locate"))))
+;; Finally, C-h d asks nicely what 'd'ocumentation you're interested in. After providing a few keywords, the apropos tool yields possible functions and variables that may accomplish my goal.
 
 ;; This was some setup that I did to the minibuffer; not sure it was wise
 ;; (add-hook 'eval-expression-minibuffer-setup-hook 'my-minibuffer-setup)
@@ -1013,16 +1037,10 @@
 
 ;; Emacs desiderata
 
-
 ;; Get code to color parens again for latex files.
-;; Setup package-pinned-packages, so as to draw from the correct package repo.
-;; Set up paradox -- if that's still a good idea. Cf straight-use-package, etc. etc.
 ;; Setup emacs calendar to sync with google calendar
 ;; Spacing with parens in various non-lisp modes that you use w/paredit mode.
-;; Turn off C-z behavior that hides window
 ;; use David's .emacs as a sample, to set things up properly.
-;; Add a separate file with my private information like git stuff etc, that folk can setup and add.
-;; Set things up so langtool will either be automatically downloaded or suggest that it be downloaded.
 
 ;; From https://github.com/Vidianos-Giannitsis/Dotfiles/tree/master/emacs/.emacs.d
 ;; I believe, how to do things in GUI and non-GUI mode
@@ -1064,8 +1082,6 @@
 ;; Org-roam-bibtex
 (org-roam-bibtex-mode)
 (define-key org-roam-bibtex-mode-map (kbd "C-c n a") #'orb-note-actions)
-;; This one does not seem to be needed unless You use reftex.
-(setq reftex-default-bibliography '("~/old-microKanren.bib"))
 
 (pdf-tools-install) ;; if this slows things down try (pdf-loader-install)
 
