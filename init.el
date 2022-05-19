@@ -211,6 +211,10 @@
 ;; The following package requires some set-up to work with org-mode or w/e.
 (straight-use-package 'elmacro) ;; https://github.com/Silex/elmacro#elmacro-processors
 (straight-use-package 'elscreen-separate-buffer-list)
+
+(when (executable-find "mpv") ;; empv relies on the mpv executable.
+  (straight-use-package '(empv :type git :host github :repo "isamert/empv.el")))
+
 (straight-use-package 'epkg) ;; epkg-describe-package should show the dependencies
 (straight-use-package 'exec-path-from-shell) ;; Make Emacs use the $PATH set up by the user's shell
 (straight-use-package 'expand-region) ;; Increase selected region by semantic units
@@ -219,7 +223,10 @@
 (straight-use-package 'flim)
 (straight-use-package 'flycheck)
 (straight-use-package '(flycheck-textlint :type git :host github :repo "kisaragi-hiu/flycheck-textlint" :fork nil))
+
+(straight-use-package 'gradle-mode)
 (straight-use-package 'flycheck-gradle)
+
 ;; No need to use these, as flycheck is better
 ;; (straight-use-package 'flylisp) ;; Add highlighting to mismatched parentheses, so you can see the mistake
 ;; (straight-use-package 'flymake-easy)
@@ -231,11 +238,13 @@
 (straight-use-package '(flyspell-popup :type git :host github :repo "xuchunyang/flyspell-popup"))
 (straight-use-package 'fullframe) ;; Advice commands to execute fullscreen, restoring the window setup when exiting.
 (straight-use-package 'gh-md)
+
 (straight-use-package 'ghub)
+(straight-use-package 'ghub+)
+
 (straight-use-package 'git-timemachine) ;; Walk through git revisions of a file
 
 (straight-use-package 'goto-chg) ;; Goto last change in current buffer
-(straight-use-package 'gradle-mode)
 (straight-use-package 'graphql)
 
 ;; Themes from packages
@@ -278,6 +287,7 @@
 ;; (straight-use-package 'helm-system-packages)
 ;; (straight-use-package 'helm-tramp)
 ;; (straight-use-package 'helm-wordnet)
+
 (use-package helpful
   :straight t
   :config
@@ -287,6 +297,7 @@
   (global-set-key (kbd "C-c C-d") #'helpful-at-point)
   (global-set-key (kbd "C-h F") #'helpful-function)
   (global-set-key (kbd "C-h C") #'helpful-command))
+
 (straight-use-package 'ht)
 ;; https://github.com/coldnew/coldnew-emacs#hydra
 (straight-use-package 'hydra) ;; tie related commands into a family of short bindings w/a common prefix.
@@ -303,19 +314,37 @@
 (straight-use-package 'lean-mode)
 (straight-use-package 'latex-unicode-math-mode)
 (straight-use-package 'loadhist)
+
 (use-package magit
   :straight t
   :config (global-set-key (kbd "C-x g") 'magit-status))
-(straight-use-package 'magit-filenotify) ;; if magit feels slow, disable this.
-(add-hook 'magit-status-mode-hook 'magit-filenotify-mode)
-(straight-use-package 'magit-gerrit) ;; gerrit mode for emacs
+
+;; (use-package magit-filenotify ;; if magit feels slow, disable this.
+;;   :straight t
+;;   :hook
+;;   (magit-status-mode magit-filenotify-mode)) ;; this might be what's causing a bug
+
+(straight-use-package 'magit-gerrit) ;; gerrit mode for emacs w/magit attachment
 (straight-use-package 'magit-popup)
 (straight-use-package 'markdown-mode+)
 (straight-use-package 'markdown-preview-mode)
-(straight-use-package 'mc-extras)
+
 (straight-use-package 'meghanada)
 (straight-use-package 'midnight)
-(straight-use-package 'multiple-cursors)
+
+(use-package multiple-cursors
+  :straight t
+  :hook
+  (scheme-mode . multiple-cursors-mode)
+  (inferior-scheme-mode . multiple-cursors-mode)
+  :config
+  (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+  (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this))
+
+(straight-use-package 'mc-extras)
+
 (straight-use-package 'mustache)
 (straight-use-package 'neotree) ;; A emacs tree plugin like NerdTree for Vim.
 ;; (straight-use-package 'nlinum) %% with emacs 26 built-in line numbering, not needed
@@ -331,7 +360,7 @@
 (straight-use-package 'org-ql)
 (straight-use-package 'org-ref)
 (straight-use-package 'org-roam-bibtex)
-;; (straight-use-package 'org-roam-server) Not useful, org-roam-ui is the good one
+;; (straight-use-package 'org-roam-server) defunct, org-roam-ui is the good one
 (straight-use-package 'org-rtm)
 (straight-use-package 'org-sidebar)
 (straight-use-package 'org-super-agenda)
@@ -361,10 +390,13 @@
               ;; ("<S-return>" .  'newline)
 	      ))
 (straight-use-package 'popup) ;; Visual Popup Interface Library for Emacs
+
 (straight-use-package 'powerthesaurus)
+
 (straight-use-package 'projectile) ;; Project Interaction Library for Emacs http://projectile.readthedocs.io
 (straight-use-package 'proof-general)
 
+;; Not clear: do I want these paredit hooks on racket-mode or paredit mode?
 (use-package racket-mode
   :straight t
   :hook
@@ -382,8 +414,18 @@
 (straight-use-package 's) ;; The long lost Emacs string manipulation library.
 (straight-use-package 'savehist)
 ;; (straight-use-package 'scheme-complete) ;; Unclear if I need it — Asked Alex Shinn
-(straight-use-package 'selectrum)
-(straight-use-package 'selectrum-prescient)
+
+(use-package selectrum
+  :straight t
+  :config
+  (selectrum-mode +1)) ;; To turn on selectrum
+
+(use-package selectrum-prescient
+  :straight t
+  :config
+  (selectrum-prescient-mode +1) ;; to make sorting and filtering more intelligent
+  (prescient-persist-mode +1)) ;; For selectrum, save your command history on disk, so the sorting gets more intelligent over time
+
 (straight-use-package 'semi)
 (straight-use-package 'sh-script) ;; The major mode for editing Unix and GNU/Linux shell script code
 (straight-use-package 'smartscan) ;; Quickly jumps between other symbols found at point in Emacs
@@ -399,15 +441,33 @@
 (straight-use-package 'treepy) ;; tree-walk functionality like a clojure library implementation
 (straight-use-package 'ts) ;; A bunch of nice utilities for time and date parsing, better than the built-ins
 (straight-use-package 'undo-tree) ;; Treat undo history as a tree
-;; vertigo
-(straight-use-package 'visual-regexp) ;; A regexp/replace command for Emacs with interactive visual feedback
+;; vertico ?? 
+(use-package visual-regexp  ;; A regexp/replace command for Emacs with interactive visual feedback
+  :straight t
+  :config
+  (global-set-key (kbd "C-c r") 'vr/replace)
+  (global-set-key (kbd "C-c q") 'vr/query-replace))
+
+;; if you use multiple-cursors, this is for you:
+(define-key global-map (kbd "C-c m") 'vr/mc-mark)
+
 (straight-use-package 'visual-regexp-steroids) ;; Extends visual-regexp to support other regexp engines
+
 (straight-use-package 'volatile-highlights) ;; Minor mode for visual feedback on some operations.
 (straight-use-package 'w3m)
 (straight-use-package 'wanderlust)
 (straight-use-package 'which-key)
-(straight-use-package 'wordnut)
-(straight-use-package 'wordsmith-mode)
+
+(use-package wordnut
+  :straight t
+  :config
+  (global-set-key [f12] 'wordnut-search)
+  (global-set-key [(control f12)] 'wordnut-lookup-current-word))
+
+(use-package wordsmith-mode
+  :straight t
+  :hook (text-mode . wordsmith-mode))
+
 (straight-use-package 'wrap-region) ;; Emacs minor mode to wrap region with tag or punctuations
 
 (use-package writegood-mode
@@ -422,14 +482,6 @@
 (use-package zygospore
   :straight t
   :config (global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows))
-
-;; To turn on selectrum
-(selectrum-mode +1)
-;; to make sorting and filtering more intelligent
-(selectrum-prescient-mode +1)
-
-;; For selectrum, save your command history on disk, so the sorting gets more intelligent over time
-(prescient-persist-mode +1)
 
 (straight-use-package '(all-the-icons :type git :flavor melpa :files (:defaults "data" "all-the-icons-pkg.el") :host github :repo "domtronn/all-the-icons.el"))
 
@@ -600,15 +652,6 @@
 ;; Because this depends on OSX tooling specifically
 (when (and (eq system-type 'darwin) (executable-find "syn"))
   (add-hook 'text-mode-hook 'wordsmith-mode))
-
-(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-(global-set-key (kbd "C->") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
-
-;; Can I set these globally, always? I should look into this.
-(add-hook 'scheme-mode-hook                        'multiple-cursors-mode)
-(add-hook 'inferior-scheme-mode-hook               'multiple-cursors-mode)
 
 (global-company-mode)
 
