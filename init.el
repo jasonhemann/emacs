@@ -36,9 +36,6 @@
 
 (setq straight-check-for-modifications '(check-on-save find-when-checking))
 
-;; Don't ask me about following symlinks to version-controlled files.
-(setq vc-follow-symlinks t)
-
 ;; JBH 4/6/22 disabling because it was seeming slow
 ;; (add-hook 'find-file-hook (lambda () (ruler-mode 1)))
 
@@ -204,6 +201,7 @@
   :config
   (setq ediprolog-program "scryer-prolog")
   (global-set-key [f10] 'ediprolog-dwim))
+
 (straight-use-package 'el2org)
 (straight-use-package 'el-init)
 (straight-use-package 'el-init-viewer)
@@ -228,6 +226,7 @@
 ;; (straight-use-package 'flymake-gradle)
 ;; (straight-use-package 'flymake-racket)
 ;; (straight-use-package 'flymd) No longer works w/FF >= 68
+
 (straight-use-package 'flyspell-lazy)
 (straight-use-package '(flyspell-popup :type git :host github :repo "xuchunyang/flyspell-popup"))
 (straight-use-package 'fullframe) ;; Advice commands to execute fullscreen, restoring the window setup when exiting.
@@ -613,8 +612,6 @@
 
 (global-company-mode)
 
-
-
 (global-flycheck-mode)
 
 (flycheck-define-checker proselint
@@ -712,7 +709,6 @@
 
 
 (add-hook 'latex-mode-hook 'turn-on-reftex)   ; with Emacs latex mode
-(add-hook 'text-mode-hook 'flyspell-mode)
 (add-hook 'text-mode-hook 'visual-line-mode)
 
 (add-hook 'TeX-mode-hook (function (lambda () (setq ispell-parser 'tex))))
@@ -726,7 +722,7 @@
 
 (add-hook 'TeX-mode-hook 'turn-on-reftex)   ; with AUCTeX LaTeX mode
 (add-hook 'TeX-mode-hook 'visual-line-mode)
-;; (add-hook 'TeX-mode-hook 'flyspell-preprocess-buffer) ;; somehow void
+
 (add-hook 'TeX-mode-hook 'TeX-source-correlate-mode)
 (add-hook 'TeX-mode-hook 'TeX-PDF-mode)
 (add-hook 'TeX-mode-hook 'TeX-fold-mode)
@@ -906,11 +902,10 @@
  '(tab-always-indent 'complete)
  '(tool-bar-mode nil)
  '(truncate-lines t)
- '(vc-follow-symlinks 't)
+ '(vc-follow-symlinks t)
  '(vc-make-backup-files t)
  '(version-control t)
  '(visible-bell t))
-
 
 
 
@@ -927,12 +922,13 @@
 
 (global-set-key (kbd "<f8>") 'ispell-word)
 
-
-(define-key flyspell-mode-map (kbd "C-;") #'flyspell-popup-correct)
+;; Don't know why this isn't working Pu
+;; (define-key flyspell-mode-map (kbd "C-;") 'flyspell-popup-correct)
 ;; You can also enable flyspell-popup-auto-correct-mode to popup that
 ;; Popup Menu automatically with a delay (default 1.6 seconds):
+(add-hook 'text-mode-hook 'flyspell-mode)
 (add-hook 'flyspell-mode-hook #'flyspell-popup-auto-correct-mode)
-
+;; (add-hook 'TeX-mode-hook 'flyspell-preprocess-buffer) ;; somehow void
 
 (setq flyspell-issue-message-flag nil)
 (setq flyspell-issue-welcome-flag nil)
