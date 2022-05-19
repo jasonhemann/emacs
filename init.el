@@ -156,7 +156,12 @@
 (straight-use-package 'clang-format)
 (straight-use-package 'clean-aindent-mode) ;; Emacs extension for simple indent and unindent
 
-(straight-use-package 'comment-dwim-2) ;; A replacement for the emacs' built-in command comment-dwim
+(use-package comment-dwim-2 ;; A replacement for the emacs' built-in command comment-dwim
+  :straight t
+  :config
+  (global-set-key (kbd "M-;") 'comment-dwim-2)
+  (define-key org-mode-map (kbd "M-;") 'org-comment-dwim-2))
+
 (straight-use-package 'company) ;; Complete anything ;-)
 (straight-use-package 'company-coq)
 (straight-use-package 'company-dict)
@@ -474,7 +479,11 @@
   :straight t
   :hook (text-mode . writegood-mode))
 
-(straight-use-package 'ws-butler) ;; Unobtrusively trim extraneous white-space *ONLY* in lines edited.
+(use-package ws-butler ;; Unobtrusively trim extraneous white-space *ONLY* in lines edited.
+  :straight t
+  :config
+  (setq ws-butler-global-mode t))
+
 (straight-use-package 'yafolding) ;; Yet another folding extension for Emacs
 (straight-use-package 'yaml-mode) ;; The emacs major mode for editing files in the YAML data serialization format.
 (straight-use-package 'zones)
@@ -509,7 +518,6 @@
                   (window-width . 0.33)
                   (window-height . fit-window-to-buffer)))
 
-(global-set-key (kbd "M-;") 'comment-dwim-2)
 
 (global-set-key (kbd "C-z") #'company-try-hard)
 ;; global-set-key is a shortcut here for:
@@ -1097,8 +1105,6 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(diary ((t (:foreground "dark red")))))
-
-(define-key org-mode-map (kbd "M-;") 'org-comment-dwim-2)
 
 (setq org-roam-graph-executable "/usr/local/bin/dot")
 
