@@ -324,17 +324,19 @@
   :straight t
   :config (global-set-key (kbd "C-x g") 'magit-status))
 
+
+;; Buggy.
+;; This looks like what I want, but when I load the hook there's a bug w/it.
 ;; (use-package magit-filenotify ;; if magit feels slow, disable this.
 ;;   :straight t
 ;;   :hook
-;;   (magit-status-mode magit-filenotify-mode)) ;; this might be what's causing a bug
+;;   (magit-status-mode magit-filenotify-mode))
 
 (straight-use-package 'magit-gerrit) ;; gerrit mode for emacs w/magit attachment
 (straight-use-package 'magit-popup)
 (straight-use-package 'markdown-mode+)
 (straight-use-package 'markdown-preview-mode)
 
-(straight-use-package 'meghanada)
 (straight-use-package 'midnight)
 
 (use-package multiple-cursors
@@ -593,10 +595,8 @@
 (if (file-exists-p "/Users/jhemann/Documents/acl2/scripts-master/.lisp.el")
     (load-file "/Users/jhemann/Documents/acl2/scripts-master/.lisp.el"))
 
-;; https://cliplab.org/~clip/Software/Ciao/ciao-1.15.0.html/CiaoMode.html#Installation%20of%20the%20Ciao%20emacs%20interface
-;; https://github.com/ciao-lang/ciao_emacs
-;; (if (file-exists-p "/usr/local/lib/ciao/ciao-mode-init.el")
-;;     (load-file "/usr/local/lib/ciao/ciao-mode-init.el"))
+;; Another java mode
+(straight-use-package 'meghanada)
 
 ;; I should want maven, I think, tbqh
 (add-hook 'java-mode-hook '(lambda () (gradle-mode 1)))
@@ -1166,6 +1166,12 @@
 (if (file-exists-p "/Users/jhemann/Documents/ciao/ciao_emacs/elisp/ciao-site-file.el")
   (load-file "/Users/jhemann/Documents/ciao/ciao_emacs/elisp/ciao-site-file.el"))
 ; @end(39781165)@ - End of automatically added lines.
+
+;; https://cliplab.org/~clip/Software/Ciao/ciao-1.15.0.html/CiaoMode.html#Installation%20of%20the%20Ciao%20emacs%20interface
+;; https://github.com/ciao-lang/ciao_emacs
+;; (if (file-exists-p "/usr/local/lib/ciao/ciao-mode-init.el")
+;;     (load-file "/usr/local/lib/ciao/ciao-mode-init.el"))
+
 
 ;; Start the emacs server, so that I can use emacsclient to connect to the existing emacs instance
 ;; I need another way to do this. To instead have an Emacs.app -like thing do it
