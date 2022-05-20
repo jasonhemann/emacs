@@ -70,7 +70,7 @@
 (straight-use-package '(which-key :custom (which-key-mode)))
 (straight-use-package '(helm :files ("*.el" "emacs-helm.sh" (:exclude "helm-lib.el" "helm-source.el" "helm-multi-match.el" "helm-core.el" "helm-core-pkg.el") "helm-pkg.el")))
 
-(straight-use-package 'font-utils) ;; Nice for working w/fonts in emacs
+(straight-use-package 'font-utils) ;; Apparently nice for working w/fonts in emacs.
 
 ;; In order to search for synonyms.
 (use-package www-synonyms
@@ -78,6 +78,9 @@
   :secret api-key
   :config
   (setq www-synonyms-key api-key))
+
+;; A preferred synonyms package, but check use-cases.
+(straight-use-package 'powerthesaurus)
 
 (use-package org-roam
       :demand t
@@ -208,13 +211,18 @@
   (global-set-key [f10] 'ediprolog-dwim))
 
 (straight-use-package 'el2org)
+
+;; these provide ways to cleanly split an init file up
 (straight-use-package 'el-init)
 (straight-use-package 'el-init-viewer)
+
 ;;  el-mock Maybe I need it, but I don't think so.
 (straight-use-package 'el-patch)
 (straight-use-package 'eldoc) ;; the argument list of the function call you are currently writing
 ;; The following package requires some set-up to work with org-mode or w/e.
 (straight-use-package 'elmacro) ;; https://github.com/Silex/elmacro#elmacro-processors
+
+;; s-u-p elscreen ?
 (straight-use-package 'elscreen-separate-buffer-list)
 
 (when (executable-find "mpv") ;; empv relies on the mpv executable.
@@ -306,7 +314,12 @@
 (straight-use-package 'ht)
 ;; https://github.com/coldnew/coldnew-emacs#hydra
 (straight-use-package 'hydra) ;; tie related commands into a family of short bindings w/a common prefix.
+
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+(straight-use-package 'all-the-icons-ibuffer)
+
 (straight-use-package 'ibuffer-vc) ;; Let Emacs' ibuffer-mode group files by git project etc., and show file state
+
 ;; Not needed, I use helm.
 ;; (straight-use-package 'ido-vertical-mode) ;; makes ido-mode display vertically
 (straight-use-package 'iedit) ;; Emacs minor mode and allows you to edit one occurrence of some text in a buffer
@@ -324,7 +337,6 @@
   :straight t
   :config (global-set-key (kbd "C-x g") 'magit-status))
 
-
 ;; Buggy.
 ;; This looks like what I want, but when I load the hook there's a bug w/it.
 ;; (use-package magit-filenotify ;; if magit feels slow, disable this.
@@ -334,10 +346,17 @@
 
 (straight-use-package 'magit-gerrit) ;; gerrit mode for emacs w/magit attachment
 (straight-use-package 'magit-popup)
-(straight-use-package 'markdown-mode+)
+
+;; (straight-use-package 'markdown-mode+) ;; attic'd, defunct
+
+;; Unclear if I want this, when I have impatient-mode.
 (straight-use-package 'markdown-preview-mode)
 
-(straight-use-package 'midnight)
+;; Perform an action every day at "midnight"--e.g. daily calendar
+(use-package midnight
+  :straight t
+  :config
+  (setq midnight-hook '(calendar)))
 
 (use-package multiple-cursors
   :straight t
@@ -396,11 +415,14 @@
               ;; ("<return>"   . 'pdf-annot-edit-contents-commit)
               ;; ("<S-return>" .  'newline)
 	      ))
-(straight-use-package 'popup) ;; Visual Popup Interface Library for Emacs
 
-(straight-use-package 'powerthesaurus)
+;; Visual Popup Interface Library for Emacs
+;; (straight-use-package 'popup)
+;; probably useful if I'm developing some GUI packages, but I don't see why I need to manually require it. Straight!
 
 (straight-use-package 'projectile) ;; Project Interaction Library for Emacs http://projectile.readthedocs.io
+;; ibuffer-projectile. If I like projectile that is.
+
 (straight-use-package 'proof-general)
 
 ;; Not clear: do I want these paredit hooks on racket-mode or paredit mode?
@@ -448,7 +470,7 @@
 (straight-use-package 'treepy) ;; tree-walk functionality like a clojure library implementation
 (straight-use-package 'ts) ;; A bunch of nice utilities for time and date parsing, better than the built-ins
 (straight-use-package 'undo-tree) ;; Treat undo history as a tree
-;; vertico ?? 
+;; vertico ??
 (use-package visual-regexp  ;; A regexp/replace command for Emacs with interactive visual feedback
   :straight t
   :config
@@ -511,7 +533,7 @@
 (global-set-key (kbd "C-c c") 'org-capture)
 
 
-;; (org-roam-db-autosync-mode)
+
 
 (add-to-list 'display-buffer-alist
                '("\\*org-roam\\*"
