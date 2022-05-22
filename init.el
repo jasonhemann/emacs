@@ -569,7 +569,11 @@
 (straight-use-package 'visual-regexp-steroids) ;; Extends visual-regexp to support other regexp engines
 
 (straight-use-package 'volatile-highlights) ;; Minor mode for visual feedback on some operations.
-(straight-use-package 'w3m)
+
+(use-package w3m
+  :straight t
+  :config (setq w3m-use-tab-line nil))
+
 (straight-use-package 'which-key)
 
 (use-package wordnut
@@ -948,12 +952,14 @@
  '(fringe-mode 2 nil (fringe))
  '(global-auto-revert-non-file-buffers t)
  '(global-display-line-numbers-mode t)
+ '(global-flycheck-mode t)
  '(history-length 50)
  '(indicate-empty-lines t)
  '(inhibit-startup-screen t)
  '(initial-scratch-message nil)
  '(ispell-highlight-face 'highlight)
  '(ispell-highlight-p t)
+ '(ispell-program-name "aspell")
  '(load-home-init-file t t)
  '(ls-lisp-dirs-first t)
  '(mac-system-move-file-to-trash-use-finder t)
@@ -973,6 +979,7 @@
  '(org-src-tab-acts-natively t)
  '(org-support-shift-select t)
  '(org-time-stamp-custom-formats '("<%m/%d/%y %a>" . "<%a %_B %_d, %H:%M>"))
+ '(org-trello-current-prefix-keybinding "C-c o")
  '(org-use-speed-commands t)
  '(preview-auto-cache-preamble t)
  '(reftex-cite-format 'biblatex)
@@ -1021,7 +1028,8 @@
  '(vc-make-backup-files t)
  '(version-control t)
  '(view-read-only t)
- '(visible-bell t))
+ '(visible-bell t)
+ '(window-combination-resize t))
 
 (flycheck-define-checker proselint
   "A linter for prose."
@@ -1159,10 +1167,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(j-verb-face ((t (:foreground "Red"))))
- '(j-adverb-face ((t (:foreground "Green"))))
- '(j-conjunction-face ((t (:foreground "Blue"))))
- '(j-other-face ((t (:foreground "Black"))))
  '(diary ((t (:foreground "dark red")))))
 
 (define-key org-roam-mode-map [mouse-1] #'org-roam-visit-thing)
