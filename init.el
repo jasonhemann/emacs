@@ -968,6 +968,7 @@
  '(calendar-week-start-day 1)
  '(column-number-mode t)
  '(custom-safe-themes t)
+ '(debug-on-error t)
  '(default-input-method "TeX")
  '(describe-bindings-outline t)
  '(dired-listing-switches "-alGh1v --group-directories-first --time-style=long-iso" nil nil "long format, w/hidden files, w/o group information, w/good numeric sorting human-readable sizes, and w/directories first")
