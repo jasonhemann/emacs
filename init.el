@@ -150,6 +150,10 @@
 (straight-use-package 'biblio)
 (straight-use-package 'bibtex-completion)
 
+;; Org-ref
+;; Set up bibliography
+(setq bibtex-completion-bibliography "~/old-microKanrenbib.bib")
+
 ;; ~bind-key~ adds a keybinding
 ;; ~bind-key*~ overrides minor-mode
 ;; ~unbind-key~ removes
@@ -524,7 +528,6 @@
 (straight-use-package 'refine)
 
 (straight-use-package 's) ;; The long lost Emacs string manipulation library.
-(straight-use-package 'savehist)
 ;; (straight-use-package 'scheme-complete) ;; Unclear if I need it — Asked Alex Shinn
 
 (use-package selectrum
@@ -1172,10 +1175,6 @@
                   ("\\section{%s}" . "\\section*{%s}")
                   ("\\subsection{%s}" . "\\subsection*{%s}")
                   ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
-
-;; Org-ref
-;; Set up bibliography
-(setq bibtex-completion-bibliography "~/old-microKanrenbib.bib")
 
 (pdf-tools-install) ;; if this slows things down try (pdf-loader-install)
 
