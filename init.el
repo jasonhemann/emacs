@@ -40,22 +40,25 @@
 ;; (add-hook 'find-file-hook (lambda () (ruler-mode 1)))
 
 ;; From my package.el days
-;; To be investigated further; most already dismissed
-;; (package-selected-packages
-;;  '(
-;; ;;  htmlize seems unnecessary. Org and markdown are all I would use it for and those are already supported elsewhere.
-;; ;;  x-dict emacs attic, so no need.
-;; ;;  dictionary is also a emacs 21 era thing, so no need.
-;;   ))
+;;  htmlize seems unnecessary. Org and markdown are all I would use it for and those are already supported elsewhere.
+;;  x-dict emacs attic, so no need.
+;;  dictionary is also a emacs 21 era thing, so no need.
 
-(defalias 'yes-or-no-p 'y-or-n-p)
+(fset 'yes-or-no-p 'y-or-n-p)
+
 (straight-use-package 'use-package)
 
 ;; So that I can publicly VC my config w/o leaking secret keys &c.
 (straight-use-package '(use-package-secret :host github :repo "emacswatcher/use-package-secret"))
 
-(straight-use-package 'org)
+(use-package org
+  :straight t
+  :config ;; Org mode defaults
+  (global-set-key (kbd "C-c l") 'org-store-link)
+  (global-set-key (kbd "C-c a") 'org-agenda)
+  (global-set-key (kbd "C-c c") 'org-capture))
 
+;; Do I want this hook under agda2-mode or paredit-mode
 (use-package agda2-mode
   :straight '(:includes (eri annotation))
   :hook (agda2-mode . enable-paredit-mode)
@@ -70,7 +73,11 @@
 (straight-use-package '(which-key :custom (which-key-mode)))
 (straight-use-package '(helm :files ("*.el" "emacs-helm.sh" (:exclude "helm-lib.el" "helm-source.el" "helm-multi-match.el" "helm-core.el" "helm-core-pkg.el") "helm-pkg.el")))
 
+(straight-use-package 'unicode-fonts)
 (straight-use-package 'font-utils) ;; Apparently nice for working w/fonts in emacs.
+
+;; A preferred synonyms package, but check use-cases.
+(straight-use-package 'powerthesaurus)
 
 ;; In order to search for synonyms.
 (use-package www-synonyms
@@ -79,21 +86,27 @@
   :config
   (setq www-synonyms-key api-key))
 
-;; A preferred synonyms package, but check use-cases.
-(straight-use-package 'powerthesaurus)
-
 (use-package org-roam
-      :demand t
-      :config (org-roam-db-autosync-mode)
-      :straight t
-      :custom (org-roam-directory (file-truename "~/.org/"))
-      :bind (:map org-roam-mode-map
+  :demand t
+  :config (org-roam-db-autosync-mode)
+  :straight t
+  :custom
+  (setq org-roam-graph-executable "/usr/local/bin/dot"
+		org-roam-directory (file-truename "~/.org/"))
+  :bind (:map org-roam-mode-map
               (("C-c n l" . org-roam)
                ("C-c n f" . org-roam-find-file)
                ("C-c n g" . org-roam-graph))
               :map org-mode-map
               (("C-c n i" . org-roam-insert))
               (("C-c n I" . org-roam-insert-immediate))))
+
+(add-to-list 'display-buffer-alist
+	     '("\\*org-roam\\*"
+               (display-buffer-in-direction)
+               (direction . right)
+               (window-width . 0.33)
+               (window-height . fit-window-to-buffer)))
 
 (use-package org-roam-ui
     :straight (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out"))
@@ -105,7 +118,6 @@
           org-roam-ui-update-on-save t
           org-roam-ui-open-on-start t))
 
-(straight-use-package 'ac-math)
 (straight-use-package 'academic-phrases)
 
 (use-package artbollocks-mode
@@ -123,14 +135,23 @@
 (straight-use-package 'auctex) ;; Not sure if I need w/dependency but trying just in case
 (straight-use-package 'auctex-latexmk)
 (straight-use-package 'auto-compile) ;; Automatically compile Emacs Lisp libraries
+
 ;; Auto complete is for most things strictly worse than company-mode
 ;; (straight-use-package 'auto-complete)
+;; (require 'auto-complete-config)
+;; (ac-mode 1)
+;; (ac-config-default)
+;; (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+;; (straight-use-package 'ac-math) commented in favor of company-math
 ;; (straight-use-package 'auto-complete-auctex)
+
 ;; (straight-use-package 'auto-package-update) ;; straight has this feature already
+
 (straight-use-package 'autopair)
 (straight-use-package 'bbdb) ;; Emacs address book
 (straight-use-package 'biblio)
 (straight-use-package 'bibtex-completion)
+
 ;; ~bind-key~ adds a keybinding
 ;; ~bind-key*~ overrides minor-mode
 ;; ~unbind-key~ removes
@@ -140,6 +161,7 @@
   :bind ("C-h B" . describe-personal-keybindings))
 (straight-use-package 'bog) ;; for taking research notes w/org. Cf the more general org-ref that does both notes and writing.
 (straight-use-package 'buffer-move) ;; used for rotating buffers. buf-move-left
+
 (straight-use-package 'calfw)
 (straight-use-package 'calfw-cal)
 (straight-use-package 'calfw-gcal)
@@ -156,19 +178,30 @@
   (TeX-mode . turn-on-cdlatex))  ; with AUCTeX LaTeX mode
 
 (straight-use-package 'cl-lib) ;; Properly prefixed CL functions and macros
-(straight-use-package 'clang-format)
-(straight-use-package 'clean-aindent-mode) ;; Emacs extension for simple indent and unindent
+
+(use-package clang-format
+  :straight t
+  :config (global-set-key [C-M-tab] 'clang-format-region))
 
 (use-package comment-dwim-2 ;; A replacement for the emacs' built-in command comment-dwim
   :straight t
+  :bind (:map org-mode-map
+			  ("M-;" . 'org-comment-dwim-2))
   :config
-  (global-set-key (kbd "M-;") 'comment-dwim-2)
-  (define-key org-mode-map (kbd "M-;") 'org-comment-dwim-2))
+  (global-set-key (kbd "M-;") 'comment-dwim-2))
 
-(straight-use-package 'company) ;; Complete anything ;-)
+(use-package company ;; Complete anything ;-)
+  :straight t
+  :config (global-company-mode))
+
 (straight-use-package 'company-coq)
 (straight-use-package 'company-dict)
-(straight-use-package 'company-lean)
+
+(straight-use-package 'lean-mode)
+(use-package company-lean
+  :straight t
+  :config (global-set-key (kbd "S-SPC") #'company-complete)) ;; Trigger completion on Shift-Space
+
 (straight-use-package 'company-math)
 (straight-use-package 'company-org-roam)
 (straight-use-package 'company-auctex)
@@ -181,20 +214,28 @@
 
 (straight-use-package 'dash) ;; A modern list library for Emacs
 (straight-use-package 'dash-functional)
+
 (straight-use-package '(dired-hacks-utils :host github :repo "Fuco1/dired-hacks" :fork (:host github :repo "jasonhemann/dired-hacks")))
+
 (use-package dired-collapse
   :straight '(:host github :repo "Fuco1/dired-hacks"
 		    :fork (:host github :repo "jasonhemann/dired-hacks")) ;; This is now correct
   :hook (dired-mode . dired-collapse-mode))
+
 (straight-use-package 'dired+)
 ;; (straight-use-package 'discover) ;; discover more of Emacs. Sadly, moribund
-(straight-use-package 'discover-my-major) ;; Discover key bindings and their meaning for the current Emacs major mode
-(straight-use-package 'dr-racket-like-unicode)
-;; Why can't I add these hooks after dr-racket-like-unicode
-(add-hook 'racket-mode-hook #'racket-unicode-input-method-enable)
-(add-hook 'racket-repl-mode #'racket-unicode-input-method-enable)
 
+(straight-use-package 'discover-my-major) ;; Discover key bindings and their meaning for the current Emacs major mode
+
+(use-package dr-racket-like-unicode
+  :straight t
+  :hook
+  (racket-mode . racket-unicode-input-method-enable)
+  (racket-repl . racket-unicode-input-method-enable))
+
+(straight-use-package 'clean-aindent-mode) ;; Emacs extension for simple indent and unindent
 (straight-use-package 'dtrt-indent) ;; A minor mode that guesses the indentation offset originally used for creating source code
+
 (straight-use-package 'duplicate-thing) ;; duplicate current line
 (straight-use-package 'easy-jekyll)
 
@@ -233,12 +274,27 @@
 (straight-use-package 'expand-region) ;; Increase selected region by semantic units
 (straight-use-package 'f) ;; Modern API for working with files and directories in Emacs
 ;; fontawesome is abandonware
-(straight-use-package 'flim)
-(straight-use-package 'flycheck)
+
+(use-package flycheck
+  :straight t
+  :config (setq global-flycheck-mode t))
+
 (straight-use-package '(flycheck-textlint :type git :host github :repo "kisaragi-hiu/flycheck-textlint" :fork nil))
 
-(straight-use-package 'gradle-mode)
+(use-package gradle-mode ;; I should want maven, I think, tbqh
+  :straight t
+  :hook (java-mode . gradle-mode))
+
 (straight-use-package 'flycheck-gradle)
+
+;; Another java mode
+(straight-use-package 'meghanada)
+
+;; All eclim abandoned and better use java-lsp.
+;; no company-emacs-eclim ac-emacs-eclim either
+
+;; Take a look at what he has here
+;; (load "~/Documents/eliemacs/eliemacs")
 
 ;; No need to use these, as flycheck is better
 ;; (straight-use-package 'flylisp) ;; Add highlighting to mismatched parentheses, so you can see the mistake
@@ -324,14 +380,23 @@
 ;; (straight-use-package 'ido-vertical-mode) ;; makes ido-mode display vertically
 (straight-use-package 'iedit) ;; Emacs minor mode and allows you to edit one occurrence of some text in a buffer
 (straight-use-package 'info+) ;; Package that enhances some info menus
+
 ;; (straight-use-package 'init-loader) ;; No, b/c el-init is better for split init files
-(straight-use-package 'j-mode)
-(straight-use-package 'jeison)
+
+(use-package j-mode
+  :straight t
+  :config (add-to-list 'auto-mode-alist '("\\.ij[rstp]$" . j-mode)))
+
+;; Unneeded
+;; (straight-use-package 'jeison)
+
 (straight-use-package 'jump) ;; build functions which contextually jump between files
 
-(straight-use-package 'lean-mode)
 (straight-use-package 'latex-unicode-math-mode)
+
+;; https://www.emacswiki.org/emacs/LibraryDependencies
 (straight-use-package 'loadhist)
+;; straight-use-package lib-requires, elisp-depend, exl
 
 (use-package magit
   :straight t
@@ -384,22 +449,42 @@
 (straight-use-package 'org-jekyll)
 (straight-use-package 'org-journal)
 (straight-use-package 'org-ql)
-(straight-use-package 'org-ref)
-(straight-use-package 'org-roam-bibtex)
+
+(use-package org-ref ;; Org-ref
+  :straight t
+  :config ;; Set up bibliography
+  (setq org-ref-default-bibliography '("~/iCloudDrive/bibliography/myBibliography.bib")))
+
+(use-package org-roam-bibtex ;; Org-roam-bibtex
+  :straight t
+  :config
+  (org-roam-bibtex-mode)
+  (define-key org-roam-bibtex-mode-map (kbd "C-c n a") #'orb-note-actions))
+
 ;; (straight-use-package 'org-roam-server) defunct, org-roam-ui is the good one
 (straight-use-package 'org-rtm)
 (straight-use-package 'org-sidebar)
 (straight-use-package 'org-super-agenda)
-(straight-use-package 'org-trello)
+
+(use-package org-trello
+  :straight t
+  :config
+  (setq org-trello-current-prefix-keybinding "C-c o"))
+
 (straight-use-package 'org2web)
 (straight-use-package 'ox-gfm) ;; for el2org, instead of ox-md fallback cf https://github.com/tumashu/el2org
 (straight-use-package 'ox-jekyll-md)
 (straight-use-package 'ox-pandoc)
 (straight-use-package 'paradox)
 (straight-use-package 'paredit)
-(straight-use-package 'paredit-everywhere)
+
+(use-package paredit-everywhere ;; Paredit-everywhere-mode is a liar.
+  :straight t ;; It turns on *some* of the paredit keybindings but not all, and it doesn't let you choose
+  :hook (prog-mode . paredit-everywhere-mode))
+
 (straight-use-package 'paredit-menu)
 (straight-use-package 'parent-mode)
+
 ;;(straight-use-package 'pdf-tools)
 (use-package pdf-tools
   :straight t
@@ -484,7 +569,6 @@
 
 (straight-use-package 'volatile-highlights) ;; Minor mode for visual feedback on some operations.
 (straight-use-package 'w3m)
-(straight-use-package 'wanderlust)
 (straight-use-package 'which-key)
 
 (use-package wordnut
@@ -527,20 +611,6 @@
   :config
   (setq all-the-icons-dired-monochrome nil))
 
-;; Org mode defaults
-(global-set-key (kbd "C-c l") 'org-store-link)
-(global-set-key (kbd "C-c a") 'org-agenda)
-(global-set-key (kbd "C-c c") 'org-capture)
-
-
-
-
-(add-to-list 'display-buffer-alist
-               '("\\*org-roam\\*"
-                  (display-buffer-in-direction)
-                  (direction . right)
-                  (window-width . 0.33)
-                  (window-height . fit-window-to-buffer)))
 
 
 (global-set-key (kbd "C-z") #'company-try-hard)
@@ -548,14 +618,18 @@
 ;; (define-key (current-global-map) (kbd "C-z") #'company-try-hard)
 
 ;; UTF-8 as default encoding
-(set-language-environment "utf-8")
+(set-default-coding-systems 'utf-8)
 (prefer-coding-system 'utf-8)
-(setq coding-system-for-read 'utf-8)
-(setq coding-system-for-write 'utf-8)
+(set-language-environment "utf-8")
+
+;;  Don't bind this globally quoth docs
+;; (setq coding-system-for-read 'utf-8)
+;; (setq coding-system-for-write 'utf-8)
 
 (straight-use-package '(eldoro :host github :repo "pjones/eldoro"))
 
 ;; Disabling because I don't have mail handling in emacs right now
+;; (straight-use-package 'wanderlust)
 ;; Wanderlust doesn't seem to work w/Google 2FA.
 ;; (autoload 'wl "wl" "Wanderlust" t)
 ;; (autoload 'wl-other-frame "wl" "Wanderlust on new frame." t)
@@ -614,31 +688,15 @@
 ;;       'wl-draft-kill
 ;;       'mail-send-hook))
 
+;; Flim is a help package for dev w/wanderlust
+;; (straight-use-package 'flim)
+
 (if (file-exists-p "/Users/jhemann/Documents/acl2/scripts-master/.lisp.el")
     (load-file "/Users/jhemann/Documents/acl2/scripts-master/.lisp.el"))
-
-;; Another java mode
-(straight-use-package 'meghanada)
-
-;; I should want maven, I think, tbqh
-(add-hook 'java-mode-hook '(lambda () (gradle-mode 1)))
-
-;; All eclim abandoned and better use java-lsp.
-;; no company-emacs-eclim ac-emacs-eclim either
-
-;; Take a look at what he has here
-;; (load "~/Documents/eliemacs/eliemacs")
-
-
-
-(global-set-key [C-M-tab] 'clang-format-region)
 
 (let ((gnu-ls-path (executable-find "gls")))
   (when gnu-ls-path
     (setq insert-directory-program gnu-ls-path)))
-
-;; (ac-mode 1)
-;; (require 'auto-complete-config)
 
 ;; (helm-mode 1)
 ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
@@ -661,11 +719,7 @@
 
 ;; (when (executable-find "curl")
 ;;   (setq helm-google-suggest-use-curl-p t))
-
-
-;; JBH
-;; (ac-config-default)
-;; (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+;; (global-set-key (kbd "<f6>") #'org-ref-helm-insert-cite-link)
 
 (global-set-key (kbd "C-S-s") (lambda () (interactive (insert "§"))))
 (global-set-key (kbd "C-c (") (lambda () (interactive) (insert "ಠ_ಠ")))
@@ -682,10 +736,6 @@
 ;; Because this depends on OSX tooling specifically
 (when (and (eq system-type 'darwin) (executable-find "syn"))
   (add-hook 'text-mode-hook 'wordsmith-mode))
-
-(global-company-mode)
-
-(global-flycheck-mode)
 
 (flycheck-define-checker proselint
   "A linter for prose."
@@ -714,14 +764,10 @@
 (global-set-key (kbd "M-<f8>") 'flyspell-check-next-highlighted-word)
 
 ;; Only in Emacs mac-port
-(mac-auto-operator-composition-mode t)
+(when (eq system-type 'darwin)
+  (mac-auto-operator-composition-mode t))
 
-(if (eq system-type 'darwin)
-    (setq-default ispell-program-name "/usr/local/bin/aspell")
-  (if (eq system-type 'linux)
-      (setq-default ispell-program-name "/usr/bin/aspell")
-    (setq-default ispell-program-name (executable-find "asell")))) ;; What should we do about Windows?
-
+(setq-default ispell-program-name (executable-find "aspell"))
 (setq-default ispell-list-command "list")
 
 (use-package langtool
@@ -831,9 +877,6 @@
 (autoload 'coq-mode "coq" "Major mode for editing Coq vernacular." t)
 (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
 
-;; Paredit-everywhere-mode is a liar.
-;; It turns on *some* of the paredit keybindings but not all, and it doesn't let you choose
-(add-hook 'prog-mode-hook 'paredit-everywhere-mode)
 (add-hook 'emacs-lisp-mode-hook                    #'enable-paredit-mode)
 (add-hook 'eval-expression-minibuffer-setup-hook   #'enable-paredit-mode)
 (add-hook 'ielm-mode-hook                          #'enable-paredit-mode) ;; inferior-emacs-lisp-mode
@@ -904,14 +947,12 @@
  '(fringe-mode 2 nil (fringe))
  '(global-auto-revert-non-file-buffers t)
  '(global-display-line-numbers-mode t)
- '(global-flycheck-mode t)
  '(history-length 50)
  '(indicate-empty-lines t)
  '(inhibit-startup-screen t)
  '(initial-scratch-message nil)
  '(ispell-highlight-face 'highlight)
  '(ispell-highlight-p t)
- '(ispell-program-name "aspell")
  '(load-home-init-file t t)
  '(ls-lisp-dirs-first t)
  '(mac-system-move-file-to-trash-use-finder t)
@@ -931,7 +972,6 @@
  '(org-src-tab-acts-natively t)
  '(org-support-shift-select t)
  '(org-time-stamp-custom-formats '("<%m/%d/%y %a>" . "<%a %_B %_d, %H:%M>"))
- '(org-trello-current-prefix-keybinding "C-c o")
  '(org-use-speed-commands t)
  '(preview-auto-cache-preamble t)
  '(reftex-cite-format 'biblatex)
@@ -942,21 +982,21 @@
  '(ring-bell-function 'ignore)
  '(safe-local-variable-values
    '((TeX-command-extra-options . "-shell-escape")
-     (eval progn
-	   (let
-	       ((tt-root-directory
-		 (when buffer-file-name
-		   (locate-dominating-file buffer-file-name ".dir-locals.el")))
-		(tt-project-find-file
-		 (and
-		  (boundp 'tt-project-find-file)
-		  tt-project-find-file)))
-	     (setq tags-file-name
-		   (concat tt-root-directory "TAGS"))
-	     (unless tt-project-find-file
-	       (setq compile-command
-		     (concat "make -C " tt-root-directory)))
-	     (setq default-directory tt-root-directory)))))
+	 (eval progn
+		   (let
+			   ((tt-root-directory
+				 (when buffer-file-name
+				   (locate-dominating-file buffer-file-name ".dir-locals.el")))
+				(tt-project-find-file
+				 (and
+				  (boundp 'tt-project-find-file)
+				  tt-project-find-file)))
+			 (setq tags-file-name
+				   (concat tt-root-directory "TAGS"))
+			 (unless tt-project-find-file
+			   (setq compile-command
+					 (concat "make -C " tt-root-directory)))
+			 (setq default-directory tt-root-directory)))))
  '(save-place-mode t)
  '(savehist-mode t)
  '(scheme-program-name "scheme" nil nil "scheme defaults to chez scheme on my system.")
@@ -969,18 +1009,18 @@
  '(sort-fold-case t t)
  '(straight-host-usernames
    '((gitlab . "jasonhemann")
-     (github . "jasonhemann")
-     (bitbucket . "jhemann")))
+	 (github . "jasonhemann")
+	 (bitbucket . "jhemann")))
  '(straight-use-package-by-default t)
  '(tab-always-indent 'complete)
+ '(tab-width 4 nil nil "Switching to a 4-space tab")
  '(tool-bar-mode nil)
  '(truncate-lines t)
  '(vc-follow-symlinks t)
  '(vc-make-backup-files t)
  '(version-control t)
+ '(view-read-only t)
  '(visible-bell t))
-
-
 
 (flycheck-define-checker proselint
   "A linter for prose."
@@ -1020,12 +1060,6 @@
 ;; Only in Emacs mac-port
 (mac-auto-operator-composition-mode t)
 
-(if (eq system-type 'darwin)
-    (setq-default ispell-program-name "/usr/local/bin/aspell")
-  (if (eq system-type 'linux)
-      (setq-default ispell-program-name "/usr/bin/aspell")
-    (setq-default ispell-program-name ""))) ;; What should we do about Windows?
-
 (setq-default major-mode 'text-mode)
 (setq-default ispell-list-command "list")
 
@@ -1044,8 +1078,6 @@
                 (memq last-command '(keyboard-quit)))
       (let ((msg (langtool-details-error-message overlays)))
         (popup-tip msg)))))
-
-(load-theme (nth (cl-random (length (custom-available-themes))) (custom-available-themes)) t)    ;; To have it always remember this is safe
 
  ;; Add opam emacs directory to the load-path
 (setq opam-share (substring (shell-command-to-string "opam config var share 2> /dev/null") 0 -1))
@@ -1126,9 +1158,13 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(j-verb-face ((t (:foreground "Red"))))
+ '(j-adverb-face ((t (:foreground "Green"))))
+ '(j-conjunction-face ((t (:foreground "Blue"))))
+ '(j-other-face ((t (:foreground "Black"))))
  '(diary ((t (:foreground "dark red")))))
 
-(setq org-roam-graph-executable "/usr/local/bin/dot")
+(define-key org-roam-mode-map [mouse-1] #'org-roam-visit-thing)
 
 (with-eval-after-load 'ox-latex
    (add-to-list 'org-latex-classes
@@ -1141,14 +1177,7 @@
 
 ;; Org-ref
 ;; Set up bibliography
-(setq org-ref-default-bibliography '("~/iCloudDrive/bibliography/myBibliography.bib"))
-(setq bibtex-completion-bibliography "~/iCloudDrive/bibliography/myBibliography.bib")
-
-;; (global-set-key (kbd "<f6>") #'org-ref-helm-insert-cite-link)
-
-;; Org-roam-bibtex
-(org-roam-bibtex-mode)
-(define-key org-roam-bibtex-mode-map (kbd "C-c n a") #'orb-note-actions)
+(setq bibtex-completion-bibliography "~/old-microKanrenbib.bib")
 
 (pdf-tools-install) ;; if this slows things down try (pdf-loader-install)
 
@@ -1180,8 +1209,6 @@
                     :weight 'normal
                     :width  'normal)
 
-(define-key org-roam-mode-map [mouse-1] #'org-roam-visit-thing)
-
 ;; (file-dependents (feature-file 'cl))
 
 ; @begin(39781165)@ - Do not edit these lines - added automatically!
@@ -1194,10 +1221,12 @@
 ;; (if (file-exists-p "/usr/local/lib/ciao/ciao-mode-init.el")
 ;;     (load-file "/usr/local/lib/ciao/ciao-mode-init.el"))
 
-
 ;; Start the emacs server, so that I can use emacsclient to connect to the existing emacs instance
 ;; I need another way to do this. To instead have an Emacs.app -like thing do it
 ;; (server-start)
 
-(provide '.emacs)
-;;; .emacs ends here
+;; Pick a random theme.
+(load-theme (nth (cl-random (length (custom-available-themes))) (custom-available-themes)) t)    ;; To have it always remember this is safe
+
+(provide 'init.el)
+;;; init.el ends here
