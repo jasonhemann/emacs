@@ -89,8 +89,8 @@
   :config (org-roam-db-autosync-mode)
   :straight t
   :custom
-  (setq org-roam-graph-executable "/usr/local/bin/dot"
-		org-roam-directory (file-truename "~/.org/"))
+  (setq org-roam-graph-executable "/usr/local/bin/dot")
+  (org-roam-directory (file-truename "~/.org/"))
   :bind (:map org-roam-mode-map
               (("C-c n l" . org-roam)
                ("C-c n f" . org-roam-find-file)
@@ -632,13 +632,11 @@
 ;; (define-key (current-global-map) (kbd "C-z") #'company-try-hard)
 
 ;; UTF-8 as default encoding
-(set-default-coding-systems 'utf-8)
+;; (set-default-coding-systems 'utf-8)
 (prefer-coding-system 'utf-8)
 (set-language-environment "utf-8")
-
-;;  Don't bind this globally quoth docs
-;; (setq coding-system-for-read 'utf-8)
-;; (setq coding-system-for-write 'utf-8)
+(setq coding-system-for-read 'utf-8)
+(setq coding-system-for-write 'utf-8)
 
 (straight-use-package '(eldoro :host github :repo "pjones/eldoro"))
 
