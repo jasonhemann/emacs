@@ -555,8 +555,20 @@
 (straight-use-package 'tabbar)
 (straight-use-package 'treepy) ;; tree-walk functionality like a clojure library implementation
 (straight-use-package 'ts) ;; A bunch of nice utilities for time and date parsing, better than the built-ins
-(straight-use-package 'undo-tree) ;; Treat undo history as a tree
+
+(use-package volatile-highlights ;; Minor mode for visual feedback on some operations.
+  :straight t
+  :config (setq volatile-highlights-mode t))
+
+;; Assumes volatile highlights
+(use-package undo-tree ;; Treat undo history as a tree
+  :straight t
+  :config
+  (vhl/define-extension 'undo-tree 'undo-tree-yank 'undo-tree-move)
+  (vhl/install-extension 'undo-tree))
+
 ;; vertico ??
+
 (use-package visual-regexp  ;; A regexp/replace command for Emacs with interactive visual feedback
   :straight t
   :config
@@ -568,7 +580,6 @@
 
 (straight-use-package 'visual-regexp-steroids) ;; Extends visual-regexp to support other regexp engines
 
-(straight-use-package 'volatile-highlights) ;; Minor mode for visual feedback on some operations.
 
 (use-package w3m
   :straight t
