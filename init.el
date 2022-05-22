@@ -703,8 +703,8 @@
 ;; Flim is a help package for dev w/wanderlust
 ;; (straight-use-package 'flim)
 
-(if (file-exists-p "/Users/jhemann/Documents/acl2/scripts-master/.lisp.el")
-    (load-file "/Users/jhemann/Documents/acl2/scripts-master/.lisp.el"))
+(if (file-exists-p "~/Documents/acl2/scripts-master/.lisp.el")
+    (load-file "~/Documents/acl2/scripts-master/.lisp.el"))
 
 (let ((gnu-ls-path (executable-find "gls")))
   (when gnu-ls-path
@@ -1217,8 +1217,8 @@
 ;; (file-dependents (feature-file 'cl))
 
 ; @begin(39781165)@ - Do not edit these lines - added automatically!
-(if (file-exists-p "/Users/jhemann/Documents/ciao/ciao_emacs/elisp/ciao-site-file.el")
-  (load-file "/Users/jhemann/Documents/ciao/ciao_emacs/elisp/ciao-site-file.el"))
+(if (file-exists-p "~/Documents/ciao/ciao_emacs/elisp/ciao-site-file.el")
+  (load-file "~/Documents/ciao/ciao_emacs/elisp/ciao-site-file.el"))
 ; @end(39781165)@ - End of automatically added lines.
 
 ;; https://cliplab.org/~clip/Software/Ciao/ciao-1.15.0.html/CiaoMode.html#Installation%20of%20the%20Ciao%20emacs%20interface
