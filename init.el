@@ -580,7 +580,6 @@
 
 (straight-use-package 'visual-regexp-steroids) ;; Extends visual-regexp to support other regexp engines
 
-
 (use-package w3m
   :straight t
   :config (setq w3m-use-tab-line nil))
@@ -626,7 +625,6 @@
   (dired-mode . all-the-icons-dired-mode)
   :config
   (setq all-the-icons-dired-monochrome nil))
-
 
 
 (global-set-key (kbd "C-z") #'company-try-hard)
@@ -738,16 +736,15 @@
 ;; (global-set-key (kbd "<f6>") #'org-ref-helm-insert-cite-link)
 
 (global-set-key (kbd "C-S-s") (lambda () (interactive (insert "§"))))
-(global-set-key (kbd "C-c (") (lambda () (interactive) (insert "ಠ_ಠ")))
-(global-set-key (kbd "C-c )") (lambda () (interactive) (insert "¯\\_(ツ)_/¯")))
-(global-set-key (kbd "C-c C-x (") (lambda () (interactive) (insert "ᕕ( ᐛ )ᕗ")))
-(global-set-key (kbd "C-c C-x )") (lambda () (interactive) (insert "(－‸ლ)")))
-(global-set-key (kbd "C-c C-x x") (lambda () (interactive) (insert "!(•̀ᴗ•́)و ̑̑")))
+(global-set-key (kbd "C-c (") (lambda () (interactive (insert "ಠ_ಠ"))))
+(global-set-key (kbd "C-c )") (lambda () (interactive (insert "¯\\_(ツ)_/¯"))))
+(global-set-key (kbd "C-c C-x (") (lambda () (interactive (insert "ᕕ( ᐛ )ᕗ"))))
+(global-set-key (kbd "C-c C-x )") (lambda () (interactive (insert "(－‸ლ)"))))
+(global-set-key (kbd "C-c C-x x") (lambda () (interactive (insert "!(•̀ᴗ•́)و ̑̑"))))
 
 (defun prime-it ()
   "A function to add a prime character."
   (interactive (insert "′")))
-
 
 ;; Because this depends on OSX tooling specifically
 (when (and (eq system-type 'darwin) (executable-find "syn"))
@@ -781,7 +778,8 @@
 
 ;; Only in Emacs mac-port
 (when (eq system-type 'darwin)
-  (mac-auto-operator-composition-mode t))
+  (setq mac-auto-operator-composition-mode t
+		mac-system-move-file-to-trash-use-finder t))
 
 (setq-default ispell-program-name (executable-find "aspell"))
 (setq-default ispell-list-command "list")
@@ -973,7 +971,6 @@
  '(ispell-program-name "aspell")
  '(load-home-init-file t t)
  '(ls-lisp-dirs-first t)
- '(mac-system-move-file-to-trash-use-finder t)
  '(make-backup-files nil)
  '(ns-alternate-modifier '(:ordinary meta :mouse alt))
  '(org-agenda-files '("tasks.org"))
@@ -1076,9 +1073,6 @@
   (ispell-word))
 
 (global-set-key (kbd "M-<f8>") 'flyspell-check-next-highlighted-word)
-
-;; Only in Emacs mac-port
-(mac-auto-operator-composition-mode t)
 
 (setq-default major-mode 'text-mode)
 (setq-default ispell-list-command "list")
