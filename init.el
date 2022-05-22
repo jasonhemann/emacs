@@ -44,8 +44,6 @@
 ;;  x-dict emacs attic, so no need.
 ;;  dictionary is also a emacs 21 era thing, so no need.
 
-(fset 'yes-or-no-p 'y-or-n-p)
-
 (straight-use-package 'use-package)
 
 ;; So that I can publicly VC my config w/o leaking secret keys &c.
@@ -1196,12 +1194,13 @@
 
 (use-package ob-racket
   :after org
-  :config
-  (add-hook 'ob-racket-pre-runtime-library-load-hook
-	    #'ob-racket-raco-make-runtime-library)
+  :hook (ob-racket-pre-runtime-library-load . ob-racket-raco-make-runtime-library)
   :straight (:type git :host github :repo "togakangaroo/ob-racket"
 		   :files ("*.el" "*.rkt")))
 
+;; Pick a random theme.
+(load-theme (nth (cl-random (length (custom-available-themes))) (custom-available-themes)) t)    ;; To have it always remember this is safe
+(fset 'yes-or-no-p 'y-or-n-p)
 ;; default to mononoki
 (set-face-attribute 'default nil
                     :family "mononoki"
@@ -1225,8 +1224,6 @@
 ;; I need another way to do this. To instead have an Emacs.app -like thing do it
 ;; (server-start)
 
-;; Pick a random theme.
-(load-theme (nth (cl-random (length (custom-available-themes))) (custom-available-themes)) t)    ;; To have it always remember this is safe
 
 (provide 'init.el)
 ;;; init.el ends here
