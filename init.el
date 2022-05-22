@@ -46,15 +46,15 @@
 
 (straight-use-package 'use-package)
 
-;; So that I can publicly VC my config w/o leaking secret keys &c.
+;; ;; So that I can publicly VC my config w/o leaking secret keys &c.
 (straight-use-package '(use-package-secret :host github :repo "emacswatcher/use-package-secret"))
 
 (use-package org
   :straight t
-  :config ;; Org mode defaults
-  (global-set-key (kbd "C-c l") 'org-store-link)
-  (global-set-key (kbd "C-c a") 'org-agenda)
-  (global-set-key (kbd "C-c c") 'org-capture))
+  :bind
+  ("C-c l" . org-store-link)
+  ("C-c a" . org-agenda)
+  ("C-c c" . org-capture))
 
 ;; Do I want this hook under agda2-mode or paredit-mode
 (use-package agda2-mode
@@ -94,7 +94,8 @@
   :bind (:map org-roam-mode-map
               (("C-c n l" . org-roam)
                ("C-c n f" . org-roam-find-file)
-               ("C-c n g" . org-roam-graph))
+               ("C-c n g" . org-roam-graph)
+			   ([mouse-1] . org-roam-visit-thing))
               :map org-mode-map
               (("C-c n i" . org-roam-insert))
               (("C-c n I" . org-roam-insert-immediate))))
@@ -183,14 +184,13 @@
 
 (use-package clang-format
   :straight t
-  :config (global-set-key [C-M-tab] 'clang-format-region))
+  :bind ([C-M-tab] . clang-format-region))
 
 (use-package comment-dwim-2 ;; A replacement for the emacs' built-in command comment-dwim
   :straight t
   :bind (:map org-mode-map
 			  ("M-;" . 'org-comment-dwim-2))
-  :config
-  (global-set-key (kbd "M-;") 'comment-dwim-2))
+  ("M-;" . comment-dwim-2))
 
 (use-package company ;; Complete anything ;-)
   :straight t
@@ -202,7 +202,7 @@
 (straight-use-package 'lean-mode)
 (use-package company-lean
   :straight t
-  :config (global-set-key (kbd "S-SPC") #'company-complete)) ;; Trigger completion on Shift-Space
+  :bind ("S-SPC" . company-complete)) ;; Trigger completion on Shift-Space
 
 (straight-use-package 'company-math)
 (straight-use-package 'company-org-roam)
@@ -243,15 +243,15 @@
 
 (use-package ebib
   :straight t
+  :bind ("\C-ce" . ebib)
   :config
-  (setq ebib-bibtex-dialect 'biblatex)
-  (global-set-key "\C-ce" 'ebib)) ;; ebib mode, for latex
+  (setq ebib-bibtex-dialect 'biblatex)) ;; ebib mode, for latex
 
 (use-package ediprolog
   :straight t
+  :bind ([f10] . ediprolog-dwim)
   :config
-  (setq ediprolog-program "scryer-prolog")
-  (global-set-key [f10] 'ediprolog-dwim))
+  (setq ediprolog-program "scryer-prolog"))
 
 (straight-use-package 'el2org)
 
@@ -271,8 +271,17 @@
 (when (executable-find "mpv") ;; empv relies on the mpv executable.
   (straight-use-package '(empv :type git :host github :repo "isamert/empv.el")))
 
-(straight-use-package 'epkg) ;; epkg-describe-package should show the dependencies
-(straight-use-package 'exec-path-from-shell) ;; Make Emacs use the $PATH set up by the user's shell
+;; Needed b/c closql wasn't working?
+(straight-use-package 'closql)
+
+(use-package epkg ;; epkg-describe-package should show the dependencies
+  :straight t
+  :after closql)
+
+(use-package exec-path-from-shell ;; Make Emacs use the $PATH set up by the user's shell
+  :straight t
+  :config (exec-path-from-shell-initialize))
+
 (straight-use-package 'expand-region) ;; Increase selected region by semantic units
 (straight-use-package 'f) ;; Modern API for working with files and directories in Emacs
 ;; fontawesome is abandonware
@@ -306,7 +315,14 @@
 ;; (straight-use-package 'flymd) No longer works w/FF >= 68
 
 (straight-use-package 'flyspell-lazy)
-(straight-use-package '(flyspell-popup :type git :host github :repo "xuchunyang/flyspell-popup"))
+
+(use-package flyspell-popup
+  :after flyspell
+  :straight '(:type git :host github :repo "xuchunyang/flyspell-popup")
+  :bind (:map flyspell-mode-map
+			  ("C-;" . flyspell-popup-correct))
+  :hook (flyspell-mode . flyspell-popup-auto-correct-mode))
+
 (straight-use-package 'fullframe) ;; Advice commands to execute fullscreen, restoring the window setup when exiting.
 (straight-use-package 'gh-md)
 
@@ -361,13 +377,13 @@
 
 (use-package helpful
   :straight t
-  :config
-  (global-set-key (kbd "C-h f") #'helpful-callable)
-  (global-set-key (kbd "C-h v") #'helpful-variable)
-  (global-set-key (kbd "C-h k") #'helpful-key)
-  (global-set-key (kbd "C-c C-d") #'helpful-at-point)
-  (global-set-key (kbd "C-h F") #'helpful-function)
-  (global-set-key (kbd "C-h C") #'helpful-command))
+  :bind
+  ("C-h f" . helpful-callable)
+  ("C-h v" . helpful-variable)
+  ("C-h k" . helpful-key)
+  ("C-c C-d" . helpful-at-point)
+  ("C-h F" . helpful-function)
+  ("C-h C" . helpful-command))
 
 (straight-use-package 'ht)
 ;; https://github.com/coldnew/coldnew-emacs#hydra
@@ -402,7 +418,7 @@
 
 (use-package magit
   :straight t
-  :config (global-set-key (kbd "C-x g") 'magit-status))
+  :bind ("C-x g" . magit-status))
 
 ;; Buggy.
 ;; This looks like what I want, but when I load the hook there's a bug w/it.
@@ -430,11 +446,11 @@
   :hook
   (scheme-mode . multiple-cursors-mode)
   (inferior-scheme-mode . multiple-cursors-mode)
-  :config
-  (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
-  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-  (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this))
+  :bind
+  ("C-S-c C-S-c" . mc/edit-lines)
+  ("C->" . mc/mark-next-like-this)
+  ("C-<" . mc/mark-previous-like-this)
+  ("C-c C-<" . mc/mark-all-like-this))
 
 (straight-use-package 'mc-extras)
 
@@ -455,13 +471,14 @@
 (use-package org-ref ;; Org-ref
   :straight t
   :config ;; Set up bibliography
-  (setq org-ref-default-bibliography '("~/iCloudDrive/bibliography/myBibliography.bib")))
+  (setq org-ref-default-bibliography '("~/old-microKanrenbib.bib")))
 
 (use-package org-roam-bibtex ;; Org-roam-bibtex
   :straight t
   :config
   (org-roam-bibtex-mode)
-  (define-key org-roam-bibtex-mode-map (kbd "C-c n a") #'orb-note-actions))
+  :bind (:map org-roam-bibtex-mode-map
+			   ("C-c n a" . orb-note-actions)))
 
 ;; (straight-use-package 'org-roam-server) defunct, org-roam-ui is the good one
 (straight-use-package 'org-rtm)
@@ -564,6 +581,7 @@
 (use-package undo-tree ;; Treat undo history as a tree
   :straight t
   :config
+  (global-undo-tree-mode)
   (vhl/define-extension 'undo-tree 'undo-tree-yank 'undo-tree-move)
   (vhl/install-extension 'undo-tree))
 
@@ -579,6 +597,12 @@
 (define-key global-map (kbd "C-c m") 'vr/mc-mark)
 
 (straight-use-package 'visual-regexp-steroids) ;; Extends visual-regexp to support other regexp engines
+
+(use-package wc-mode
+  :straight t
+  :hook (text-mode . wc-mode)
+  :config
+  (global-set-key "\C-cw" 'wc-mode))
 
 (use-package w3m
   :straight t
@@ -600,7 +624,11 @@
 
 (use-package writegood-mode
   :straight t
-  :hook (text-mode . writegood-mode))
+  :hook (text-mode . writegood-mode)
+  :bind
+  ("C-c g"     . writegood-mode)
+  ("C-c C-g g" . writegood-grade-level)
+  ("C-c C-g e" . writegood-reading-ease))
 
 (use-package ws-butler ;; Unobtrusively trim extraneous white-space *ONLY* in lines edited.
   :straight t
@@ -733,7 +761,7 @@
 ;;   (setq helm-google-suggest-use-curl-p t))
 ;; (global-set-key (kbd "<f6>") #'org-ref-helm-insert-cite-link)
 
-(global-set-key (kbd "C-S-s") (lambda () (interactive (insert "§"))))
+;; C-x 8 S (interactive (insert "§"))
 (global-set-key (kbd "C-c (") (lambda () (interactive (insert "ಠ_ಠ"))))
 (global-set-key (kbd "C-c )") (lambda () (interactive (insert "¯\\_(ツ)_/¯"))))
 (global-set-key (kbd "C-c C-x (") (lambda () (interactive (insert "ᕕ( ᐛ )ᕗ"))))
@@ -761,10 +789,10 @@
 
 (setq flyspell-issue-welcome-flag nil);; easy spell check setup.
 
-(global-set-key (kbd "<f8>") 'ispell-word)
 (global-set-key (kbd "C-S-<f8>") 'flyspell-mode)
 (global-set-key (kbd "C-M-<f8>") 'flyspell-buffer)
 (global-set-key (kbd "C-<f8>") 'flyspell-check-previous-highlighted-word)
+(global-set-key (kbd "M-<f8>") 'flyspell-check-next-highlighted-word)
 
 (defun flyspell-check-next-highlighted-word ()
   "Custom function to spell check next highlighted word."
@@ -772,24 +800,32 @@
   (flyspell-goto-next-error)
   (ispell-word))
 
-(global-set-key (kbd "M-<f8>") 'flyspell-check-next-highlighted-word)
-
 ;; Only in Emacs mac-port
 (when (eq system-type 'darwin)
   (setq mac-auto-operator-composition-mode t
 		mac-system-move-file-to-trash-use-finder t))
 
 (setq-default ispell-program-name (executable-find "aspell"))
-(setq-default ispell-list-command "list")
+(setq-default ispell-list-command "--list")
+
+(if ispell-program-name
+	(setq ispell-extra-args '("--sug-mode=ultra" "--lang=en_US")
+		  ispell-highlight-face 'highlight
+		  ispell-highlight-p t)
+  (t (message "No aspell found!")))
+
+(global-set-key (kbd "<f8>") 'ispell-word)
+(bind-key "H-$" 'ispell-word)
 
 (use-package langtool
   :straight t
+  :bind
+  ("\C-x4w" . langtool-check)
+  ("\C-x4W" . langtool-check-done)
+  ("\C-x4l" . langtool-switch-default-language)
+  ("\C-x44" . langtool-show-message-at-point)
+  ("\C-x4c" . langtool-correct-buffer)
   :config
-  (global-set-key "\C-x4w" 'langtool-check)
-  (global-set-key "\C-x4W" 'langtool-check-done)
-  (global-set-key "\C-x4l" 'langtool-switch-default-language)
-  (global-set-key "\C-x44" 'langtool-show-message-at-point)
-  (global-set-key "\C-x4c" 'langtool-correct-buffer)
   (setq langtool-autoshow-message-function 'langtool-autoshow-detail-popup
 	langtool-bin "/usr/local/bin/languagetool"
 	langtool-default-language "en-US"
@@ -906,9 +942,6 @@
 
 (global-set-key (kbd "{") 'paredit-open-curly)
 
-(when (memq window-system '(mac ns))
-  (exec-path-from-shell-initialize))
-
 ;; So that I can find scryer-prolog
 (add-to-list 'exec-path (expand-file-name (substitute-in-file-name "$HOME/.cargo/bin")))
 
@@ -940,6 +973,7 @@
  '(ac-modes
    '(emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode haskell-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode racket-mode Racket-mode racket-repl-mode idris-mode idris-repl-mode))
  '(ad-redefinition-action 'accept)
+ '(apropos-sort-by-scores t)
  '(auto-save-interval 75)
  '(auto-save-timeout 10)
  '(bib-cite-use-reftex-view-crossref t t)
@@ -951,6 +985,7 @@
  '(column-number-mode t)
  '(custom-safe-themes t)
  '(default-input-method "TeX")
+ '(describe-bindings-outline t)
  '(dired-listing-switches "-alGh1v --group-directories-first --time-style=long-iso" nil nil "long format, w/hidden files, w/o group information, w/good numeric sorting human-readable sizes, and w/directories first")
  '(dired-recursive-copies 'always nil nil "I shouldn't be prompted to recursively copy dirs")
  '(display-time-day-and-date t)
@@ -985,7 +1020,7 @@
  '(org-src-tab-acts-natively t)
  '(org-support-shift-select t)
  '(org-time-stamp-custom-formats '("<%m/%d/%y %a>" . "<%a %_B %_d, %H:%M>"))
- '(org-trello-current-prefix-keybinding "C-c o")
+ '(org-trello-current-prefix-keybinding "C-c o" nil (org-trello))
  '(org-use-speed-commands t)
  '(preview-auto-cache-preamble t)
  '(reftex-cite-format 'biblatex)
@@ -1018,7 +1053,7 @@
  '(select-enable-clipboard t)
  '(sentence-end-double-space nil)
  '(show-paren-delay 0)
- '(show-paren-mode 1)
+ '(show-paren-mode t)
  '(show-trailing-whitespace t)
  '(sort-fold-case t t)
  '(straight-host-usernames
@@ -1037,25 +1072,22 @@
  '(visible-bell t)
  '(window-combination-resize t))
 
-(flycheck-define-checker proselint
-  "A linter for prose."
-  :command ("proselint" source-inplace)
-  :error-patterns
-  ((warning line-start (file-name) ":" line ":" column ": "
-	    (id (one-or-more (not (any " "))))
-	    (message) line-end))
-  :modes (text-mode markdown-mode gfm-mode))
 
-(add-to-list 'flycheck-checkers 'proselint)
+;; IIRC I didn't want to use ~with-eval-after-load~
+(with-eval-after-load "flycheck-mode"
+  (flycheck-define-checker proselint
+    "A linter for prose"
+    :command ("proselint" source-inplace)
+    :error-patterns
+    ((warning line-start (file-name) ":" line ":" column ": "
+              (id (one-or-more (not (any " "))))
+              (message (one-or-more not-newline)
+                       (zero-or-more "\n" (any " ") (one-or-more not-newline)))
+              line-end))
+    :modes (text-mode markdown-mode gfm-mode org-mode))
+  (add-to-list 'flycheck-checkers 'proselint))
 
-(global-set-key (kbd "<f8>") 'ispell-word)
-
-;; Don't know why this isn't working Pu
-;; (define-key flyspell-mode-map (kbd "C-;") 'flyspell-popup-correct)
-;; You can also enable flyspell-popup-auto-correct-mode to popup that
-;; Popup Menu automatically with a delay (default 1.6 seconds):
 (add-hook 'text-mode-hook 'flyspell-mode)
-(add-hook 'flyspell-mode-hook #'flyspell-popup-auto-correct-mode)
 ;; (add-hook 'TeX-mode-hook 'flyspell-preprocess-buffer) ;; somehow void
 
 (setq flyspell-issue-message-flag nil)
@@ -1073,13 +1105,6 @@
 (global-set-key (kbd "M-<f8>") 'flyspell-check-next-highlighted-word)
 
 (setq-default major-mode 'text-mode)
-(setq-default ispell-list-command "list")
-
-(global-set-key "\C-x4w" 'langtool-check)
-(global-set-key "\C-x4W" 'langtool-check-done)
-(global-set-key "\C-x4l" 'langtool-switch-default-language)
-(global-set-key "\C-x44" 'langtool-show-message-at-point)
-(global-set-key "\C-x4c" 'langtool-correct-buffer)
 
 (defun langtool-autoshow-detail-popup (overlays)
   "OVERLAYS."
@@ -1171,8 +1196,6 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(diary ((t (:foreground "dark red")))))
-
-(define-key org-roam-mode-map [mouse-1] #'org-roam-visit-thing)
 
 (with-eval-after-load 'ox-latex
    (add-to-list 'org-latex-classes
