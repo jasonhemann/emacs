@@ -787,19 +787,6 @@
 
 (add-to-list 'flycheck-checkers 'proselint)
 
-(setq flyspell-issue-welcome-flag nil);; easy spell check setup.
-
-(global-set-key (kbd "C-S-<f8>") 'flyspell-mode)
-(global-set-key (kbd "C-M-<f8>") 'flyspell-buffer)
-(global-set-key (kbd "C-<f8>") 'flyspell-check-previous-highlighted-word)
-(global-set-key (kbd "M-<f8>") 'flyspell-check-next-highlighted-word)
-
-(defun flyspell-check-next-highlighted-word ()
-  "Custom function to spell check next highlighted word."
-  (interactive)
-  (flyspell-goto-next-error)
-  (ispell-word))
-
 ;; Only in Emacs mac-port
 (when (eq system-type 'darwin)
   (setq mac-auto-operator-composition-mode t
@@ -826,10 +813,11 @@
   ("\C-x44" . langtool-show-message-at-point)
   ("\C-x4c" . langtool-correct-buffer)
   :config
-  (setq langtool-autoshow-message-function 'langtool-autoshow-detail-popup
-	langtool-bin "/usr/local/bin/languagetool"
-	langtool-default-language "en-US"
-	langtool-mother-tongue "en"))
+  (setq
+   langtool-autoshow-message-function 'langtool-autoshow-detail-popup
+   langtool-bin "/usr/local/bin/languagetool"
+   langtool-default-language "en-US"
+   langtool-mother-tongue "en"))
 
 (defun langtool-autoshow-detail-popup (overlays)
   ". OVERLAYS."
@@ -898,12 +886,9 @@
 (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
 (add-hook 'LaTeX-mode-hook 'LaTeX-preview-setup)
 
-
-;; Only sometimes works!
 ;; must be after font locking is set up for the buffer on!
 ;; ... whatever that means
 ;; (add-hook 'find-file-hook 'TeX-fold-buffer t)
-
 
 ;; (setq lisp-indent-function 'scheme-smart-indent-function)
 ;; (autoload 'scheme-smart-complete "scheme-complete" nil t)
@@ -932,7 +917,6 @@
 (add-hook 'lisp-interaction-mode-hook              #'enable-paredit-mode)
 (add-hook 'scheme-mode-hook                        #'enable-paredit-mode)
 (add-hook 'inferior-scheme-mode-hook               #'enable-paredit-mode)
-
 
 (add-hook 'idris-mode-hook                         #'enable-paredit-mode)
 (add-hook 'idris-repl-mode-hook                    #'enable-paredit-mode)
@@ -1072,7 +1056,6 @@
  '(visible-bell t)
  '(window-combination-resize t))
 
-
 ;; IIRC I didn't want to use ~with-eval-after-load~
 (with-eval-after-load "flycheck-mode"
   (flycheck-define-checker proselint
@@ -1091,7 +1074,7 @@
 ;; (add-hook 'TeX-mode-hook 'flyspell-preprocess-buffer) ;; somehow void
 
 (setq flyspell-issue-message-flag nil)
-(setq flyspell-issue-welcome-flag nil)
+(setq flyspell-issue-welcome-flag nil);; easy spell check setup.
 (global-set-key (kbd "C-S-<f8>") 'flyspell-mode)
 (global-set-key (kbd "C-M-<f8>") 'flyspell-buffer)
 (global-set-key (kbd "C-<f8>") 'flyspell-check-previous-highlighted-word)
@@ -1103,8 +1086,6 @@
   (ispell-word))
 
 (global-set-key (kbd "M-<f8>") 'flyspell-check-next-highlighted-word)
-
-(setq-default major-mode 'text-mode)
 
 (defun langtool-autoshow-detail-popup (overlays)
   "OVERLAYS."
@@ -1227,6 +1208,7 @@
   :straight (:type git :host github :repo "togakangaroo/ob-racket"
 		   :files ("*.el" "*.rkt")))
 
+(setq-default major-mode 'text-mode)
 ;; Pick a random theme.
 (load-theme (nth (cl-random (length (custom-available-themes))) (custom-available-themes)) t)    ;; To have it always remember this is safe
 (fset 'yes-or-no-p 'y-or-n-p)
