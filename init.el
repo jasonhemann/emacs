@@ -47,7 +47,10 @@
 (straight-use-package 'use-package)
 
 ;; ;; So that I can publicly VC my config w/o leaking secret keys &c.
-(straight-use-package '(use-package-secret :host github :repo "emacswatcher/use-package-secret"))
+(straight-use-package
+ '(use-package-secret :host github
+					  :repo "emacswatcher/use-package-secret"
+					  :fork (:host github :repo "jasonhemann/use-package-secret")))
 
 (use-package org
   :straight t
@@ -163,6 +166,9 @@
   :straight t
   :bind ("C-h B" . describe-personal-keybindings))
 (straight-use-package 'bog) ;; for taking research notes w/org. Cf the more general org-ref that does both notes and writing.
+
+(straight-use-package 'bug-hunter) ;; how to fix bugs in an init file, by auto-bisect
+
 (straight-use-package 'buffer-move) ;; used for rotating buffers. buf-move-left
 
 (straight-use-package 'calfw)
@@ -307,6 +313,11 @@
 ;; Take a look at what he has here
 ;; (load "~/Documents/eliemacs/eliemacs")
 
+(autoload 'logtalk-mode "logtalk" "Major mode for editing Logtalk programs." t)
+(add-to-list 'auto-mode-alist '("\\.lgt\\'" . logtalk-mode))
+(add-to-list 'auto-mode-alist '("\\.logtalk\\'" . logtalk-mode))
+
+
 ;; No need to use these, as flycheck is better
 ;; (straight-use-package 'flylisp) ;; Add highlighting to mismatched parentheses, so you can see the mistake
 ;; (straight-use-package 'flymake-easy)
@@ -331,7 +342,7 @@
 
 (straight-use-package 'git-timemachine) ;; Walk through git revisions of a file
 
-(straight-use-package 'goto-chg) ;; Goto last change in current buffer
+(straight-use-package 'goto-chg) ;; Goto last change in current buffer. Needed?
 (straight-use-package 'graphql)
 
 ;; Themes from packages
@@ -340,6 +351,7 @@
 (straight-use-package 'gotham-theme)
 (straight-use-package 'green-phosphor-theme)
 (straight-use-package 'hc-zenburn-theme)
+(straight-use-package 'solarized-emacs)
 
 ;; These helm commands I commented because they seemed annoying when I used them.
 ;; helm-browse-project: handles project files and buffers; defaults to current directory; works with helm-find-files; recommended with helm-ls-git, helm-ls-hg and helm-ls-svn for a better handling of version control files. Each time a project under version control is visited it is added to helm-browse-project-history and can be visted with helm-projects-history.
@@ -394,7 +406,7 @@
 
 (straight-use-package 'ibuffer-vc) ;; Let Emacs' ibuffer-mode group files by git project etc., and show file state
 
-;; Not needed, I use helm.
+;; Not needed, b/c I was using helm. Now I'm using selectrum instead.
 ;; (straight-use-package 'ido-vertical-mode) ;; makes ido-mode display vertically
 (straight-use-package 'iedit) ;; Emacs minor mode and allows you to edit one occurrence of some text in a buffer
 (straight-use-package 'info+) ;; Package that enhances some info menus
@@ -524,7 +536,35 @@
 ;; (straight-use-package 'popup)
 ;; probably useful if I'm developing some GUI packages, but I don't see why I need to manually require it. Straight!
 
-(straight-use-package 'projectile) ;; Project Interaction Library for Emacs http://projectile.readthedocs.io
+;projectile add .projectile to any file
+(use-package projectile ;; Project Interaction Library for Emacs
+  :straight t
+  :config
+  (projectile-global-mode)
+  (setq projectile-enable-caching t
+        projectile-indexing-method 'hybrid ;  'alien 'native
+        projectile-sort-order 'recently-active
+        enable-local-variables ':safe ;enable safe local variables
+        enable-local-eval ':safe
+        projectile-completion-system 'selectrum
+		projectile-mode-line-function '(lambda () (format " Projectile[%s]" (projectile-project-name))))
+  ;; (setq projectile-switch-project-action 'projectile-dired)
+  ;; (setq projectile-switch-project-action 'helm-projectile)
+
+  (with-eval-after-load 'projectile
+	(defun projectile-find-file-other-window (&optional invalidate-cache)
+	  "Jump to a project's file using completion and show it in another window. With a prefix arg INVALIDATE-CACHE invalidates the cache first."
+	  (interactive "P")
+	  (progn
+		(setq split-window-preferred-function 'split-window-sensibly
+			  split-window-preferred-function nil)
+		(projectile--find-file invalidate-cache #'find-file-other-window))))
+
+  :bind
+  (:map projectile-mode-map ("C-c p". projectile-command-map))
+  (("C-c p" . projectile-command-map)))
+
+;; http://projectile.readthedocs.io
 ;; ibuffer-projectile. If I like projectile that is.
 
 (straight-use-package 'proof-general)
@@ -558,6 +598,15 @@
   (selectrum-prescient-mode +1) ;; to make sorting and filtering more intelligent
   (prescient-persist-mode +1)) ;; For selectrum, save your command history on disk, so the sorting gets more intelligent over time
 
+(use-package smex
+  :straight t
+  :config (smex-initialize) ; Can be omitted. This might cause a (minimal) delay when Smex is auto-initialized on its first run.
+  :bind
+  ("M-x" . smex)
+  ("M-X" . smex-major-mode-commands)
+  ("C-c C-c M-x" . execute-extended-command)) ;; This is your old M-x.
+
+
 (straight-use-package 'semi)
 (straight-use-package 'sh-script) ;; The major mode for editing Unix and GNU/Linux shell script code
 (straight-use-package 'smartscan) ;; Quickly jumps between other symbols found at point in Emacs
@@ -565,7 +614,6 @@
 (straight-use-package 'sml-mode)
 (straight-use-package 'sml-modeline)
 (straight-use-package 'smog)
-(straight-use-package 'solarized-emacs)
 (straight-use-package 'sourcemap) ;;  Sourmap parser in Emacs Lisp
 (straight-use-package 'sx) ;; Stackoverflow mode ;-)
 (straight-use-package 'svg-tag-mode)
@@ -813,31 +861,25 @@
   ("\C-x44" . langtool-show-message-at-point)
   ("\C-x4c" . langtool-correct-buffer)
   :config
-  (setq
-   langtool-autoshow-message-function 'langtool-autoshow-detail-popup
-   langtool-bin "/usr/local/bin/languagetool"
-   langtool-default-language "en-US"
-   langtool-mother-tongue "en"))
+  (setq langtool-autoshow-message-function 'langtool-autoshow-detail-popup
+		langtool-bin "/usr/local/bin/languagetool"
+		langtool-default-language "en-US"
+		langtool-mother-tongue "en")
+  (with-eval-after-load 'langtool
+	(defun langtool-autoshow-detail-popup (overlays)
+	  "OVERLAYS."
+	  (when (require 'popup nil t)
+		;; Do not interrupt current popup
+		(unless (or popup-instances
+					;; suppress popup after type `C-g` .
+					(memq last-command '(keyboard-quit)))
+		  (let ((msg (langtool-details-error-message overlays)))
+			(popup-tip msg)))))))
 
-(defun langtool-autoshow-detail-popup (overlays)
-  ". OVERLAYS."
-  (when (require 'popup nil t)
-    ;; Do not interrupt current popup
-    (unless (or popup-instances
-                ;; suppress popup after type `C-g` .
-                (memq last-command '(keyboard-quit)))
-      (let ((msg (langtool-details-error-message overlays)))
-        (popup-tip msg)))))
-
-(setq TeX-auto-save t)
-(setq TeX-parse-self t)
 ;; (setq-default TeX-master "master") ; set a master for in the future.
 (setq-default TeX-master nil)
 
 (setq reftex-default-bibliography '("~/old-microKanren.bib"))
-(setq reftex-plug-into-AUCTeX t)
-(setq reftex-extra-bindings t)
-(setq bib-cite-use-reftex-view-crossref t)
 
 ;; I grabbed this code off of the internet. The reftex-ref-style-alist
 ;; variables already had some of these cleveref options, so not sure
@@ -980,6 +1022,7 @@
  '(global-auto-revert-non-file-buffers t)
  '(global-display-line-numbers-mode t)
  '(global-flycheck-mode t)
+ '(global-visual-line-mode t) ;; Turn on visual-line mode, for better text wrapping when I want it. 
  '(history-length 50)
  '(indicate-empty-lines t)
  '(inhibit-startup-screen t)
@@ -1088,15 +1131,6 @@
 
 (global-set-key (kbd "M-<f8>") 'flyspell-check-next-highlighted-word)
 
-(defun langtool-autoshow-detail-popup (overlays)
-  "OVERLAYS."
-  (when (require 'popup nil t)
-    ;; Do not interrupt current popup
-    (unless (or popup-instances
-                ;; suppress popup after type `C-g` .
-                (memq last-command '(keyboard-quit)))
-      (let ((msg (langtool-details-error-message overlays)))
-        (popup-tip msg)))))
 
  ;; Add opam emacs directory to the load-path
 (setq opam-share (substring (shell-command-to-string "opam config var share 2> /dev/null") 0 -1))
@@ -1147,6 +1181,9 @@
 ;; C-h ? ⇒ What're the help topics? —gives possible completions to “C-h ⋯”.
 ;; “I accidentally hit a key, which one and what did it do!?” ⇒ C-h e and C-h l, then use C-h o to get more details on the action. ;-)
 ;; Finally, C-h d asks nicely what 'd'ocumentation you're interested in. After providing a few keywords, the apropos tool yields possible functions and variables that may accomplish my goal.
+;; Init problems w/o traces, use (setq debug-on-message "Eager macro-expansion failure:"), then (load "~/.emacs.d/init.el")
+
+
 
 ;; This was some setup that I did to the minibuffer; not sure it was wise
 ;; (add-hook 'eval-expression-minibuffer-setup-hook 'my-minibuffer-setup)
