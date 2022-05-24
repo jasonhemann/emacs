@@ -1013,6 +1013,7 @@
  '(debug-on-error t)
  '(default-input-method "TeX")
  '(describe-bindings-outline t)
+ '(dired-dwim-target 'dired-dwim-target-recent nil nil "Not obvious which option is *best*, but this at least works when I put two direds side-by-side.")
  '(dired-listing-switches "-alGh1v --group-directories-first --time-style=long-iso" nil nil "long format, w/hidden files, w/o group information, w/good numeric sorting human-readable sizes, and w/directories first")
  '(dired-recursive-copies 'always nil nil "I shouldn't be prompted to recursively copy dirs")
  '(display-time-day-and-date t)
@@ -1022,7 +1023,7 @@
  '(global-auto-revert-non-file-buffers t)
  '(global-display-line-numbers-mode t)
  '(global-flycheck-mode t)
- '(global-visual-line-mode t) ;; Turn on visual-line mode, for better text wrapping when I want it. 
+ '(global-visual-line-mode t)
  '(history-length 50)
  '(indicate-empty-lines t)
  '(inhibit-startup-screen t)
@@ -1182,7 +1183,7 @@
 ;; “I accidentally hit a key, which one and what did it do!?” ⇒ C-h e and C-h l, then use C-h o to get more details on the action. ;-)
 ;; Finally, C-h d asks nicely what 'd'ocumentation you're interested in. After providing a few keywords, the apropos tool yields possible functions and variables that may accomplish my goal.
 ;; Init problems w/o traces, use (setq debug-on-message "Eager macro-expansion failure:"), then (load "~/.emacs.d/init.el")
-
+;; M-x toggle-truncate-lines to switch b/t line-wrap and not.
 
 
 ;; This was some setup that I did to the minibuffer; not sure it was wise
