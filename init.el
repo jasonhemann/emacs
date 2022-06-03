@@ -8,10 +8,9 @@
 ;;; Code:
 
 ;; Need to be set before we load straight.el, to correct a flycheck incompatibility.
-(setq straight-fix-flycheck t)
-
+(setq straight-fix-flycheck t
 ;; Configuration for how straight.el should load.
-(setq load-prefer-newer t)
+	  load-prefer-newer t)
 
 ;; The straight.el bootstrap code.
 (defvar bootstrap-version)
@@ -92,7 +91,6 @@
   :config (org-roam-db-autosync-mode)
   :straight t
   :custom
-  (setq org-roam-graph-executable "/usr/local/bin/dot")
   (org-roam-directory (file-truename "~/.org/"))
   :bind (:map org-roam-mode-map
               (("C-c n l" . org-roam)
@@ -114,11 +112,11 @@
     :straight (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out"))
     :after org-roam
     :hook (after-init . org-roam-ui-mode)
-    :config
-    (setq org-roam-ui-sync-theme t
-          org-roam-ui-follow t
-          org-roam-ui-update-on-save t
-          org-roam-ui-open-on-start t))
+    :custom
+	(org-roam-ui-sync-theme t)
+	(org-roam-ui-follow t)
+	(org-roam-ui-update-on-save t)
+	(org-roam-ui-open-on-start t))
 
 (straight-use-package 'academic-phrases)
 
@@ -230,7 +228,10 @@
 		    :fork (:host github :repo "jasonhemann/dired-hacks")) ;; This is now correct
   :hook (dired-mode . dired-collapse-mode))
 
-(straight-use-package 'dired+)
+(use-package dired+
+  :straight t
+  :config
+  (setq diredp-hide-details-initially-flag nil))
 ;; (straight-use-package 'discover) ;; discover more of Emacs. Sadly, moribund
 
 (straight-use-package 'discover-my-major) ;; Discover key bindings and their meaning for the current Emacs major mode
@@ -250,14 +251,14 @@
 (use-package ebib
   :straight t
   :bind ("\C-ce" . ebib)
-  :config
-  (setq ebib-bibtex-dialect 'biblatex)) ;; ebib mode, for latex
+  :custom
+   (ebib-bibtex-dialect 'biblatex)) ;; ebib mode, for latex
 
 (use-package ediprolog
   :straight t
   :bind ([f10] . ediprolog-dwim)
-  :config
-  (setq ediprolog-program "scryer-prolog"))
+  :custom
+  (ediprolog-program "scryer-prolog"))
 
 (straight-use-package 'el2org)
 
@@ -294,7 +295,9 @@
 
 (use-package flycheck
   :straight t
-  :config (setq global-flycheck-mode t))
+  :config (global-flycheck-mode +1)
+  ;;  Consider as a fix to flycheck-mode, see https://github.com/flycheck/flycheck/issues/153#issuecomment-19450255
+  :custom (flycheck-highlighting-mode 'lines))
 
 (straight-use-package '(flycheck-textlint :type git :host github :repo "kisaragi-hiu/flycheck-textlint" :fork nil))
 
@@ -450,8 +453,7 @@
 ;; Perform an action every day at "midnight"--e.g. daily calendar
 (use-package midnight
   :straight t
-  :config
-  (setq midnight-hook '(calendar)))
+  :custom (midnight-hook '(calendar)))
 
 (use-package multiple-cursors
   :straight t
@@ -482,7 +484,8 @@
 
 (use-package org-ref ;; Org-ref
   :straight t
-  :config ;; Set up bibliography
+  ;; Set up bibliography
+  :config
   (setq org-ref-default-bibliography '("~/old-microKanrenbib.bib")))
 
 (use-package org-roam-bibtex ;; Org-roam-bibtex
@@ -572,13 +575,18 @@
 ;; Not clear: do I want these paredit hooks on racket-mode or paredit mode?
 (use-package racket-mode
   :straight t
+  :after (paredit)
   :hook
   (racket-mode . enable-paredit-mode) ;; should I need the below?
   (racket-mode . (lambda () (define-key racket-mode-map (kbd "C-c r") 'racket-run)))
   (racket-mode . racket-xp-mode)
+  (racket-mode . racket-smart-open-bracket-mode)
+  (racket-mode . (lambda () (flycheck-mode -1))) ;; disable flycheck in racket b/c Rk✓
+  (racket-repl-mode . racket-smart-open-bracket-mode)
   (racket-repl-mode . enable-paredit-mode)
+  :custom
+    (racket-program "racket")
   :config
-  (setq racket-program "racket")
   (add-to-list 'auto-mode-alist '("\\.rkt\\'" . racket-mode)))
 
 (straight-use-package 'reazon)
@@ -625,13 +633,14 @@
   :straight t
   :config (setq volatile-highlights-mode t))
 
+;; I don't think I like undo-tree
 ;; Assumes volatile highlights
-(use-package undo-tree ;; Treat undo history as a tree
-  :straight t
-  :config
-  (global-undo-tree-mode)
-  (vhl/define-extension 'undo-tree 'undo-tree-yank 'undo-tree-move)
-  (vhl/install-extension 'undo-tree))
+;; (use-package undo-tree ;; Treat undo history as a tree
+;;   :straight t
+;;   :config
+;;   (global-undo-tree-mode)
+;;   (vhl/define-extension 'undo-tree 'undo-tree-yank 'undo-tree-move)
+;;   (vhl/install-extension 'undo-tree))
 
 ;; vertico ??
 
@@ -1019,6 +1028,8 @@
  '(display-time-day-and-date t)
  '(display-time-mode t)
  '(find-file-visit-truename t)
+ '(flycheck-check-syntax-automatically '(save idle-change mode-enabled) nil nil "flycheck was a time-hog w/Racket mode, so I disabled newline check & delayed to 4sec")
+ '(flycheck-idle-change-delay 4)
  '(fringe-mode 2 nil (fringe))
  '(global-auto-revert-non-file-buffers t)
  '(global-display-line-numbers-mode t)
@@ -1060,21 +1071,21 @@
  '(ring-bell-function 'ignore)
  '(safe-local-variable-values
    '((TeX-command-extra-options . "-shell-escape")
-	 (eval progn
-		   (let
-			   ((tt-root-directory
-				 (when buffer-file-name
-				   (locate-dominating-file buffer-file-name ".dir-locals.el")))
-				(tt-project-find-file
-				 (and
-				  (boundp 'tt-project-find-file)
-				  tt-project-find-file)))
-			 (setq tags-file-name
-				   (concat tt-root-directory "TAGS"))
-			 (unless tt-project-find-file
-			   (setq compile-command
-					 (concat "make -C " tt-root-directory)))
-			 (setq default-directory tt-root-directory)))))
+     (eval progn
+           (let
+               ((tt-root-directory
+                 (when buffer-file-name
+                   (locate-dominating-file buffer-file-name ".dir-locals.el")))
+                (tt-project-find-file
+                 (and
+                  (boundp 'tt-project-find-file)
+                  tt-project-find-file)))
+             (setq tags-file-name
+                   (concat tt-root-directory "TAGS"))
+             (unless tt-project-find-file
+               (setq compile-command
+                     (concat "make -C " tt-root-directory)))
+             (setq default-directory tt-root-directory)))))
  '(save-place-mode t)
  '(savehist-mode t)
  '(scheme-program-name "scheme" nil nil "scheme defaults to chez scheme on my system.")
@@ -1087,8 +1098,8 @@
  '(sort-fold-case t t)
  '(straight-host-usernames
    '((gitlab . "jasonhemann")
-	 (github . "jasonhemann")
-	 (bitbucket . "jhemann")))
+     (github . "jasonhemann")
+     (bitbucket . "jhemann")))
  '(straight-use-package-by-default t)
  '(tab-always-indent 'complete)
  '(tab-width 4 nil nil "Switching to a 4-space tab")
@@ -1215,7 +1226,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(diary ((t (:foreground "dark red")))))
+ '(diary ((t (:foreground "dark red"))))
+ '(font-lock-function-name-face ((t (:foreground "#385e6b" :weight bold)))))
 
 (with-eval-after-load 'ox-latex
    (add-to-list 'org-latex-classes
