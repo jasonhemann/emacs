@@ -337,7 +337,7 @@
 			  ("C-;" . flyspell-popup-correct))
   :hook (flyspell-mode . flyspell-popup-auto-correct-mode))
 
-(straight-use-package 'fullframe) ;; Advice commands to execute fullscreen, restoring the window setup when exiting.
+(straight-use-package 'fullframe) ;; Advise commands to execute fullscreen, restoring the window setup when exiting.
 (straight-use-package 'gh-md)
 
 (straight-use-package 'ghub)
@@ -510,16 +510,27 @@
 (straight-use-package 'ox-jekyll-md)
 (straight-use-package 'ox-pandoc)
 (straight-use-package 'paradox)
-(straight-use-package 'paredit)
 
-(use-package paredit-everywhere ;; Paredit-everywhere-mode is a liar.
-  :straight t ;; It turns on *some* of the paredit keybindings but not all, and it doesn't let you choose
+(use-package paredit
+  :straight t
+  :hook
+  (emacs-lisp-mode . enable-paredit-mode)
+  (eval-expression-minibuffer-setup  . enable-paredit-mode)
+  (ielm-mode . enable-paredit-mode) ;; inferior-emacs-lisp-mode
+  (lisp-mode . enable-paredit-mode)
+  (lisp-interaction-mode . enable-paredit-mode)
+  (scheme-mode-hook . enable-paredit-mode)
+  (inferior-scheme-mode . enable-paredit-mode))
+
+;; Paredit-everywhere-mode is a liar. It turns on *some* of the
+;; paredit keybindings but not all, and it doesn't let you choose
+(use-package paredit-everywhere
+  :straight t
   :hook (prog-mode . paredit-everywhere-mode))
-
 (straight-use-package 'paredit-menu)
+
 (straight-use-package 'parent-mode)
 
-;;(straight-use-package 'pdf-tools)
 (use-package pdf-tools
   :straight t
 ;;  :after (pdf-annot fullframe)
@@ -954,20 +965,13 @@
 ;;     (setq eldoc-documentation-function 'scheme-get-current-symbol-info)
 ;;     (eldoc-mode)))
 
+;; Broken 
 (add-to-list 'auto-mode-alist '("\\.v$" . coq-mode))
 
 (add-to-list 'auto-mode-alist '("\\.pl\\'" . prolog-mode))
 
 (autoload 'coq-mode "coq" "Major mode for editing Coq vernacular." t)
 (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
-
-(add-hook 'emacs-lisp-mode-hook                    #'enable-paredit-mode)
-(add-hook 'eval-expression-minibuffer-setup-hook   #'enable-paredit-mode)
-(add-hook 'ielm-mode-hook                          #'enable-paredit-mode) ;; inferior-emacs-lisp-mode
-(add-hook 'lisp-mode-hook                          #'enable-paredit-mode)
-(add-hook 'lisp-interaction-mode-hook              #'enable-paredit-mode)
-(add-hook 'scheme-mode-hook                        #'enable-paredit-mode)
-(add-hook 'inferior-scheme-mode-hook               #'enable-paredit-mode)
 
 (add-hook 'idris-mode-hook                         #'enable-paredit-mode)
 (add-hook 'idris-repl-mode-hook                    #'enable-paredit-mode)
