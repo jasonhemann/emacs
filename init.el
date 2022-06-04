@@ -275,6 +275,8 @@
 ;; s-u-p elscreen ?
 (straight-use-package 'elscreen-separate-buffer-list)
 
+(straight-use-package 'esup)
+
 (when (executable-find "mpv") ;; empv relies on the mpv executable.
   (straight-use-package '(empv :type git :host github :repo "isamert/empv.el")))
 
