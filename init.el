@@ -60,8 +60,7 @@
 
 ;; Do I want this hook under agda2-mode or paredit-mode
 (use-package agda2-mode
-  :straight '(:includes (eri annotation))
-  :hook (agda2-mode . enable-paredit-mode)
+  :straight (:includes (eri annotation))
   :mode (("\\.agda\\'" . agda2-mode)
 		 ("\\.lagda.md\\'" . agda2-mode)))
 
@@ -100,13 +99,15 @@
               (("C-c n i" . org-roam-insert))
               (("C-c n I" . org-roam-insert-immediate))))
 
-(add-to-list 'display-buffer-alist
-	     '("\\*org-roam\\*"
-               (display-buffer-in-direction)
-               (direction . right)
-               (window-width . 0.33)
-               (window-height . fit-window-to-buffer)))
+(add-to-list
+ 'display-buffer-alist
+ '("\\*org-roam\\*"
+   (display-buffer-in-direction)
+   (direction . right)
+   (window-width . 0.33)
+   (window-height . fit-window-to-buffer)))
 
+;; I don't know when I need an ~:after~ flag
 (use-package org-roam-ui
     :straight (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out"))
     :after org-roam
@@ -121,15 +122,17 @@
 
 (use-package artbollocks-mode
   :straight t
-  :hook (text-mode . artbollocks-mode))
+  :hook text-mode)
 
 (straight-use-package 'ace-jump-mode)
+
 ;; displays current match and total matches information
 ;; global search count mode
 (use-package anzu
   :straight t
   :config
   (global-anzu-mode +1))
+
 (straight-use-package 'apel) ;; portable emacs extensions; unclear how relevant
 (straight-use-package 'auctex) ;; Not sure if I need w/dependency but trying just in case
 (straight-use-package 'auctex-latexmk)
@@ -195,8 +198,8 @@
 (use-package cdlatex
   :straight t
   :hook
-  (latex-mode . turn-on-cdlatex)  ; with Emacs latex mode
-  (TeX-mode . turn-on-cdlatex))  ; with AUCTeX LaTeX mode
+  ;; with Emacs latex mode, then with AUCTeX LaTeX mode
+  ((latex-mode TeX-mode) . turn-on-cdlatex))
 
 (straight-use-package 'cl-lib) ;; Properly prefixed CL functions and macros
 
@@ -216,17 +219,24 @@
 
 (straight-use-package 'company-coq)
 (straight-use-package 'company-dict)
-
 (straight-use-package 'lean-mode)
+
 (use-package company-lean
   :straight t
-  :bind ("S-SPC" . company-complete)) ;; Trigger completion on Shift-Space
+  ;; Trigger completion on Shift-Space
+  ;; Was ~company-complete~, but company-try-hard does more
+  :bind ("S-SPC" . company-try-hard))
 
 (straight-use-package 'company-math)
 (straight-use-package 'company-org-roam)
 (straight-use-package 'company-auctex)
 (straight-use-package 'company-bibtex)
-(straight-use-package 'company-try-hard)
+
+(use-package company-try-hard
+  :straight t
+  :bind ("C-z" . company-try-hard)
+  (:map company-active-map ("C-z" . company-try-hard)))
+
 (straight-use-package 'company-fuzzy)
 (straight-use-package 'consult) ;; the counsel equivalent for selectrum
 (straight-use-package 'coq-commenter)
@@ -238,9 +248,9 @@
 (straight-use-package '(dired-hacks-utils :host github :repo "Fuco1/dired-hacks" :fork (:host github :repo "jasonhemann/dired-hacks")))
 
 (use-package dired-collapse
-  :straight '(:host github :repo "Fuco1/dired-hacks"
+  :straight (:host github :repo "Fuco1/dired-hacks"
 		    :fork (:host github :repo "jasonhemann/dired-hacks")) ;; This is now correct
-  :hook (dired-mode . dired-collapse-mode))
+  :hook dired-mode)
 
 (use-package dired+
   :straight t
@@ -291,8 +301,7 @@
 
 (straight-use-package 'esup)
 
-(when (executable-find "mpv") ;; empv relies on the mpv executable.
-  (straight-use-package '(empv :type git :host github :repo "isamert/empv.el")))
+(straight-use-package '(empv :host github :repo "isamert/empv.el" :if (executable-find "mpv")))
 
 ;; Needed b/c closql wasn't working?
 (straight-use-package 'closql)
@@ -302,6 +311,7 @@
   :after closql)
 
 (use-package exec-path-from-shell ;; Make Emacs use the $PATH set up by the user's shell
+  :if (memq window-system '(mac ns))
   :straight t
   :config (exec-path-from-shell-initialize))
 
@@ -319,7 +329,7 @@
 
 (use-package gradle-mode ;; I should want maven, I think, tbqh
   :straight t
-  :hook (java-mode . gradle-mode))
+  :hook java-mode)
 
 (straight-use-package 'flycheck-gradle)
 
@@ -327,11 +337,12 @@
 (straight-use-package 'meghanada)
 
 ;; All eclim abandoned and better use java-lsp.
-;; no company-emacs-eclim ac-emacs-eclim either
+;; Skip company-emacs-eclim ac-emacs-eclim too.
 
 ;; Take a look at what he has here
 ;; (load "~/Documents/eliemacs/eliemacs")
 
+;; Logtalk mode is not found right now. BUG.
 (autoload 'logtalk-mode "logtalk" "Major mode for editing Logtalk programs." t)
 (add-to-list 'auto-mode-alist '("\\.lgt\\'" . logtalk-mode))
 (add-to-list 'auto-mode-alist '("\\.logtalk\\'" . logtalk-mode))
@@ -348,7 +359,7 @@
 
 (use-package flyspell-popup
   :after flyspell
-  :straight '(:type git :host github :repo "xuchunyang/flyspell-popup")
+  :straight (:host github :repo "xuchunyang/flyspell-popup")
   :bind (:map flyspell-mode-map
 			  ("C-;" . flyspell-popup-correct))
   :hook (flyspell-mode . flyspell-popup-auto-correct-mode))
@@ -461,7 +472,8 @@
 ;;   :hook
 ;;   (magit-status-mode magit-filenotify-mode))
 
-(straight-use-package 'magit-gerrit) ;; gerrit mode for emacs w/magit attachment
+;; gerrit mode for emacs w/magit attachment
+;; (straight-use-package 'magit-gerrit)
 (straight-use-package 'magit-popup)
 
 ;; (straight-use-package 'markdown-mode+) ;; attic'd, defunct
@@ -476,9 +488,8 @@
 
 (use-package multiple-cursors
   :straight t
-  :hook
-  (scheme-mode . multiple-cursors-mode)
-  (inferior-scheme-mode . multiple-cursors-mode)
+  :config
+  (multiple-cursors-mode +1)
   :bind
   ("C-S-c C-S-c" . mc/edit-lines)
   ("C->" . mc/mark-next-like-this)
@@ -501,18 +512,20 @@
 (straight-use-package 'org-journal)
 (straight-use-package 'org-ql)
 
+
+;; See (org-ref-manual) for some documentation
+;; Unclear if I actually _want_ this system, or if I'll prefer the built-in org-cite behavior. 
 (use-package org-ref ;; Org-ref
   :straight t
-  ;; Set up bibliography
   :config
   (setq org-ref-default-bibliography '("~/old-microKanrenbib.bib")))
+;; Set up bibliography
 
 (use-package org-roam-bibtex ;; Org-roam-bibtex
   :straight t
-  :config
-  (org-roam-bibtex-mode)
+  :config (org-roam-bibtex-mode +1)
   :bind (:map org-roam-bibtex-mode-map
-			   ("C-c n a" . orb-note-actions)))
+			  ("C-c n a" . orb-note-actions)))
 
 ;; (straight-use-package 'org-roam-server) defunct, org-roam-ui is the good one
 (straight-use-package 'org-rtm)
@@ -533,19 +546,28 @@
 (use-package paredit
   :straight t
   :hook
-  (emacs-lisp-mode . enable-paredit-mode)
-  (eval-expression-minibuffer-setup  . enable-paredit-mode)
-  (ielm-mode . enable-paredit-mode) ;; inferior-emacs-lisp-mode
-  (lisp-mode . enable-paredit-mode)
-  (lisp-interaction-mode . enable-paredit-mode)
-  (scheme-mode-hook . enable-paredit-mode)
-  (inferior-scheme-mode . enable-paredit-mode))
+  ((agda2-mode
+	emacs-lisp-mode
+	eval-expression-minibuffer-setup
+	ielm-mode ;; inferior-emacs-lisp-mode
+	lisp-mode
+	lisp-interaction-mode
+	scheme-mode-hook
+	racket-mode
+	racket-repl-mode
+	idris-mode
+	idris-repl-mode
+	idris-prover-script-mode
+	inferior-scheme-mode) . enable-paredit-mode))
 
 ;; Paredit-everywhere-mode is a liar. It turns on *some* of the
 ;; paredit keybindings but not all, and it doesn't let you choose
 (use-package paredit-everywhere
   :straight t
-  :hook (prog-mode . paredit-everywhere-mode))
+  :bind ("{" . 'paredit-open-curly)
+  :hook
+  (prog-mode . paredit-everywhere-mode))
+
 (straight-use-package 'paredit-menu)
 
 (straight-use-package 'parent-mode)
@@ -553,17 +575,18 @@
 (use-package pdf-tools
   :straight t
 ;;  :after (pdf-annot fullframe)
-;;  :magic ("%PDF" . pdf-view-mode)
+  :magic ("%PDF" . pdf-view-mode)
+  :config (pdf-tools-install :no-query) ;; if this slows things down try (pdf-loader-install)
   :bind (:map pdf-view-mode-map
               ("h"   . 'pdf-annot-add-highlight-markup-annotation)
               ("t"   . 'pdf-annot-add-text-annotation)
               ("D"   . 'pdf-annot-delete)
-              ("C-s" . 'isearch-forward)
+              ("C-s" . 'isearch-forward))
               ;; ("m"   . 'mrb/mailfile)
               ;; :map pdf-annot-edit-contents-minor-mode-map
               ;; ("<return>"   . 'pdf-annot-edit-contents-commit)
               ;; ("<S-return>" .  'newline)
-	      ))
+			  )
 
 ;; Visual Popup Interface Library for Emacs
 ;; (straight-use-package 'popup)
@@ -572,15 +595,14 @@
 ;projectile add .projectile to any file
 (use-package projectile ;; Project Interaction Library for Emacs
   :straight t
+  :custom
+  (projectile-sort-order recently-active)
+  (projectile-completion-system selectrum)
+  (projectile-indexing-method hybrid) ; 'alien 'native
+  (projectile-enable-caching t)
   :config
-  (projectile-global-mode)
-  (setq projectile-enable-caching t
-        projectile-indexing-method 'hybrid ;  'alien 'native
-        projectile-sort-order 'recently-active
-        enable-local-variables ':safe ;enable safe local variables
-        enable-local-eval ':safe
-        projectile-completion-system 'selectrum
-		projectile-mode-line-function '(lambda () (format " Projectile[%s]" (projectile-project-name))))
+  (projectile-mode +1)
+  (setq projectile-mode-line-function '(lambda () (format " Projectile[%s]" (projectile-project-name))))
   ;; (setq projectile-switch-project-action 'projectile-dired)
   ;; (setq projectile-switch-project-action 'helm-projectile)
 
@@ -594,28 +616,50 @@
 		(projectile--find-file invalidate-cache #'find-file-other-window))))
 
   :bind
-  (:map projectile-mode-map ("C-c p". projectile-command-map))
+  (:map projectile-mode-map ("C-c p" . projectile-command-map))
   (("C-c p" . projectile-command-map)))
 
 ;; http://projectile.readthedocs.io
 ;; ibuffer-projectile. If I like projectile that is.
 
-(straight-use-package 'proof-general)
+;; Broken
+;; No coq-mode package
+;; (use-package proof-general
+;;   :defines (coq-mode-map
+;;             proof-prog-name-ask
+;;             proof-follow-mode
+;;             proof-sticky-errors
+;;             proof-splash-seen)
+;;   :straight t
+;;   :mode ("\\.v$" . coq-mode)
+;;   :init (push ".v.d" completion-ignored-extensions)
+;;   :custom
+;;   (proof-prog-name-ask t)
+;;   (proof-follow-mode 'followdown)
+;;   (proof-sticky-errors t)
+;;   (proof-splash-seen t)
+;;   (coq-accept-proof-using-suggestion 'never)
+;;   :config (flycheck-mode 0)
+;;   :bind (:map coq-mode-map
+;; 			  (("s-n" . proof-assert-next-command-interactive)
+;; 			   ("s-<down>" . proof-assert-next-command-interactive)
+;; 			   ("s-<right>" . proof-goto-point)
+;; 			   ("s-<up>" . proof-undo-last-successful-command)
+;; 			   ("s-<left>" . proof-goto-end-of-locked)
+;; 			   ("s-<end>" . proof-process-buffer))))
 
 ;; Not clear: do I want these paredit hooks on racket-mode or paredit mode?
 (use-package racket-mode
   :straight t
-  :after (paredit)
+;; Not clear that I need this.
+  ;;  :after (paredit)
+  :bind (:map racket-mode-map ("C-c r" . racket-run))
   :hook
-  (racket-mode . enable-paredit-mode) ;; should I need the below?
-  (racket-mode . (lambda () (define-key racket-mode-map (kbd "C-c r") 'racket-run)))
   (racket-mode . racket-xp-mode)
   (racket-mode . racket-smart-open-bracket-mode)
   (racket-mode . (lambda () (flycheck-mode -1))) ;; disable flycheck in racket b/c Rk✓
   (racket-repl-mode . racket-smart-open-bracket-mode)
-  (racket-repl-mode . enable-paredit-mode)
-  :custom
-    (racket-program "racket")
+  :custom (racket-program "racket")
   :mode ("\\.rkt\\'" . racket-mode))
 
 (straight-use-package 'reazon)
@@ -673,7 +717,7 @@
 
 (use-package volatile-highlights ;; Minor mode for visual feedback on some operations.
   :straight t
-  :config (setq volatile-highlights-mode t))
+  :config (volatile-highlights-mode +1))
 
 ;; I don't think I like undo-tree. Weird undo structure.
 ;; (use-package undo-tree ;; Treat undo history as a tree
@@ -700,8 +744,7 @@
 (use-package wc-mode
   :straight t
   :hook (text-mode . wc-mode)
-  :config
-  (global-set-key "\C-cw" 'wc-mode))
+  :bind ("\C-cw" . wc-mode))
 
 (use-package w3m
   :straight t
@@ -717,13 +760,13 @@
 
 (use-package wordsmith-mode
   :straight t
-  :hook (text-mode . wordsmith-mode))
+  :hook text-mode)
 
 (straight-use-package 'wrap-region) ;; Emacs minor mode to wrap region with tag or punctuations
 
 (use-package writegood-mode
   :straight t
-  :hook (text-mode . writegood-mode)
+  :hook text-mode
   :bind
   ("C-c g"     . writegood-mode)
   ("C-c C-g g" . writegood-grade-level)
@@ -740,21 +783,20 @@
 
 (use-package zygospore
   :straight t
-  :config (global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows))
+  :bind ("C-x 1" . zygospore-toggle-delete-other-windows))
 
 (straight-use-package '(all-the-icons :type git :flavor melpa :files (:defaults "data" "all-the-icons-pkg.el") :host github :repo "domtronn/all-the-icons.el"))
 
 ;; Also, does this need to be graphics-only, like all-the-icons?
 ;; https://github.com/domtronn/all-the-icons.el#installation
 (use-package all-the-icons–dired
-  :straight '(:host github :repo "wyuenho/all-the-icons-dired")
+  :straight (:host github :repo "wyuenho/all-the-icons-dired")
   :hook
   (dired-mode . all-the-icons-dired-mode)
   :config
   (setq all-the-icons-dired-monochrome nil))
 
 
-(global-set-key (kbd "C-z") #'company-try-hard)
 ;; global-set-key is a shortcut here for:
 ;; (define-key (current-global-map) (kbd "C-z") #'company-try-hard)
 
@@ -905,17 +947,19 @@
 
 (use-package langtool
   :straight t
+  :if (executable-find "languagetool")
   :bind
   ("\C-x4w" . langtool-check)
   ("\C-x4W" . langtool-check-done)
   ("\C-x4l" . langtool-switch-default-language)
   ("\C-x44" . langtool-show-message-at-point)
   ("\C-x4c" . langtool-correct-buffer)
+  :custom
+  (langtool-bin (executable-find "languagetool"))
+  (langtool-mother-tongue "en")
+  (langtool-autoshow-message-function 'langtool-autoshow-detail-popup)
+  (langtool-default-language "en-US")
   :config
-  (setq langtool-autoshow-message-function 'langtool-autoshow-detail-popup
-		langtool-bin "/usr/local/bin/languagetool"
-		langtool-default-language "en-US"
-		langtool-mother-tongue "en")
   (with-eval-after-load 'langtool
 	(defun langtool-autoshow-detail-popup (overlays)
 	  "OVERLAYS."
@@ -955,9 +999,7 @@
 
 ;; TeX-latex-mode, LaTeX-mode, TeX-mode, tex-mode, latex-mode, auxtex-mode
 
-
 (add-hook 'latex-mode-hook 'turn-on-reftex)   ; with Emacs latex mode
-(add-hook 'text-mode-hook 'visual-line-mode)
 
 (add-hook 'TeX-mode-hook (function (lambda () (setq ispell-parser 'tex))))
 (add-hook 'tex-mode-hook 'auxtex-mode)
@@ -969,7 +1011,6 @@
 (add-hook 'LaTeX-mode-hook 'LaTeX-preview-setup)
 
 (add-hook 'TeX-mode-hook 'turn-on-reftex)   ; with AUCTeX LaTeX mode
-(add-hook 'TeX-mode-hook 'visual-line-mode)
 
 (add-hook 'TeX-mode-hook 'TeX-source-correlate-mode)
 (add-hook 'TeX-mode-hook 'TeX-PDF-mode)
@@ -996,25 +1037,14 @@
 ;;     (setq eldoc-documentation-function 'scheme-get-current-symbol-info)
 ;;     (eldoc-mode)))
 
-;; Broken
-
-
-(add-to-list 'auto-mode-alist '("\\.v$" . coq-mode))
-
 ;; I don't know if this is what I want here.
 
 (add-to-list 'auto-mode-alist '("\\.pl\\'" . prolog-mode))
 
-(autoload 'coq-mode "coq" "Major mode for editing Coq vernacular." t)
+(straight-use-package 'idris-mode)
 
-
-(add-hook 'idris-mode-hook                         #'enable-paredit-mode)
-(add-hook 'idris-repl-mode-hook                    #'enable-paredit-mode)
-;; (add-hook 'ciao-mode-hook                          #'enable-paredit-mode) ;; not til fix paren space issue.
+;; (add-hook 'ciao-mode-hook #'enable-paredit-mode) ;; not til fix paren space issue.
 ;; tex-mode has paredit-mode issue too.
-(add-hook 'idris-prover-script-mode-hook           #'enable-paredit-mode)
-
-(global-set-key (kbd "{") 'paredit-open-curly)
 
 ;; So that I can find scryer-prolog
 (add-to-list 'exec-path (expand-file-name (substitute-in-file-name "$HOME/.cargo/bin")))
@@ -1066,13 +1096,14 @@
  '(dired-recursive-copies 'always nil nil "I shouldn't be prompted to recursively copy dirs")
  '(display-time-day-and-date t)
  '(display-time-mode t)
+ ;; '(enable-local-variables ':safe) ;enable safe local variables
+ ;; '(enable-local-eval ':safe)
  '(find-file-visit-truename t)
  '(flycheck-check-syntax-automatically '(save idle-change mode-enabled) nil nil "flycheck was a time-hog w/Racket mode, so I disabled newline check & delayed to 4sec")
  '(flycheck-idle-change-delay 4)
  '(fringe-mode 2 nil (fringe))
  '(global-auto-revert-non-file-buffers t)
  '(global-display-line-numbers-mode t)
- '(global-flycheck-mode t)
  '(global-visual-line-mode t)
  '(history-length 50)
  '(indicate-empty-lines t)
@@ -1165,7 +1196,6 @@
     :modes (text-mode markdown-mode gfm-mode org-mode))
   (add-to-list 'flycheck-checkers 'proselint))
 
-(add-hook 'text-mode-hook 'flyspell-mode)
 ;; (add-hook 'TeX-mode-hook 'flyspell-preprocess-buffer) ;; somehow void
 
 (setq flyspell-issue-message-flag nil)
@@ -1181,7 +1211,6 @@
   (ispell-word))
 
 (global-set-key (kbd "M-<f8>") 'flyspell-check-next-highlighted-word)
-
 
  ;; Add opam emacs directory to the load-path
 (setq opam-share (substring (shell-command-to-string "opam config var share 2> /dev/null") 0 -1))
@@ -1277,7 +1306,7 @@
                   ("\\subsection{%s}" . "\\subsection*{%s}")
                   ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
 
-(pdf-tools-install) ;; if this slows things down try (pdf-loader-install)
+
 
 (require 'org-protocol)
 (require 'org-roam-protocol)
