@@ -62,9 +62,8 @@
 (use-package agda2-mode
   :straight '(:includes (eri annotation))
   :hook (agda2-mode . enable-paredit-mode)
-  :config
-  (add-to-list 'auto-mode-alist '("\\.agda\\'" . agda2-mode))
-  (add-to-list 'auto-mode-alist '("\\.lagda.md\\'" . agda2-mode)))
+  :mode (("\\.agda\\'" . agda2-mode)
+		 ("\\.lagda.md\\'" . agda2-mode)))
 
 (straight-use-package '(simple-httpd :includes web-server :files ("*.el")))
 (straight-use-package 'impatient-mode) ;; replacement for flymd
@@ -169,13 +168,28 @@
 
 (straight-use-package 'buffer-move) ;; used for rotating buffers. buf-move-left
 
-(straight-use-package 'calfw)
+;; https://github.com/kiwanami/emacs-calfw
+;; To use, must configure
+;; TODO when time.
+(use-package calfw
+  :straight t
+  :config
+  (setq cfw:fchar-junction ?╋
+		cfw:fchar-vertical-line ?┃
+		cfw:fchar-horizontal-line ?━
+		cfw:fchar-left-junction ?┣
+		cfw:fchar-right-junction ?┫
+		cfw:fchar-top-junction ?┯
+		cfw:fchar-top-left-corner ?┏
+		cfw:fchar-top-right-corner ?┓))
+
 (straight-use-package 'calfw-cal)
 (straight-use-package 'calfw-gcal)
 (straight-use-package 'calfw-ical)
 (straight-use-package 'calfw-org)
 ;; No need for howm-mode; org-mode + roam for me
 ;; (straight-use-package 'calfw-howm)
+
 (straight-use-package 'cbm) ;; cycle by major mode
 
 (use-package cdlatex
@@ -350,13 +364,13 @@
 (straight-use-package 'goto-chg) ;; Goto last change in current buffer. Needed?
 (straight-use-package 'graphql)
 
-;; Themes from packages
-(straight-use-package 'color-theme-modern)
-(straight-use-package 'cyberpunk-theme)
-(straight-use-package 'gotham-theme)
-(straight-use-package 'green-phosphor-theme)
-(straight-use-package 'hc-zenburn-theme)
-(straight-use-package 'solarized-emacs)
+;; Themes from packages. I have enough; don't think I need these.
+;; (straight-use-package 'color-theme-modern)
+;; (straight-use-package 'cyberpunk-theme)
+;; (straight-use-package 'gotham-theme)
+;; (straight-use-package 'green-phosphor-theme)
+;; (straight-use-package 'hc-zenburn-theme)
+;; (straight-use-package 'solarized-emacs)
 
 ;; These helm commands I commented because they seemed annoying when I used them.
 ;; helm-browse-project: handles project files and buffers; defaults to current directory; works with helm-find-files; recommended with helm-ls-git, helm-ls-hg and helm-ls-svn for a better handling of version control files. Each time a project under version control is visited it is added to helm-browse-project-history and can be visted with helm-projects-history.
@@ -420,7 +434,10 @@
 
 (use-package j-mode
   :straight t
-  :config (add-to-list 'auto-mode-alist '("\\.ij[rstp]$" . j-mode)))
+  :mode ("\\.ij[rstp]$" . j-mode))
+
+;; This fork was more up-to-date than the o.g. janet-mode repo.
+(straight-use-package '(janet-mode :fork (:host github :repo "pierre-rouleau/janet-mode")))
 
 ;; Unneeded
 ;; (straight-use-package 'jeison)
@@ -599,8 +616,7 @@
   (racket-repl-mode . enable-paredit-mode)
   :custom
     (racket-program "racket")
-  :config
-  (add-to-list 'auto-mode-alist '("\\.rkt\\'" . racket-mode)))
+  :mode ("\\.rkt\\'" . racket-mode))
 
 (straight-use-package 'reazon)
 (straight-use-package 'refine)
@@ -642,16 +658,29 @@
 (straight-use-package 'treepy) ;; tree-walk functionality like a clojure library implementation
 (straight-use-package 'ts) ;; A bunch of nice utilities for time and date parsing, better than the built-ins
 
+(use-package vterm
+  :straight t
+  :bind (("C-c t" . vterm)))
+
+(use-package eshell-vterm
+  :straight t
+;;  Not clear that I should need these configuration options, b/c dependencies.
+;;  :demand t
+;;  :after eshell
+  :config
+  (eshell-vterm-mode)
+  (defalias 'eshell/v 'eshell-exec-visual))
+
 (use-package volatile-highlights ;; Minor mode for visual feedback on some operations.
   :straight t
   :config (setq volatile-highlights-mode t))
 
-;; I don't think I like undo-tree
-;; Assumes volatile highlights
+;; I don't think I like undo-tree. Weird undo structure.
 ;; (use-package undo-tree ;; Treat undo history as a tree
 ;;   :straight t
 ;;   :config
 ;;   (global-undo-tree-mode)
+;;   BTW Config section assumes volatile highlights
 ;;   (vhl/define-extension 'undo-tree 'undo-tree-yank 'undo-tree-move)
 ;;   (vhl/install-extension 'undo-tree))
 
@@ -967,13 +996,17 @@
 ;;     (setq eldoc-documentation-function 'scheme-get-current-symbol-info)
 ;;     (eldoc-mode)))
 
-;; Broken 
+;; Broken
+
+
 (add-to-list 'auto-mode-alist '("\\.v$" . coq-mode))
+
+;; I don't know if this is what I want here.
 
 (add-to-list 'auto-mode-alist '("\\.pl\\'" . prolog-mode))
 
 (autoload 'coq-mode "coq" "Major mode for editing Coq vernacular." t)
-(autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
+
 
 (add-hook 'idris-mode-hook                         #'enable-paredit-mode)
 (add-hook 'idris-repl-mode-hook                    #'enable-paredit-mode)
@@ -1285,8 +1318,8 @@
 
 ;; https://cliplab.org/~clip/Software/Ciao/ciao-1.15.0.html/CiaoMode.html#Installation%20of%20the%20Ciao%20emacs%20interface
 ;; https://github.com/ciao-lang/ciao_emacs
-;; (if (file-exists-p "/usr/local/lib/ciao/ciao-mode-init.el")
-;;     (load-file "/usr/local/lib/ciao/ciao-mode-init.el"))
+(if (file-exists-p "/usr/local/lib/ciao/ciao-mode-init.el")
+    (load-file "/usr/local/lib/ciao/ciao-mode-init.el"))
 
 ;; Start the emacs server, so that I can use emacsclient to connect to the existing emacs instance
 ;; I need another way to do this. To instead have an Emacs.app -like thing do it
