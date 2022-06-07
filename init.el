@@ -9,6 +9,7 @@
 
 ;; Need to be set before we load straight.el, to correct a flycheck incompatibility.
 (setq straight-fix-flycheck t
+	  use-package-compute-statistics t
 ;; Configuration for how straight.el should load.
 	  load-prefer-newer t)
 
@@ -44,21 +45,24 @@
 ;;  dictionary is also a emacs 21 era thing, so no need.
 
 (straight-use-package 'use-package)
-
-;; ;; So that I can publicly VC my config w/o leaking secret keys &c.
+(straight-use-package 'use-package-ensure-system-package)
+;; So that I can publicly VC my config w/o leaking secret keys &c.
 (straight-use-package
  '(use-package-secret :host github
 					  :repo "emacswatcher/use-package-secret"
 					  :fork (:host github :repo "jasonhemann/use-package-secret")))
 
+(use-package exec-path-from-shell ;; Make Emacs use the $PATH set up by the user's shell
+  :if (memq window-system '(mac ns))
+  :straight t
+  :config (exec-path-from-shell-initialize))
+
 (use-package org
   :straight t
-  :bind
-  ("C-c l" . org-store-link)
-  ("C-c a" . org-agenda)
-  ("C-c c" . org-capture))
+  :bind (("C-c l" . org-store-link)
+		 ("C-c a" . org-agenda)
+		 ("C-c c" . org-capture)))
 
-;; Do I want this hook under agda2-mode or paredit-mode
 (use-package agda2-mode
   :straight (:includes (eri annotation))
   :mode (("\\.agda\\'" . agda2-mode)
@@ -70,6 +74,8 @@
 (straight-use-package '(let-alist :type built-in))
 (straight-use-package '(which-key :custom (which-key-mode)))
 (straight-use-package '(helm :files ("*.el" "emacs-helm.sh" (:exclude "helm-lib.el" "helm-source.el" "helm-multi-match.el" "helm-core.el" "helm-core-pkg.el") "helm-pkg.el")))
+
+(straight-use-package '(rg :ensure-system-package rg))
 
 (straight-use-package 'unicode-fonts)
 (straight-use-package 'font-utils) ;; Apparently nice for working w/fonts in emacs.
@@ -90,14 +96,15 @@
   :straight t
   :custom
   (org-roam-directory (file-truename "~/.org/"))
+  ;; Why have I nested these map commands?
   :bind (:map org-roam-mode-map
-              (("C-c n l" . org-roam)
-               ("C-c n f" . org-roam-find-file)
-               ("C-c n g" . org-roam-graph)
-			   ([mouse-1] . org-roam-visit-thing))
-              :map org-mode-map
-              (("C-c n i" . org-roam-insert))
-              (("C-c n I" . org-roam-insert-immediate))))
+		 ("C-c n l" . org-roam)
+		 ("C-c n f" . org-roam-find-file)
+		 ("C-c n g" . org-roam-graph)
+		 ([mouse-1] . org-roam-visit-thing)
+		 :map org-mode-map
+		 ("C-c n i" . org-roam-insert)
+		 ("C-c n I" . org-roam-insert-immediate)))
 
 (add-to-list
  'display-buffer-alist
@@ -176,15 +183,15 @@
 ;; TODO when time.
 (use-package calfw
   :straight t
-  :config
-  (setq cfw:fchar-junction ?╋
-		cfw:fchar-vertical-line ?┃
-		cfw:fchar-horizontal-line ?━
-		cfw:fchar-left-junction ?┣
-		cfw:fchar-right-junction ?┫
-		cfw:fchar-top-junction ?┯
-		cfw:fchar-top-left-corner ?┏
-		cfw:fchar-top-right-corner ?┓))
+  :custom
+  (cfw:fchar-junction ?╋)
+  (cfw:fchar-vertical-line ?┃)
+  (cfw:fchar-horizontal-line ?━)
+  (cfw:fchar-left-junction ?┣)
+  (cfw:fchar-right-junction ?┫)
+  (cfw:fchar-top-junction ?┯)
+  (cfw:fchar-top-left-corner ?┏)
+  (cfw:fchar-top-right-corner ?┓))
 
 (straight-use-package 'calfw-cal)
 (straight-use-package 'calfw-gcal)
@@ -209,9 +216,10 @@
 
 (use-package comment-dwim-2 ;; A replacement for the emacs' built-in command comment-dwim
   :straight t
-  :bind (:map org-mode-map
-			  ("M-;" . 'org-comment-dwim-2))
-  ("M-;" . comment-dwim-2))
+  :bind
+  (("M-;" . comment-dwim-2)
+   :map org-mode-map
+   ("M-;" . 'org-comment-dwim-2)))
 
 (use-package company ;; Complete anything ;-)
   :straight t
@@ -234,8 +242,9 @@
 
 (use-package company-try-hard
   :straight t
-  :bind ("C-z" . company-try-hard)
-  (:map company-active-map ("C-z" . company-try-hard)))
+  :bind (("C-z" . company-try-hard)
+		 :map company-active-map
+		 ("C-z" . company-try-hard)))
 
 (straight-use-package 'company-fuzzy)
 (straight-use-package 'consult) ;; the counsel equivalent for selectrum
@@ -256,6 +265,7 @@
   :straight t
   :config
   (setq diredp-hide-details-initially-flag nil))
+
 ;; (straight-use-package 'discover) ;; discover more of Emacs. Sadly, moribund
 
 (straight-use-package 'discover-my-major) ;; Discover key bindings and their meaning for the current Emacs major mode
@@ -263,8 +273,7 @@
 (use-package dr-racket-like-unicode
   :straight t
   :hook
-  (racket-mode . racket-unicode-input-method-enable)
-  (racket-repl . racket-unicode-input-method-enable))
+  ((racket-mode racket-repl) . racket-unicode-input-method-enable))
 
 (straight-use-package 'clean-aindent-mode) ;; Emacs extension for simple indent and unindent
 (straight-use-package 'dtrt-indent) ;; A minor mode that guesses the indentation offset originally used for creating source code
@@ -301,7 +310,7 @@
 
 (straight-use-package 'esup)
 
-(straight-use-package '(empv :host github :repo "isamert/empv.el" :if (executable-find "mpv")))
+(straight-use-package '(empv :host github :repo "isamert/empv.el" :ensure-system-package mpv))
 
 ;; Needed b/c closql wasn't working?
 (straight-use-package 'closql)
@@ -309,11 +318,6 @@
 (use-package epkg ;; epkg-describe-package should show the dependencies
   :straight t
   :after closql)
-
-(use-package exec-path-from-shell ;; Make Emacs use the $PATH set up by the user's shell
-  :if (memq window-system '(mac ns))
-  :straight t
-  :config (exec-path-from-shell-initialize))
 
 (straight-use-package 'expand-region) ;; Increase selected region by semantic units
 (straight-use-package 'f) ;; Modern API for working with files and directories in Emacs
@@ -361,7 +365,7 @@
   :after flyspell
   :straight (:host github :repo "xuchunyang/flyspell-popup")
   :bind (:map flyspell-mode-map
-			  ("C-;" . flyspell-popup-correct))
+		 ("C-;" . flyspell-popup-correct))
   :hook (flyspell-mode . flyspell-popup-auto-correct-mode))
 
 (straight-use-package 'fullframe) ;; Advise commands to execute fullscreen, restoring the window setup when exiting.
@@ -420,12 +424,12 @@
 (use-package helpful
   :straight t
   :bind
-  ("C-h f" . helpful-callable)
-  ("C-h v" . helpful-variable)
-  ("C-h k" . helpful-key)
-  ("C-c C-d" . helpful-at-point)
-  ("C-h F" . helpful-function)
-  ("C-h C" . helpful-command))
+  (("C-h f" . helpful-callable)
+   ("C-h v" . helpful-variable)
+   ("C-h k" . helpful-key)
+   ("C-c C-d" . helpful-at-point)
+   ("C-h F" . helpful-function)
+   ("C-h C" . helpful-command)))
 
 (straight-use-package 'ht)
 ;; https://github.com/coldnew/coldnew-emacs#hydra
@@ -491,16 +495,15 @@
   :config
   (multiple-cursors-mode +1)
   :bind
-  ("C-S-c C-S-c" . mc/edit-lines)
-  ("C->" . mc/mark-next-like-this)
-  ("C-<" . mc/mark-previous-like-this)
-  ("C-c C-<" . mc/mark-all-like-this))
+  (("C-S-c C-S-c" . mc/edit-lines)
+   ("C->" . mc/mark-next-like-this)
+   ("C-<" . mc/mark-previous-like-this)
+   ("C-c C-<" . mc/mark-all-like-this)))
 
 (straight-use-package 'mc-extras)
-
 (straight-use-package 'mustache)
 (straight-use-package 'neotree) ;; A emacs tree plugin like NerdTree for Vim.
-;; (straight-use-package 'nlinum) %% with emacs 26 built-in line numbering, not needed
+;; (straight-use-package 'nlinum) %% with emacs 26 built-in line numbering, not wanted
 (straight-use-package 'ob-browser)
 (straight-use-package 'org-ac)
 (straight-use-package 'org-bullets)
@@ -514,7 +517,7 @@
 
 
 ;; See (org-ref-manual) for some documentation
-;; Unclear if I actually _want_ this system, or if I'll prefer the built-in org-cite behavior. 
+;; Unclear if I actually _want_ this system, or if I'll prefer the built-in org-cite behavior.
 (use-package org-ref ;; Org-ref
   :straight t
   :config
@@ -525,7 +528,7 @@
   :straight t
   :config (org-roam-bibtex-mode +1)
   :bind (:map org-roam-bibtex-mode-map
-			  ("C-c n a" . orb-note-actions)))
+	     ("C-c n a" . orb-note-actions)))
 
 ;; (straight-use-package 'org-roam-server) defunct, org-roam-ui is the good one
 (straight-use-package 'org-rtm)
@@ -578,10 +581,10 @@
   :magic ("%PDF" . pdf-view-mode)
   :config (pdf-tools-install :no-query) ;; if this slows things down try (pdf-loader-install)
   :bind (:map pdf-view-mode-map
-              ("h"   . 'pdf-annot-add-highlight-markup-annotation)
-              ("t"   . 'pdf-annot-add-text-annotation)
-              ("D"   . 'pdf-annot-delete)
-              ("C-s" . 'isearch-forward))
+		 ("h"   . 'pdf-annot-add-highlight-markup-annotation)
+		 ("t"   . 'pdf-annot-add-text-annotation)
+		 ("D"   . 'pdf-annot-delete)
+		 ("C-s" . 'isearch-forward))
               ;; ("m"   . 'mrb/mailfile)
               ;; :map pdf-annot-edit-contents-minor-mode-map
               ;; ("<return>"   . 'pdf-annot-edit-contents-commit)
@@ -614,10 +617,9 @@
 		(setq split-window-preferred-function 'split-window-sensibly
 			  split-window-preferred-function nil)
 		(projectile--find-file invalidate-cache #'find-file-other-window))))
-
-  :bind
-  (:map projectile-mode-map ("C-c p" . projectile-command-map))
-  (("C-c p" . projectile-command-map)))
+  :bind-keymap ("C-c p" . projectile-command-map)
+  :bind (:map projectile-mode-map
+		 ("C-c p" . projectile-command-map)))
 
 ;; http://projectile.readthedocs.io
 ;; ibuffer-projectile. If I like projectile that is.
@@ -682,10 +684,9 @@
 (use-package smex
   :straight t
   :config (smex-initialize) ; Can be omitted. This might cause a (minimal) delay when Smex is auto-initialized on its first run.
-  :bind
-  ("M-x" . smex)
-  ("M-X" . smex-major-mode-commands)
-  ("C-c C-c M-x" . execute-extended-command)) ;; This is your old M-x.
+  :bind (("M-x" . smex)
+		 ("M-X" . smex-major-mode-commands)
+		 ("C-c C-c M-x" . execute-extended-command))) ;; This is your old M-x.
 
 
 (straight-use-package 'semi)
@@ -704,7 +705,8 @@
 
 (use-package vterm
   :straight t
-  :bind (("C-c t" . vterm)))
+  :bind (("C-c t" . vterm))
+  :custom (vterm-always-compile-module t))
 
 (use-package eshell-vterm
   :straight t
@@ -732,9 +734,8 @@
 
 (use-package visual-regexp  ;; A regexp/replace command for Emacs with interactive visual feedback
   :straight t
-  :config
-  (global-set-key (kbd "C-c r") 'vr/replace)
-  (global-set-key (kbd "C-c q") 'vr/query-replace))
+  :bind (("C-c r" . vr/replace)
+         ("C-c q". vr/query-replace)))
 
 ;; if you use multiple-cursors, this is for you:
 (define-key global-map (kbd "C-c m") 'vr/mc-mark)
@@ -767,10 +768,9 @@
 (use-package writegood-mode
   :straight t
   :hook text-mode
-  :bind
-  ("C-c g"     . writegood-mode)
-  ("C-c C-g g" . writegood-grade-level)
-  ("C-c C-g e" . writegood-reading-ease))
+  :bind (("C-c g"     . writegood-mode)
+		 ("C-c C-g g" . writegood-grade-level)
+		 ("C-c C-g e" . writegood-reading-ease)))
 
 (use-package ws-butler ;; Unobtrusively trim extraneous white-space *ONLY* in lines edited.
   :straight t
@@ -947,13 +947,13 @@
 
 (use-package langtool
   :straight t
-  :if (executable-find "languagetool")
-  :bind
-  ("\C-x4w" . langtool-check)
-  ("\C-x4W" . langtool-check-done)
-  ("\C-x4l" . langtool-switch-default-language)
-  ("\C-x44" . langtool-show-message-at-point)
-  ("\C-x4c" . langtool-correct-buffer)
+  ;; I don't like that I have the same string in two places
+  :ensure-system-package languagetool
+  :bind (("\C-x4w" . langtool-check)
+		 ("\C-x4W" . langtool-check-done)
+		 ("\C-x4l" . langtool-switch-default-language)
+		 ("\C-x44" . langtool-show-message-at-point)
+		 ("\C-x4c" . langtool-correct-buffer))
   :custom
   (langtool-bin (executable-find "languagetool"))
   (langtool-mother-tongue "en")
@@ -1340,15 +1340,16 @@
 
 ;; (file-dependents (feature-file 'cl))
 
+;; Commenting because my Ciao mode install sucks and I need prolog mode.
 ; @begin(39781165)@ - Do not edit these lines - added automatically!
-(if (file-exists-p "~/Documents/ciao/ciao_emacs/elisp/ciao-site-file.el")
-  (load-file "~/Documents/ciao/ciao_emacs/elisp/ciao-site-file.el"))
+;; (if (file-exists-p "~/Documents/ciao/ciao_emacs/elisp/ciao-site-file.el")
+;;   (load-file "~/Documents/ciao/ciao_emacs/elisp/ciao-site-file.el"))
 ; @end(39781165)@ - End of automatically added lines.
 
 ;; https://cliplab.org/~clip/Software/Ciao/ciao-1.15.0.html/CiaoMode.html#Installation%20of%20the%20Ciao%20emacs%20interface
 ;; https://github.com/ciao-lang/ciao_emacs
-(if (file-exists-p "/usr/local/lib/ciao/ciao-mode-init.el")
-    (load-file "/usr/local/lib/ciao/ciao-mode-init.el"))
+;; (if (file-exists-p "/usr/local/lib/ciao/ciao-mode-init.el")
+;;     (load-file "/usr/local/lib/ciao/ciao-mode-init.el"))
 
 ;; Start the emacs server, so that I can use emacsclient to connect to the existing emacs instance
 ;; I need another way to do this. To instead have an Emacs.app -like thing do it
