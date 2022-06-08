@@ -1331,16 +1331,8 @@
 ;; Init problems w/o traces, use (setq debug-on-message "Eager macro-expansion failure:"), then (load "~/.emacs.d/init.el")
 ;; M-x toggle-truncate-lines to switch b/t line-wrap and not.
 
-
-;; This was some setup that I did to the minibuffer; not sure it was wise
-;; (add-hook 'eval-expression-minibuffer-setup-hook 'my-minibuffer-setup)
-;; (add-hook 'minibuffer-setup-hook 'my-minibuffer-setup)
-;; (defun my-minibuffer-setup ()
-;;   (set (make-local-variable 'face-remapping-alist)
-;;        '((default :height 5.0))))
-
 ;; Emacs desiderata
-
+;;
 ;; Get code to color parens again for latex files.
 ;; Setup emacs calendar to sync with google calendar
 ;; Spacing with parens in various non-lisp modes that you use w/paredit mode.
@@ -1374,7 +1366,6 @@
                   ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
 
 
-
 (require 'org-protocol)
 (require 'org-roam-protocol)
 
@@ -1399,6 +1390,7 @@
 ;; Pick a random theme.
 (load-theme (nth (cl-random (length (custom-available-themes))) (custom-available-themes)) t)    ;; To have it always remember this is safe
 (fset 'yes-or-no-p 'y-or-n-p)
+
 ;; default to mononoki, 22pt font
 (set-face-attribute 'default nil
                     :family "mononoki"
