@@ -69,7 +69,11 @@
 		 ("\\.lagda.md\\'" . agda2-mode)))
 
 (straight-use-package '(simple-httpd :includes web-server :files ("*.el")))
-(straight-use-package 'impatient-mode) ;; replacement for flymd
+
+(use-package impatient-mode ;; replacement for flymd
+  :straight t
+  :hook markdown-mode)
+
 (straight-use-package '(faceup :type built-in)) ;; b/c this is newer than the one from straight, lexical binding
 (straight-use-package '(let-alist :type built-in))
 (straight-use-package '(which-key :custom (which-key-mode)))
@@ -141,6 +145,8 @@
   (global-anzu-mode +1))
 
 (straight-use-package 'apel) ;; portable emacs extensions; unclear how relevant
+
+;; Need to think about how to set up hooks w/auctex.
 (straight-use-package 'auctex) ;; Not sure if I need w/dependency but trying just in case
 (straight-use-package 'auctex-latexmk)
 (straight-use-package 'auto-compile) ;; Automatically compile Emacs Lisp libraries
@@ -516,11 +522,9 @@
 (straight-use-package 'mustache)
 (straight-use-package 'neotree) ;; A emacs tree plugin like NerdTree for Vim.
 ;; (straight-use-package 'nlinum) %% with emacs 26 built-in line numbering, not wanted
-(straight-use-package 'ob-browser)
-(straight-use-package 'org-ac)
+(straight-use-package '(org-ac :hook org-mode))
 
 (use-package org-bullets
-  :defines org-bullets
   :straight t
   :hook ((org-mode org-roam-mode) . org-bullets-mode))
 
@@ -551,10 +555,11 @@
 (straight-use-package 'org-sidebar)
 (straight-use-package 'org-super-agenda)
 
+;; TODO: org-trello-mode, when I load it, seems to change how the
+;; org-mode files indent and breaks tab-through org-mode behavior.
 (use-package org-trello
   :straight t
-  :config
-  (setq org-trello-current-prefix-keybinding "C-c o"))
+  :custom (org-trello-current-prefix-keybinding "C-c o"))
 
 (straight-use-package 'org2web)
 (straight-use-package 'ox-gfm) ;; for el2org, instead of ox-md fallback cf https://github.com/tumashu/el2org
@@ -764,9 +769,11 @@
 
 (use-package w3m
   :straight t
-  :custom (w3m-use-tab-line nil))
+   :custom (w3m-use-tab-line nil))
 
-(straight-use-package 'which-key)
+(use-package which-key
+  :straight t
+  :custom (which-key-mode t))
 
 (use-package wordnut
   :straight t
@@ -774,10 +781,17 @@
 		 ([(control f12)] . wordnut-lookup-current-word)))
 
 (use-package wordsmith-mode
+  :if (and (eq system-type 'darwin) (executable-find "syn")) ;; Because this depends on OSX tooling specifically
   :straight t
   :hook text-mode)
 
-(straight-use-package 'wrap-region) ;; Emacs minor mode to wrap region with tag or punctuations
+;; I think this would be useful for block comments, but I am not sure
+;; if this is what this is supposed to be for.
+;;
+(use-package wrap-region ;; Emacs minor mode to wrap region with tag or punctuations
+  :straight t
+  :custom
+  (wrap-region-global-mode t))
 
 (use-package writegood-mode
   :straight t
@@ -923,10 +937,6 @@
 (defun prime-it ()
   "A function to add a prime character."
   (interactive (insert "′")))
-
-;; Because this depends on OSX tooling specifically
-(when (and (eq system-type 'darwin) (executable-find "syn"))
-  (add-hook 'text-mode-hook 'wordsmith-mode))
 
 (flycheck-define-checker proselint
   "A linter for prose."
@@ -1100,6 +1110,7 @@
  '(find-file-visit-truename t)
  '(flycheck-check-syntax-automatically '(save idle-change mode-enabled) nil nil "flycheck was a time-hog w/Racket mode, so I disabled newline check & delayed to 4sec")
  '(flycheck-idle-change-delay 4)
+ '(flyspell-issue-welcome-flag nil)
  '(fringe-mode 2 nil (fringe))
  '(global-auto-revert-non-file-buffers t)
  '(global-display-line-numbers-mode t)
@@ -1108,9 +1119,9 @@
  '(indicate-empty-lines t)
  '(inhibit-startup-screen t)
  '(initial-scratch-message nil)
- '(ispell-highlight-face 'highlight t)
- '(ispell-highlight-p t t)
- '(ispell-program-name "aspell" t)
+ '(ispell-highlight-face 'highlight)
+ '(ispell-highlight-p t)
+ '(ispell-program-name "aspell")
  '(load-home-init-file t t)
  '(ls-lisp-dirs-first t)
  '(magit-status-mode-hook '(magit-filenotify-mode))
@@ -1130,7 +1141,6 @@
  '(org-src-tab-acts-natively t)
  '(org-support-shift-select t)
  '(org-time-stamp-custom-formats '("<%m/%d/%y %a>" . "<%a %_B %_d, %H:%M>"))
- '(org-trello-current-prefix-keybinding "C-c o" nil (org-trello))
  '(org-use-speed-commands t)
  '(preview-auto-cache-preamble t)
  '(prolog-compile-string
@@ -1250,7 +1260,6 @@
 
 ;; (add-hook 'TeX-mode-hook 'flyspell-preprocess-buffer) ;; somehow void
 
-(setq flyspell-issue-welcome-flag nil);; easy spell check setup.
 (global-set-key (kbd "C-S-<f8>") 'flyspell-mode)
 (global-set-key (kbd "C-M-<f8>") 'flyspell-buffer)
 (global-set-key (kbd "C-<f8>") 'flyspell-check-previous-highlighted-word)
@@ -1263,7 +1272,10 @@
 
 (global-set-key (kbd "M-<f8>") 'flyspell-check-next-highlighted-word)
 
- ;; Add opam emacs directory to the load-path
+;; Add opam emacs directory to the load-path This whole substring
+;; thing just strips the newline. Seems weird way to do it. Check 's'
+;; package for possibly better function?
+;;
 (setq opam-share (substring (shell-command-to-string "opam config var share 2> /dev/null") 0 -1))
 (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
 
@@ -1372,6 +1384,8 @@
 ;;    )
 ;; )
 
+(straight-use-package 'ob-browser)
+
 (use-package ob-racket
   :after org
   :hook (ob-racket-pre-runtime-library-load . ob-racket-raco-make-runtime-library)
@@ -1383,10 +1397,10 @@
 ;; Pick a random theme.
 (load-theme (nth (cl-random (length (custom-available-themes))) (custom-available-themes)) t)    ;; To have it always remember this is safe
 (fset 'yes-or-no-p 'y-or-n-p)
-;; default to mononoki
+;; default to mononoki, 22pt font
 (set-face-attribute 'default nil
                     :family "mononoki"
-                    :height 120
+                    :height 220
                     :weight 'normal
                     :width  'normal)
 
