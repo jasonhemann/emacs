@@ -462,7 +462,9 @@
 
 (straight-use-package 'jump) ;; build functions which contextually jump between files
 
-(straight-use-package 'latex-unicode-math-mode)
+(use-package latex-unicode-math-mode
+  :straight t
+  :hook LaTeX-mode)
 
 ;; https://www.emacswiki.org/emacs/LibraryDependencies
 (straight-use-package 'loadhist)
@@ -472,12 +474,18 @@
   :straight t
   :bind ("C-x g" . magit-status))
 
-;; Buggy.
-;; This looks like what I want, but when I load the hook there's a bug w/it.
+;; Buggy. This looks like what I want, but when magit-status-mode-hook
+;; runs, I get an error that magit-filenotify.el does not actually
+;; define the magit-filenotify that it claims to provide at eof.
+;;
+;; I have tried to :declare magit-filenotify, since I think maybe
+;; that's needed. I have also tried to add explicitly the name of the
+;; mode ~(magit-status-mode . magit-filenotify-mode)~ in case that's
+;; it.
+;;
 ;; (use-package magit-filenotify ;; if magit feels slow, disable this.
 ;;   :straight t
-;;   :hook
-;;   (magit-status-mode magit-filenotify-mode))
+;;   :hook magit-status-mode)
 
 ;; gerrit mode for emacs w/magit attachment
 ;; (straight-use-package 'magit-gerrit)
@@ -504,12 +512,18 @@
    ("C-c C-<" . mc/mark-all-like-this)))
 
 (straight-use-package 'mc-extras)
+
 (straight-use-package 'mustache)
 (straight-use-package 'neotree) ;; A emacs tree plugin like NerdTree for Vim.
 ;; (straight-use-package 'nlinum) %% with emacs 26 built-in line numbering, not wanted
 (straight-use-package 'ob-browser)
 (straight-use-package 'org-ac)
-(straight-use-package 'org-bullets)
+
+(use-package org-bullets
+  :defines org-bullets
+  :straight t
+  :hook ((org-mode org-roam-mode) . org-bullets-mode))
+
 (straight-use-package 'org-dropbox)
 (straight-use-package 'org-doing)
 (straight-use-package 'org-dotemacs)
@@ -517,7 +531,6 @@
 (straight-use-package 'org-jekyll)
 (straight-use-package 'org-journal)
 (straight-use-package 'org-ql)
-
 
 ;; See (org-ref-manual) for some documentation
 ;; Unclear if I actually _want_ this system, or if I'll prefer the built-in org-cite behavior.
@@ -746,7 +759,7 @@
 
 (use-package wc-mode
   :straight t
-  :hook (text-mode . wc-mode)
+  :hook text-mode
   :bind ("\C-cw" . wc-mode))
 
 (use-package w3m
@@ -1100,6 +1113,7 @@
  '(ispell-program-name "aspell" t)
  '(load-home-init-file t t)
  '(ls-lisp-dirs-first t)
+ '(magit-status-mode-hook '(magit-filenotify-mode))
  '(make-backup-files nil)
  '(ns-alternate-modifier '(:ordinary meta :mouse alt))
  '(org-agenda-files '("tasks.org"))
