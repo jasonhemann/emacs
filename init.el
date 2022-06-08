@@ -359,7 +359,10 @@
 ;; (straight-use-package 'flymake-racket)
 ;; (straight-use-package 'flymd) No longer works w/FF >= 68
 
-(straight-use-package 'flyspell-lazy)
+;; Intended to make flyspell zippier
+(use-package flyspell-lazy
+  :straight t
+  :config (flyspell-lazy-mode +1))
 
 (use-package flyspell-popup
   :after flyspell
@@ -932,7 +935,7 @@
 (setq-default ispell-list-command "--list")
 
 (if ispell-program-name
-	(setq ispell-extra-args '("--sug-mode=ultra" "--lang=en_US")
+	(setq ispell-extra-args '("--sug-mode=ultra" "--lang=en_US") ;; we want this just when the ispell program is aspell
 		  ispell-highlight-face 'highlight
 		  ispell-highlight-p t)
   (t (message "No aspell found!")))
@@ -1360,7 +1363,7 @@
   :hook (ob-racket-pre-runtime-library-load . ob-racket-raco-make-runtime-library)
   :straight (:type git :host github :repo "togakangaroo/ob-racket" :files ("*.el" "*.rkt")))
 
-(straight-use-package 'ob-prolog)
+(straight-use-package '(ob-prolog :demand t))
 
 (setq-default major-mode 'text-mode)
 ;; Pick a random theme.
