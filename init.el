@@ -29,8 +29,6 @@
 
 (require 'straight-x) ;; Adds the straight-x commands to clean up straight install
 
-(defvar curr-f-list features)
-
 ;; This is probably not good, b/c what if we are not online
 (straight-pull-recipe-repositories '(melpa org-elpa gnu-elpa-mirror el-get emacsmirror-mirror))
 
@@ -318,7 +316,10 @@
 ;; s-u-p elscreen ?
 (straight-use-package 'elscreen-separate-buffer-list)
 
-(straight-use-package 'esup)
+;; Emacs start up profiler isn't working the way it should
+(use-package esup
+  ;; :custom `(esup-user-init-file ,(file-truename "~/init.el")) I thought this would help, but alas
+  :straight t)
 
 (straight-use-package '(empv :host github :repo "isamert/empv.el" :ensure-system-package mpv))
 
@@ -821,7 +822,7 @@
   :bind ("C-x 1" . zygospore-toggle-delete-other-windows))
 
 (use-package all-the-icons
-  ;; :config (all-the-icons-install-fonts t)
+  :config (all-the-icons-install-fonts t)
   :straight t)
 
 ;; Also, does this need to be graphics-only, like all-the-icons?
@@ -1286,42 +1287,42 @@
 ;; Pre-load Andromeda
 (require 'andromeda-autoloads)
 
-;; For 311, to make continuations RI.
-;; Assumes k has some formal parameters
-;; Leave mark at end of last match line in apply-k.
-
-;; (fset 'make-k-ri
-;;       (lambda (&optional arg) "Keyboard macro." (interactive "p")
-;;         (kmacro-exec-ring-item (quote ([134217749 134217749 134217749 134217734 134217732 134217732 134217732 134217749 201326624 134217847 134217749 134217730 134217734 25 134217730 134217730 201326624 134217847 134217732 25 32 134217749 201326624 134217765 32 return 32 44 return 33 134217749 96 2 201326624 23 134217732 134217734 134217734 return 25 134217732 25 201326624 201326624 23 134217749 134217730 134217734 201326624 23 134217749 134217749 201326624 tab 134217730 134217734 134217748 2 2 2 134217730 134217730 134217734 25 134217749 201326624 tab 134217734 134217730 134217734 2 134217730 134217730 134217734] 0 "%d")) arg)))
+(fset 'make-k-ri
+      (lambda (&optional arg)
+		"For 311, to make continuations RI."
+		"Assumes k has some formal parameters"
+		"To start, leave mark at end of last match line in apply-k."
+		(interactive "p")
+        (kmacro-exec-ring-item
+		 (quote ([134217749 134217749 134217749 134217734 134217732 134217732 134217732 134217749 201326624 134217847 134217749 134217730 134217734 25 134217730 134217730 201326624 134217847 134217732 25 32 134217749 201326624 134217765 32 return 32 44 return 33 134217749 96 2 201326624 23 134217732 134217734 134217734 return 25 134217732 25 201326624 201326624 23 134217749 134217730 134217734 201326624 23 134217749 134217749 201326624 tab 134217730 134217734 134217748 2 2 2 134217730 134217730 134217734 25 134217749 201326624 tab 134217734 134217730 134217734 2 134217730 134217730 134217734] 0 "%d")) arg)))
 
 ;; I need to write a keyboard macro for going from let* to begin/set!
 
 ;; Indent regions C-x <tab> left or right. Mix with C-u `num` for multi
 ;; M-x set-input-method RETURN TeX RETURN write unicode chars
 ;; in Racket M-\ to change input mode.
-;; C-u M-x shell -- get multiple shells!
 ;; point-to-register C-x r SPC
 ;; jump-to-register C-x r j
 ;; M-x LaTeX-math-cal Ret <the letter>
 ;; M-x smog-check, smog-check-region I thought used to exist but must not be autoloaded
-;; C-h a does apropos
-;; M-v custom-enabled-themes tells you what themes are in force.
 ;; In org-mode C-' on a table.el table lets you edit it nicely, like that.
 ;; C-h r for the manual, then g (for "goto node").
 ;; M-x table-capture https://www.gnu.org/software/emacs/manual/html_node/emacs/Table-Conversion.html
 ;; M-x list-processes
-;; C-s search C-q C-i a literal tab character
+;; key-description gives a description of the key sequences captures by a keyboard macro.
+;; (often that's opaque, so you'll want C-x C-k e (C-c C-c M-x) then the macro name.
+;; C-s search C-q C-i a literal tab character (q for quoted input)
 ;; custom-file is the variable to set location of customizations
-;; M-x custom-enabled-themes to describe the current theme(s) loaded
+;; C-h v custom-enabled-themes to describe the current theme(s) loaded
 ;; M-x describe-theme gives the deets on whatever theme is running
 ;; M-x straight-normalize-all
 ;; M-x find-library to a bunch of libraries in their locations
-;; C-x = to get a whole bunch of char info incl. overlays
 ;; M-x proced is the emacs ps replacement
 ;; M-x find-grep is an improved way to use find and grep together
 ;; M-x find-grep-dired is like that but it opens in a dired buffer
 ;; Diminish mode will help me clean up my modeline
 ;; straight--build-cache has the dependencies listed
+;; C-x = to get a whole bunch of char info incl. overlays
 ;; C-h o ⇒ What's this thing?
 ;; C-h e ⇒ What'd /Emacs/ do?
 ;; C-h l ⇒ What'd /I/ do?
@@ -1333,7 +1334,6 @@
 
 ;; Emacs desiderata
 ;;
-;; Get code to color parens again for latex files.
 ;; Setup emacs calendar to sync with google calendar
 ;; Spacing with parens in various non-lisp modes that you use w/paredit mode.
 ;; use David's .emacs as a sample, to set things up properly.
@@ -1388,7 +1388,7 @@
 
 (setq-default major-mode 'text-mode)
 ;; Pick a random theme.
-(load-theme (nth (cl-random (length (custom-available-themes))) (custom-available-themes)) t)    ;; To have it always remember this is safe
+(load-theme (nth (cl-random (length (custom-available-themes))) (custom-available-themes)) t) ;; To have it always remember this is safe
 (fset 'yes-or-no-p 'y-or-n-p)
 
 ;; default to mononoki, 22pt font
