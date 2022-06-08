@@ -289,9 +289,7 @@
 ;; TODO change from scryer-prolog to configurable
 (use-package ediprolog
   :straight t
-  :bind ([f10] . ediprolog-dwim)
-  :custom
-  (ediprolog-program "scryer-prolog"))
+  :bind ([f10] . ediprolog-dwim))
 
 (straight-use-package 'el2org)
 
