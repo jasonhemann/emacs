@@ -115,15 +115,15 @@
    (window-height . fit-window-to-buffer)))
 
 ;; I don't know when I need an ~:after~ flag
-(use-package org-roam-ui
-    :straight (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out"))
-    :after org-roam
-    :hook (after-init . org-roam-ui-mode)
-    :custom
-	(org-roam-ui-sync-theme t)
-	(org-roam-ui-follow t)
-	(org-roam-ui-update-on-save t)
-	(org-roam-ui-open-on-start t))
+;; (use-package org-roam-ui
+;;     :straight (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out"))
+;;     :after org-roam
+;;     :hook (after-init . org-roam-ui-mode)
+;;     :custom
+;; 	(org-roam-ui-sync-theme t)
+;; 	(org-roam-ui-follow t)
+;; 	(org-roam-ui-update-on-save t)
+;; 	(org-roam-ui-open-on-start t))
 
 (straight-use-package 'academic-phrases)
 
@@ -263,8 +263,7 @@
 
 (use-package dired+
   :straight t
-  :config
-  (setq diredp-hide-details-initially-flag nil))
+  :custom (diredp-hide-details-initially-flag nil))
 
 ;; (straight-use-package 'discover) ;; discover more of Emacs. Sadly, moribund
 
@@ -287,6 +286,7 @@
   :custom
    (ebib-bibtex-dialect 'biblatex)) ;; ebib mode, for latex
 
+;; TODO change from scryer-prolog to configurable
 (use-package ediprolog
   :straight t
   :bind ([f10] . ediprolog-dwim)
@@ -350,6 +350,8 @@
 (autoload 'logtalk-mode "logtalk" "Major mode for editing Logtalk programs." t)
 (add-to-list 'auto-mode-alist '("\\.lgt\\'" . logtalk-mode))
 (add-to-list 'auto-mode-alist '("\\.logtalk\\'" . logtalk-mode))
+
+(add-to-list 'auto-mode-alist '("\\.pl\\'" . prolog-mode))
 
 
 ;; No need to use these, as flycheck is better
@@ -735,10 +737,9 @@
 (use-package visual-regexp  ;; A regexp/replace command for Emacs with interactive visual feedback
   :straight t
   :bind (("C-c r" . vr/replace)
-         ("C-c q". vr/query-replace)))
-
-;; if you use multiple-cursors, this is for you:
-(define-key global-map (kbd "C-c m") 'vr/mc-mark)
+         ("C-c q". vr/query-replace)
+		 ;; if you use multiple-cursors, this is for you:
+		 ("C-c m" . 'vr/mc-mark)))
 
 (straight-use-package 'visual-regexp-steroids) ;; Extends visual-regexp to support other regexp engines
 
@@ -749,15 +750,14 @@
 
 (use-package w3m
   :straight t
-  :config (setq w3m-use-tab-line nil))
+  :custom (w3m-use-tab-line nil))
 
 (straight-use-package 'which-key)
 
 (use-package wordnut
   :straight t
-  :config
-  (global-set-key [f12] 'wordnut-search)
-  (global-set-key [(control f12)] 'wordnut-lookup-current-word))
+  :bind (([f12] . wordnut-search)
+		 ([(control f12)] . wordnut-lookup-current-word)))
 
 (use-package wordsmith-mode
   :straight t
@@ -791,11 +791,8 @@
 ;; https://github.com/domtronn/all-the-icons.el#installation
 (use-package all-the-icons–dired
   :straight (:host github :repo "wyuenho/all-the-icons-dired")
-  :hook
-  (dired-mode . all-the-icons-dired-mode)
-  :config
-  (setq all-the-icons-dired-monochrome nil))
-
+  :custom (all-the-icons-dired-monochrome nil)
+  :hook (dired-mode . all-the-icons-dired-mode))
 
 ;; global-set-key is a shortcut here for:
 ;; (define-key (current-global-map) (kbd "C-z") #'company-try-hard)
@@ -999,26 +996,17 @@
 
 ;; TeX-latex-mode, LaTeX-mode, TeX-mode, tex-mode, latex-mode, auxtex-mode
 
-(add-hook 'latex-mode-hook 'turn-on-reftex)   ; with Emacs latex mode
 
 (add-hook 'TeX-mode-hook (function (lambda () (setq ispell-parser 'tex))))
-(add-hook 'tex-mode-hook 'auxtex-mode)
-
 (add-hook 'tex-mode-hook (lambda () (define-key tex-mode-map (kbd "C-c C-k") 'compile)))
 (add-hook 'tex-mode-hook (lambda () (define-key tex-mode-map (kbd "C-c |") 'align-current)))
 
 (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
 (add-hook 'LaTeX-mode-hook 'LaTeX-preview-setup)
-
-(add-hook 'TeX-mode-hook 'turn-on-reftex)   ; with AUCTeX LaTeX mode
-
+(add-hook 'LaTeX-mode-hook 'turn-on-reftex)   ; with AUCTeX LaTeX mode
 (add-hook 'TeX-mode-hook 'TeX-source-correlate-mode)
 (add-hook 'TeX-mode-hook 'TeX-PDF-mode)
-(add-hook 'TeX-mode-hook 'TeX-fold-mode)
-(add-hook 'TeX-mode-hook (lambda () (TeX-fold-mode 1)))
-(add-hook 'TeX-mode-hook #'TeX-fold-mode) ;; Automatically activate TeX-fold-mode.
-(add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
-(add-hook 'LaTeX-mode-hook 'LaTeX-preview-setup)
+(add-hook 'TeX-mode-hook 'TeX-fold-mode) ;; Automatically activate TeX-fold-mode.
 
 ;; must be after font locking is set up for the buffer on!
 ;; ... whatever that means
@@ -1038,8 +1026,6 @@
 ;;     (eldoc-mode)))
 
 ;; I don't know if this is what I want here.
-
-(add-to-list 'auto-mode-alist '("\\.pl\\'" . prolog-mode))
 
 (straight-use-package 'idris-mode)
 
@@ -1070,10 +1056,11 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(TeX-auto-save t t)
+ '(TeX-auto-save t)
  '(TeX-auto-untabify t)
  '(TeX-engine 'xetex)
- '(TeX-parse-self t t)
+ '(TeX-master 'dwim)
+ '(TeX-parse-self t)
  '(ac-modes
    '(emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode haskell-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode racket-mode Racket-mode racket-repl-mode idris-mode idris-repl-mode))
  '(ad-redefinition-action 'accept)
@@ -1096,8 +1083,6 @@
  '(dired-recursive-copies 'always nil nil "I shouldn't be prompted to recursively copy dirs")
  '(display-time-day-and-date t)
  '(display-time-mode t)
- ;; '(enable-local-variables ':safe) ;enable safe local variables
- ;; '(enable-local-eval ':safe)
  '(find-file-visit-truename t)
  '(flycheck-check-syntax-automatically '(save idle-change mode-enabled) nil nil "flycheck was a time-hog w/Racket mode, so I disabled newline check & delayed to 4sec")
  '(flycheck-idle-change-delay 4)
@@ -1109,9 +1094,9 @@
  '(indicate-empty-lines t)
  '(inhibit-startup-screen t)
  '(initial-scratch-message nil)
- '(ispell-highlight-face 'highlight)
- '(ispell-highlight-p t)
- '(ispell-program-name "aspell")
+ '(ispell-highlight-face 'highlight t)
+ '(ispell-highlight-p t t)
+ '(ispell-program-name "aspell" t)
  '(load-home-init-file t t)
  '(ls-lisp-dirs-first t)
  '(make-backup-files nil)
@@ -1119,7 +1104,7 @@
  '(org-agenda-files '("tasks.org"))
  '(org-agenda-include-diary t)
  '(org-agenda-start-with-log-mode 'only)
- '(org-babel-load-languages '((scheme . t)))
+ '(org-babel-load-languages '((emacs-lisp . t) (prolog . t) (scheme . t)))
  '(org-directory "~/.org")
  '(org-export-backends '(ascii html icalendar latex md org))
  '(org-fold-catch-invisible-edits 'smart)
@@ -1133,29 +1118,81 @@
  '(org-trello-current-prefix-keybinding "C-c o" nil (org-trello))
  '(org-use-speed-commands t)
  '(preview-auto-cache-preamble t)
+ '(prolog-compile-string
+   '((eclipse "[%f].")
+	 (mercury "mmake ")
+	 (sicstus
+	  (eval
+	   (if
+		   (prolog-atleast-version
+			'(3 . 7))
+		   "prolog:zap_file(%m,%b,compile,%l)." "prolog:zap_file(%m,%b,compile).")))
+	 (scryer "%f")
+	 (swi "[%f].")
+	 (t "compile(%f).")))
+ '(prolog-consult-string
+   '((eclipse "[%f].")
+	 (mercury nil)
+	 (sicstus
+	  (eval
+	   (if
+		   (prolog-atleast-version
+			'(3 . 7))
+		   "prolog:zap_file(%m,%b,consult,%l)." "prolog:zap_file(%m,%b,consult).")))
+	 (swi "[%f].")
+	 (scryer "consult(%f).")
+	 (gnu "[%f].")
+	 (t "reconsult(%f).")))
+ '(prolog-program-name
+   '(((getenv "EPROLOG")
+	  (eval
+	   (getenv "EPROLOG")))
+	 (eclipse "eclipse")
+	 (mercury nil)
+	 (sicstus "sicstus")
+	 (swi "swipl")
+	 (scryer "scryer-prolog")
+	 (gnu "gprolog")
+	 (t "prolog")))
+ '(prolog-system 'scryer)
+ '(prolog-system-version
+   '((sicstus
+	  (3 . 6))
+	 (swi
+	  (0 . 0))
+	 (mercury
+	  (0 . 0))
+	 (eclipse
+	  (3 . 7))
+	 (gnu
+	  (0 . 0))
+	 (scryer
+	  (0 . 9))
+	 (azprolog
+	  (9 . 63))))
  '(reftex-cite-format 'biblatex)
- '(reftex-extra-bindings t t)
- '(reftex-plug-into-AUCTeX t t)
+ '(reftex-extra-bindings t)
+ '(reftex-plug-into-AUCTeX t)
  '(require-final-newline t nil nil "Add an EOL to files when I save them.")
  '(revert-without-query '("'(\".*\")"))
  '(ring-bell-function 'ignore)
  '(safe-local-variable-values
    '((TeX-command-extra-options . "-shell-escape")
-     (eval progn
-           (let
-               ((tt-root-directory
-                 (when buffer-file-name
-                   (locate-dominating-file buffer-file-name ".dir-locals.el")))
-                (tt-project-find-file
-                 (and
-                  (boundp 'tt-project-find-file)
-                  tt-project-find-file)))
-             (setq tags-file-name
-                   (concat tt-root-directory "TAGS"))
-             (unless tt-project-find-file
-               (setq compile-command
-                     (concat "make -C " tt-root-directory)))
-             (setq default-directory tt-root-directory)))))
+	 (eval progn
+		   (let
+			   ((tt-root-directory
+				 (when buffer-file-name
+				   (locate-dominating-file buffer-file-name ".dir-locals.el")))
+				(tt-project-find-file
+				 (and
+				  (boundp 'tt-project-find-file)
+				  tt-project-find-file)))
+			 (setq tags-file-name
+				   (concat tt-root-directory "TAGS"))
+			 (unless tt-project-find-file
+			   (setq compile-command
+					 (concat "make -C " tt-root-directory)))
+			 (setq default-directory tt-root-directory)))))
  '(save-place-mode t)
  '(savehist-mode t)
  '(scheme-program-name "scheme" nil nil "scheme defaults to chez scheme on my system.")
@@ -1168,8 +1205,8 @@
  '(sort-fold-case t t)
  '(straight-host-usernames
    '((gitlab . "jasonhemann")
-     (github . "jasonhemann")
-     (bitbucket . "jhemann")))
+	 (github . "jasonhemann")
+	 (bitbucket . "jhemann")))
  '(straight-use-package-by-default t)
  '(tab-always-indent 'complete)
  '(tab-width 4 nil nil "Switching to a 4-space tab")
@@ -1198,7 +1235,6 @@
 
 ;; (add-hook 'TeX-mode-hook 'flyspell-preprocess-buffer) ;; somehow void
 
-(setq flyspell-issue-message-flag nil)
 (setq flyspell-issue-welcome-flag nil);; easy spell check setup.
 (global-set-key (kbd "C-S-<f8>") 'flyspell-mode)
 (global-set-key (kbd "C-M-<f8>") 'flyspell-buffer)
@@ -1324,8 +1360,9 @@
 (use-package ob-racket
   :after org
   :hook (ob-racket-pre-runtime-library-load . ob-racket-raco-make-runtime-library)
-  :straight (:type git :host github :repo "togakangaroo/ob-racket"
-		   :files ("*.el" "*.rkt")))
+  :straight (:type git :host github :repo "togakangaroo/ob-racket" :files ("*.el" "*.rkt")))
+
+(straight-use-package 'ob-prolog)
 
 (setq-default major-mode 'text-mode)
 ;; Pick a random theme.
