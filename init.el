@@ -37,7 +37,7 @@
 (setq straight-check-for-modifications '(check-on-save find-when-checking))
 
 ;; JBH 4/6/22 disabling because it was seeming slow
-;; (add-hook 'find-file-hook (lambda () (ruler-mode 1)))
+;; (ruler-mode 1)
 
 ;; From my package.el days
 ;;  htmlize seems unnecessary. Org and markdown are all I would use it for and those are already supported elsewhere.
@@ -62,6 +62,12 @@
   :bind (("C-c l" . org-store-link)
 		 ("C-c a" . org-agenda)
 		 ("C-c c" . org-capture)))
+
+(use-package ob-prolog
+  :after org
+  :straight t
+  :demand t
+  :config (add-to-list 'org-babel-load-languages '(prolog . t)))
 
 (use-package agda2-mode
   :straight (:includes (eri annotation))
@@ -781,7 +787,8 @@
 		 ([(control f12)] . wordnut-lookup-current-word)))
 
 (use-package wordsmith-mode
-  :if (and (eq system-type 'darwin) (executable-find "syn")) ;; Because this depends on OSX tooling specifically
+  :if (eq system-type 'darwin) ;; Because this depends on OSX tooling specifically
+  :ensure-system-package syn ;; I need to tell it how to install syn if missing.
   :straight t
   :hook text-mode)
 
@@ -813,7 +820,9 @@
   :straight t
   :bind ("C-x 1" . zygospore-toggle-delete-other-windows))
 
-(straight-use-package '(all-the-icons :type git :flavor melpa :files (:defaults "data" "all-the-icons-pkg.el") :host github :repo "domtronn/all-the-icons.el"))
+(use-package all-the-icons
+  ;; :config (all-the-icons-install-fonts t)
+  :straight t)
 
 ;; Also, does this need to be graphics-only, like all-the-icons?
 ;; https://github.com/domtronn/all-the-icons.el#installation
@@ -1018,9 +1027,8 @@
        '("Cpageref" TeX-arg-ref)))))
 ;; Also not sure what else I needed to do to make subsec: available by default
 
+(add-hook 'text-mode-hook 'flyspell-mode)
 ;; TeX-latex-mode, LaTeX-mode, TeX-mode, tex-mode, latex-mode, auxtex-mode
-
-
 (add-hook 'TeX-mode-hook (function (lambda () (setq ispell-parser 'tex))))
 (add-hook 'tex-mode-hook (lambda () (define-key tex-mode-map (kbd "C-c C-k") 'compile)))
 (add-hook 'tex-mode-hook (lambda () (define-key tex-mode-map (kbd "C-c |") 'align-current)))
@@ -1124,13 +1132,11 @@
  '(ispell-program-name "aspell")
  '(load-home-init-file t t)
  '(ls-lisp-dirs-first t)
- '(magit-status-mode-hook '(magit-filenotify-mode))
  '(make-backup-files nil)
  '(ns-alternate-modifier '(:ordinary meta :mouse alt))
  '(org-agenda-files '("tasks.org"))
  '(org-agenda-include-diary t)
  '(org-agenda-start-with-log-mode 'only)
- '(org-babel-load-languages '((emacs-lisp . t) (prolog . t) (scheme . t)))
  '(org-directory "~/.org")
  '(org-export-backends '(ascii html icalendar latex md org))
  '(org-fold-catch-invisible-edits 'smart)
@@ -1257,8 +1263,6 @@
               line-end))
     :modes (text-mode markdown-mode gfm-mode org-mode))
   (add-to-list 'flycheck-checkers 'proselint))
-
-;; (add-hook 'TeX-mode-hook 'flyspell-preprocess-buffer) ;; somehow void
 
 (global-set-key (kbd "C-S-<f8>") 'flyspell-mode)
 (global-set-key (kbd "C-M-<f8>") 'flyspell-buffer)
@@ -1390,8 +1394,6 @@
   :after org
   :hook (ob-racket-pre-runtime-library-load . ob-racket-raco-make-runtime-library)
   :straight (:type git :host github :repo "togakangaroo/ob-racket" :files ("*.el" "*.rkt")))
-
-(straight-use-package '(ob-prolog :demand t))
 
 (setq-default major-mode 'text-mode)
 ;; Pick a random theme.
