@@ -29,8 +29,9 @@
 
 (require 'straight-x) ;; Adds the straight-x commands to clean up straight install
 
-;; This is probably not good, b/c what if we are not online
-(straight-pull-recipe-repositories '(melpa org-elpa gnu-elpa-mirror el-get emacsmirror-mirror))
+;; What if we are not online? We ignore that problem here.
+;; (ignore-error "Failed to run \"git\"; see buffer *straight-process*"
+;;   (straight-pull-recipe-repositories))
 
 (setq straight-check-for-modifications '(check-on-save find-when-checking))
 
@@ -66,6 +67,10 @@
   :straight t
   :demand t
   :config (add-to-list 'org-babel-load-languages '(prolog . t)))
+
+;; display/update images in the buffer after evaluation
+;; This has 'org-display-inline-images already installed, so just the append.
+;; (add-hook 'org-babel-after-execute-hook 'org-display-inline-images 'append)
 
 (use-package agda2-mode
   :straight (:includes (eri annotation))
@@ -104,7 +109,6 @@
   :straight t
   :custom
   (org-roam-directory (file-truename "~/.org/"))
-  ;; Why have I nested these map commands?
   :bind (:map org-roam-mode-map
 		 ("C-c n l" . org-roam)
 		 ("C-c n f" . org-roam-find-file)
@@ -301,6 +305,9 @@
   :straight t
   :bind ([f10] . ediprolog-dwim))
 
+(straight-use-package 'edit-indirect)
+(straight-use-package 'org-edit-indirect)
+
 (straight-use-package 'el2org)
 
 ;; these provide ways to cleanly split an init file up
@@ -447,9 +454,18 @@
    ("C-h F" . helpful-function)
    ("C-h C" . helpful-command)))
 
+(use-package highlight-indent-guides
+  :straight t
+  :hook prog-mode-hook)
+
 (straight-use-package 'ht)
 ;; https://github.com/coldnew/coldnew-emacs#hydra
 (straight-use-package 'hydra) ;; tie related commands into a family of short bindings w/a common prefix.
+
+;; Adds GUI-based stuff that augments the text-based info flow
+(use-package hyperbole
+  :straight t
+  :custom (hyperbole-mode))
 
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 (straight-use-package 'all-the-icons-ibuffer)
@@ -803,7 +819,7 @@
 
 (use-package writegood-mode
   :straight t
-  :hook text-mode
+  :hook (org-mode text-mode)
   :bind (("C-c g"     . writegood-mode)
 		 ("C-c C-g g" . writegood-grade-level)
 		 ("C-c C-g e" . writegood-reading-ease)))
@@ -822,8 +838,10 @@
   :bind ("C-x 1" . zygospore-toggle-delete-other-windows))
 
 (use-package all-the-icons
-  :config (all-the-icons-install-fonts t)
-  :straight t)
+  :straight t
+  :config
+  (ignore-error end-of-file
+	(all-the-icons-install-fonts t)))
 
 ;; Also, does this need to be graphics-only, like all-the-icons?
 ;; https://github.com/domtronn/all-the-icons.el#installation
@@ -1099,7 +1117,7 @@
  '(ad-redefinition-action 'accept)
  '(apropos-sort-by-scores t)
  '(auto-save-interval 75)
- '(auto-save-timeout 10)
+ '(auto-save-timeout 75)
  '(bib-cite-use-reftex-view-crossref t t)
  '(bibtex-maintain-sorted-entries 'plain)
  '(blink-cursor-mode nil)
@@ -1138,6 +1156,7 @@
  '(org-agenda-files '("tasks.org"))
  '(org-agenda-include-diary t)
  '(org-agenda-start-with-log-mode 'only)
+ '(org-confirm-babel-evaluate nil)
  '(org-directory "~/.org")
  '(org-export-backends '(ascii html icalendar latex md org))
  '(org-fold-catch-invisible-edits 'smart)
@@ -1148,6 +1167,7 @@
  '(org-src-tab-acts-natively t)
  '(org-support-shift-select t)
  '(org-time-stamp-custom-formats '("<%m/%d/%y %a>" . "<%a %_B %_d, %H:%M>"))
+ '(org-trello-current-prefix-keybinding "C-c o" nil (org-trello) "Customized with use-package org-trello")
  '(org-use-speed-commands t)
  '(preview-auto-cache-preamble t)
  '(prolog-compile-string
@@ -1336,7 +1356,7 @@
 ;;
 ;; Setup emacs calendar to sync with google calendar
 ;; Spacing with parens in various non-lisp modes that you use w/paredit mode.
-;; use David's .emacs as a sample, to set things up properly.
+;; use David Christiansen's .emacs as a sample, to set things up properly.
 
 ;; From https://github.com/Vidianos-Giannitsis/Dotfiles/tree/master/emacs/.emacs.d
 ;; I believe, how to do things in GUI and non-GUI mode
@@ -1379,12 +1399,23 @@
 ;;    )
 ;; )
 
-(straight-use-package 'ob-browser)
+;; relies on phantomjs, which is discontinued upstream
+;; (straight-use-package 'ob-browser)
 
 (use-package ob-racket
   :after org
+  :straight (ob-racket :type git :host github :repo "hasu/emacs-ob-racket" :files ("*.el" "*.rkt"))
+  :after org
   :hook (ob-racket-pre-runtime-library-load . ob-racket-raco-make-runtime-library)
-  :straight (:type git :host github :repo "togakangaroo/ob-racket" :files ("*.el" "*.rkt")))
+  :config (add-to-list 'org-babel-load-languages '(racket . t)))
+
+;; (use-package ob-racket
+;;   :after org
+;;   :hook (ob-racket-pre-runtime-library-load . ob-racket-raco-make-runtime-library)
+;;   :config
+;;   (setq org-babel-command:racket "/usr/local/bin/racket")
+;;   (add-to-list 'org-babel-load-languages '(racket . t))
+;;   :straight (:type git :host github :repo "togakangaroo/ob-racket" :files ("*.el" "*.rkt")))
 
 (setq-default major-mode 'text-mode)
 ;; Pick a random theme.
