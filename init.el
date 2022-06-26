@@ -590,38 +590,47 @@
 (straight-use-package 'ox-pandoc)
 (straight-use-package 'paradox)
 
-(use-package paredit
-  :straight t
-  :bind (:map paredit-mode-map
-		 ("{"   . paredit-open-curly)
-		 ("}"   . paredit-close-curly)
-		 :map paredit-mode-map
-         ("M-[" . paredit-wrap-square)
-         ("M-{" . paredit-wrap-curly))
-  :hook
-  ((agda2-mode
-	emacs-lisp-mode
-	eval-expression-minibuffer-setup
-	ielm-mode ;; inferior-emacs-lisp-mode
-	lisp-mode
-	lisp-interaction-mode
-	scheme-mode-hook
-	racket-mode
-	racket-repl-mode
-	idris-mode
-	idris-repl-mode
-	idris-prover-script-mode
-	inferior-scheme-mode) . enable-paredit-mode))
 
-;; Paredit-everywhere-mode is a liar. It turns on *some* of the
-;; paredit keybindings but not all, and it doesn't let you choose
-(use-package paredit-everywhere
-  :straight t
-  :bind ("{" . 'paredit-open-curly)
-  :hook
-  (prog-mode . paredit-everywhere-mode))
+;; A minor mode for parens pairs; commenting paredit in favor of smartparens
+;; (use-package paredit
+;;   :straight t
+;;   :bind (:map paredit-mode-map
+;; 		 ("{"   . paredit-open-curly)
+;; 		 ("}"   . paredit-close-curly))
+;;   :hook
+;;   ((agda2-mode
+;; 	emacs-lisp-mode
+;; 	eval-expression-minibuffer-setup
+;; 	ielm-mode ;; inferior-emacs-lisp-mode
+;; 	lisp-mode
+;; 	lisp-interaction-mode
+;; 	scheme-mode-hook
+;; 	racket-mode
+;; 	racket-repl-mode
+;; 	idris-mode
+;; 	idris-repl-mode
+;; 	idris-prover-script-mode
+;; 	inferior-scheme-mode) . enable-paredit-mode)
+;;   :config
+;;   ;; terminal emacs seems to use some of these sequences for moving
+;;   ;; around, both directly as in to switch between open windows in the
+;;   ;; terminal application, and also perhaps as parts of a sequences
+;;   ;; when using the GUI window stuff in terminal.
+;;   ;;
+;;   (unless terminal-frame
+;; 	(bind-keys :map paredit-mode-map
+;; 			   ("M-[" . paredit-wrap-square)
+;; 			   ("M-{" . paredit-wrap-curly))))
 
-(straight-use-package 'paredit-menu)
+;; ;; Paredit-everywhere-mode is a liar. It turns on *some* of the
+;; ;; paredit keybindings but not all, and it doesn't let you choose
+;; (use-package paredit-everywhere
+;;   :straight t
+;;   :bind ("{" . 'paredit-open-curly)
+;;   :hook
+;;   (prog-mode . paredit-everywhere-mode))
+
+;; (straight-use-package 'paredit-menu)
 
 (straight-use-package 'parent-mode)
 
@@ -700,11 +709,8 @@
 ;; 			   ("s-<left>" . proof-goto-end-of-locked)
 ;; 			   ("s-<end>" . proof-process-buffer))))
 
-;; Not clear: do I want these paredit hooks on racket-mode or paredit mode?
 (use-package racket-mode
   :straight t
-;; Not clear that I need this.
-  ;;  :after (paredit)
   :bind (:map racket-mode-map ("C-c r" . racket-run))
   :hook
   (racket-mode . racket-xp-mode)
@@ -738,11 +744,15 @@
 		 ("M-X" . smex-major-mode-commands)
 		 ("C-c C-c M-x" . execute-extended-command))) ;; This is your old M-x.
 
-
 (straight-use-package 'semi)
 (straight-use-package 'sh-script) ;; The major mode for editing Unix and GNU/Linux shell script code
 (straight-use-package 'smartscan) ;; Quickly jumps between other symbols found at point in Emacs
-;; (straight-use-package  'smartparens) ;; A minor mode for parens pairs; paredit probably does all I need
+
+(use-package smartparens
+  :straight t
+  :config (require 'smartparens-config)
+  :hook ((prog-mode text-mode) . turn-on-smartparens-strict-mode))
+
 (straight-use-package 'sml-mode)
 (straight-use-package 'sml-modeline)
 (straight-use-package 'smog)
