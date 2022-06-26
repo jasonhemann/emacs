@@ -592,6 +592,12 @@
 
 (use-package paredit
   :straight t
+  :bind (:map paredit-mode-map
+		 ("{"   . paredit-open-curly)
+		 ("}"   . paredit-close-curly)
+		 :map paredit-mode-map
+         ("M-[" . paredit-wrap-square)
+         ("M-{" . paredit-wrap-curly))
   :hook
   ((agda2-mode
 	emacs-lisp-mode
@@ -992,7 +998,7 @@
   (t (message "No aspell found!")))
 
 (global-set-key (kbd "<f8>") 'ispell-word)
-(bind-key "H-$" 'ispell-word)
+(bind-key "M-$" 'ispell-word)
 
 (use-package langtool
   :straight t
@@ -1047,6 +1053,7 @@
 ;; Also not sure what else I needed to do to make subsec: available by default
 
 (add-hook 'text-mode-hook 'flyspell-mode)
+(add-hook 'text-mode-hook 'electric-quote-mode)
 ;; TeX-latex-mode, LaTeX-mode, TeX-mode, tex-mode, latex-mode, auxtex-mode
 (add-hook 'TeX-mode-hook (function (lambda () (setq ispell-parser 'tex))))
 (add-hook 'tex-mode-hook (lambda () (define-key tex-mode-map (kbd "C-c C-k") 'compile)))
