@@ -43,6 +43,8 @@
 ;;  x-dict emacs attic, so no need.
 ;;  dictionary is also a emacs 21 era thing, so no need.
 
+(straight-use-package 'delight)
+
 (straight-use-package 'use-package)
 (straight-use-package 'use-package-ensure-system-package)
 ;; So that I can publicly VC my config w/o leaking secret keys &c.
@@ -141,6 +143,7 @@
 
 (use-package artbollocks-mode
   :straight t
+  :delight
   :hook text-mode)
 
 (straight-use-package 'ace-jump-mode)
@@ -149,6 +152,7 @@
 ;; global search count mode
 (use-package anzu
   :straight t
+  :delight
   :config
   (global-anzu-mode +1))
 
@@ -186,6 +190,7 @@
 (use-package bind-key
   :straight t
   :bind ("C-h B" . describe-personal-keybindings))
+
 (straight-use-package 'bog) ;; for taking research notes w/org. Cf the more general org-ref that does both notes and writing.
 
 (straight-use-package 'bug-hunter) ;; how to fix bugs in an init file, by auto-bisect
@@ -218,6 +223,7 @@
 
 (use-package cdlatex
   :straight t
+  :delight
   :hook
   ;; with Emacs latex mode, then with AUCTeX LaTeX mode
   ((latex-mode TeX-mode) . turn-on-cdlatex))
@@ -237,6 +243,7 @@
 
 (use-package company ;; Complete anything ;-)
   :straight t
+  :delight " 🏭"
   :config (global-company-mode))
 
 (straight-use-package 'company-coq)
@@ -343,6 +350,8 @@
 
 (use-package flycheck
   :straight t
+  ;; Commented because this way drops important data.
+  ;; :delight " F✓"
   :config (global-flycheck-mode +1)
   ;;  Consider as a fix to flycheck-mode, see https://github.com/flycheck/flycheck/issues/153#issuecomment-19450255
   :custom (flycheck-highlighting-mode 'lines))
@@ -720,6 +729,8 @@
   :custom (racket-program "racket")
   :mode ("\\.rkt\\'" . racket-mode))
 
+(straight-use-package 'scribble-mode)
+
 (straight-use-package 'reazon)
 (straight-use-package 'refine)
 
@@ -779,6 +790,7 @@
 
 (use-package volatile-highlights ;; Minor mode for visual feedback on some operations.
   :straight t
+  :delight
   :config (volatile-highlights-mode +1))
 
 ;; I don't think I like undo-tree. Weird undo structure.
@@ -812,16 +824,19 @@
 
 (use-package which-key
   :straight t
+  :delight
   :custom (which-key-mode t))
 
 (use-package wordnut
   :straight t
+  :delight
   :bind (([f12] . wordnut-search)
 		 ([(control f12)] . wordnut-lookup-current-word)))
 
 (use-package wordsmith-mode
   :if (eq system-type 'darwin) ;; Because this depends on OSX tooling specifically
   :ensure-system-package syn ;; I need to tell it how to install syn if missing.
+  :delight " ✒"
   :straight t
   :hook text-mode)
 
@@ -830,11 +845,13 @@
 ;;
 (use-package wrap-region ;; Emacs minor mode to wrap region with tag or punctuations
   :straight t
+  :delight
   :custom
   (wrap-region-global-mode t))
 
 (use-package writegood-mode
   :straight t
+  :delight " 💯"
   :hook (org-mode text-mode)
   :bind (("C-c g"     . writegood-mode)
 		 ("C-c C-g g" . writegood-grade-level)
@@ -1008,7 +1025,7 @@
   (t (message "No aspell found!")))
 
 (global-set-key (kbd "<f8>") 'ispell-word)
-(bind-key "M-$" 'ispell-word)
+(bind-key "H-$" 'ispell-word) ;; Hyper, one presumes.
 
 (use-package langtool
   :straight t
@@ -1063,7 +1080,11 @@
 ;; Also not sure what else I needed to do to make subsec: available by default
 
 (add-hook 'text-mode-hook 'flyspell-mode)
+
+;; See the following for a related issue and workaround. Gets complicated.
+;; https://github.com/Fuco1/smartparens/issues/854
 (add-hook 'text-mode-hook 'electric-quote-mode)
+
 ;; TeX-latex-mode, LaTeX-mode, TeX-mode, tex-mode, latex-mode, auxtex-mode
 (add-hook 'TeX-mode-hook (function (lambda () (setq ispell-parser 'tex))))
 (add-hook 'tex-mode-hook (lambda () (define-key tex-mode-map (kbd "C-c C-k") 'compile)))
@@ -1075,6 +1096,229 @@
 (add-hook 'TeX-mode-hook 'TeX-source-correlate-mode)
 (add-hook 'TeX-mode-hook 'TeX-PDF-mode)
 (add-hook 'TeX-mode-hook 'TeX-fold-mode) ;; Automatically activate TeX-fold-mode.
+
+;; (enabled-minor-modes
+;;  (auto-composition-mode)
+;;  (auto-compression-mode)
+;;  (auto-encryption-mode)
+;;  (auto-fill-mode)
+;;  (auto-save-mode)
+;;  (blink-cursor-mode)
+;;  (column-number-mode)
+;;  (company-tng-mode)
+;;  (counsel-mode)
+;;  (display-line-numbers-mode)
+;;  (doom-modeline-mode)
+;;  (electric-indent-mode)
+;;  (emojify-mode)
+;;  (evil-collection-unimpaired-mode)
+;;  (evil-local-mode)
+;;  (evil-mode)
+;;  (evil-surround-mode)
+;;  (file-name-shadow-mode)
+;;  (fira-code-mode)
+;;  (font-lock-mode)
+;;  (global-display-line-numbers-mode)
+;;  (global-eldoc-mode)
+;;  (global-emojify-mode)
+;;  (global-evil-collection-unimpaired-mode)
+;;  (global-evil-surround-mode)
+;;  (global-font-lock-mode)
+;;  (ivy-mode)
+;;  (ivy-prescient-mode)
+;;  (ivy-rich-mode)
+;;  (line-number-mode)
+;;  (mouse-wheel-mode)
+;;  (override-global-mode)
+;;  (paredit-mode)
+;;  (prescient-persist-mode)
+;;  (prettify-symbols-mode)
+;;  (rainbow-delimiters-mode)
+;;  (semantic-minor-modes-format)
+;;  (shell-dirtrack-mode)
+;;  (transient-mark-mode)
+;;  (which-key-mode))
+;; (disabled-minor-modes
+;;  (abbrev-mode)
+;;  (archive-subfile-mode)
+;;  (auto-complete-mode)
+;;  (auto-fill-function)
+;;  (auto-package-update-minor-mode)
+;;  (auto-save-visited-mode)
+;;  (avy-linum-mode)
+;;  (buffer-face-mode)
+;;  (buffer-read-only)
+;;  (cl-old-struct-compat-mode)
+;;  (company-mode)
+;;  (company-search-mode)
+;;  (compilation-minor-mode)
+;;  (compilation-shell-minor-mode)
+;;  (completion-in-region-mode)
+;;  (dash-fontify-mode)
+;;  (defining-kbd-macro)
+;;  (delete-selection-mode)
+;;  (diff-auto-refine-mode)
+;;  (diff-minor-mode)
+;;  (dired-hide-details-mode)
+;;  (eldoc-mode)
+;;  (electric-layout-mode)
+;;  (electric-quote-mode)
+;;  (emojify-debug-mode)
+;;  (emojify-mode-line-mode)
+;;  (evil-smartparens-mode)
+;;  (flyspell-mode)
+;;  (general-override-local-mode)
+;;  (general-override-mode)
+;;  (global-auto-complete-mode)
+;;  (global-company-mode)
+;;  (global-dash-fontify-mode)
+;;  (global-emojify-mode-line-mode)
+;;  (global-fira-code-mode)
+;;  (global-ligature-mode)
+;;  (global-prettify-symbols-mode)
+;;  (global-reveal-mode)
+;;  (global-semantic-highlight-edits-mode)
+;;  (global-semantic-highlight-func-mode)
+;;  (global-semantic-show-parser-state-mode)
+;;  (global-semantic-show-unmatched-syntax-mode)
+;;  (global-semantic-stickyfunc-mode)
+;;  (global-visual-line-mode)
+;;  (horizontal-scroll-bar-mode)
+;;  (hs-minor-mode)
+;;  (ido-everywhere)
+;;  (image-minor-mode)
+;;  (isearch-mode)
+;;  (ispell-minor-mode)
+;;  (ivy-rich-project-root-cache-mode)
+;;  (jit-lock-debug-mode)
+;;  (ligature-mode)
+;;  (menu-bar-mode)
+;;  (next-error-follow-minor-mode)
+;;  (org-cdlatex-mode)
+;;  (org-list-checkbox-radio-mode)
+;;  (org-src-mode)
+;;  (org-table-follow-field-mode)
+;;  (org-table-header-line-mode)
+;;  (orgtbl-mode)
+;;  (outline-minor-mode)
+;;  (overwrite-mode)
+;;  (paragraph-indent-minor-mode)
+;;  (racket-smart-open-bracket-mode)
+;;  (racket-xp-mode)
+;;  (rectangle-mark-mode)
+;;  (reveal-mode)
+;;  (semantic-highlight-edits-mode)
+;;  (semantic-highlight-func-mode)
+;;  (semantic-mode)
+;;  (semantic-show-parser-state-mode)
+;;  (semantic-show-unmatched-syntax-mode)
+;;  (semantic-stickyfunc-mode)
+;;  (sh-electric-here-document-mode)
+;;  (show-smartparens-global-mode)
+;;  (show-smartparens-mode)
+;;  (size-indication-mode)
+;;  (slime-edit-value-mode)
+;;  (slime-editing-mode)
+;;  (slime-macroexpansion-minor-mode)
+;;  (slime-mode)
+;;  (slime-popup-buffer-mode)
+;;  (smartparens-global-mode)
+;;  (smartparens-global-strict-mode)
+;;  (smartparens-mode)
+;;  (smartparens-strict-mode)
+;;  (tab-bar-history-mode)
+;;  (tab-bar-mode)
+;;  (tar-subfile-mode)
+;;  (temp-buffer-resize-mode)
+;;  (text-scale-mode)
+;;  (tool-bar-mode)
+;;  (tooltip-mode)
+;;  (unify-8859-on-decoding-mode)
+;;  (unify-8859-on-encoding-mode)
+;;  (url-handler-mode)
+;;  (use-hard-newlines)
+;;  (vc-parent-buffer)
+;;  (view-mode)
+;;  (visible-mode)
+;;  (visual-line-mode)
+;;  (window-divider-mode)
+;;  (xref-etags-mode))
+
+;; (defmacro def-pairs (pairs)
+;;   "Define functions for pairing. PAIRS is an alist of (NAME . STRING)
+;; conses, where NAME is the function name that will be created and
+;; STRING is a single-character string that marks the opening character.
+
+;;   (def-pairs ((paren . \"(\")
+;;               (bracket . \"[\"))
+
+;; defines the functions WRAP-WITH-PAREN and WRAP-WITH-BRACKET,
+;; respectively."
+;;   `(progn
+;;      ,@(loop for (key . val) in pairs
+;;              collect
+;;              `(defun ,(read (concat
+;;                              "wrap-with-"
+;;                              (prin1-to-string key)
+;;                              "s"))
+;;                   (&optional arg)
+;;                 (interactive "p")
+;;                 (sp-wrap-with-pair ,val)))))
+
+;; (def-pairs ((paren . "(")
+;;             (bracket . "[")
+;;             (brace . "{")
+;;             (single-quote . "'")
+;;             (double-quote . "\"")
+;;             (back-quote . "`")))
+
+;; (bind-keys
+;;  :map smartparens-mode-map
+;;  ("C-M-a" . sp-beginning-of-sexp)
+;;  ("C-M-e" . sp-end-of-sexp)
+
+;;  ("C-<down>" . sp-down-sexp)
+;;  ("C-<up>"   . sp-up-sexp)
+;;  ("M-<down>" . sp-backward-down-sexp)
+;;  ("M-<up>"   . sp-backward-up-sexp)
+
+;;  ("C-M-f" . sp-forward-sexp)
+;;  ("C-M-b" . sp-backward-sexp)
+
+;;  ("C-M-n" . sp-next-sexp)
+;;  ("C-M-p" . sp-previous-sexp)
+
+;;  ("C-S-f" . sp-forward-symbol)
+;;  ("C-S-b" . sp-backward-symbol)
+
+;;  ("C-<right>" . sp-forward-slurp-sexp)
+;;  ("M-<right>" . sp-forward-barf-sexp)
+;;  ("C-<left>"  . sp-backward-slurp-sexp)
+;;  ("M-<left>"  . sp-backward-barf-sexp)
+
+;;  ("C-M-t" . sp-transpose-sexp)
+;;  ("C-M-k" . sp-kill-sexp)
+;;  ("C-k"   . sp-kill-hybrid-sexp)
+;;  ("M-k"   . sp-backward-kill-sexp)
+;;  ("C-M-w" . sp-copy-sexp)
+;;  ("C-M-d" . delete-sexp)
+
+;;  ("M-<backspace>" . backward-kill-word)
+;;  ("C-<backspace>" . sp-backward-kill-word)
+;;  ([remap sp-backward-kill-word] . backward-kill-word)
+
+;;  ("M-[" . sp-backward-unwrap-sexp)
+;;  ("M-]" . sp-unwrap-sexp)
+
+;;  ("C-x C-t" . sp-transpose-hybrid-sexp)
+
+;;  ("C-c ("  . wrap-with-parens)
+;;  ("C-c ["  . wrap-with-brackets)
+;;  ("C-c {"  . wrap-with-braces)
+;;  ("C-c '"  . wrap-with-single-quotes)
+;;  ("C-c \"" . wrap-with-double-quotes)
+;;  ("C-c _"  . wrap-with-underscores)
+;;  ("C-c `"  . wrap-with-back-quotes))
 
 ;; must be after font locking is set up for the buffer on!
 ;; ... whatever that means
