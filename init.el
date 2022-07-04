@@ -1400,8 +1400,13 @@
  '(dired-dwim-target 'dired-dwim-target-recent nil nil "Not obvious which option is *best*, but this at least works when I put two direds side-by-side.")
  '(dired-listing-switches "-alGh1v --group-directories-first --time-style=long-iso" nil nil "long format, w/hidden files, w/o group information, w/good numeric sorting human-readable sizes, and w/directories first")
  '(dired-recursive-copies 'always nil nil "I shouldn't be prompted to recursively copy dirs")
+ '(display-time-24hr-format t)
  '(display-time-day-and-date t)
  '(display-time-mode t)
+ ;; I don’t think I want this; when I set it and created a new email
+ ;; in emacs, it signalled an error wrt this setting.
+ ;;
+ ;; '(display-time-use-mail-icon t)
  '(find-file-visit-truename t)
  '(flycheck-check-syntax-automatically '(save idle-change mode-enabled) nil nil "flycheck was a time-hog w/Racket mode, so I disabled newline check & delayed to 4sec")
  '(flycheck-idle-change-delay 4)
@@ -1522,7 +1527,7 @@
  '(show-paren-delay 0)
  '(show-paren-mode t)
  '(show-trailing-whitespace t)
- '(sort-fold-case t t)
+ '(sort-fold-case t nil nil "Make buffer-sort functions case-insensitive")
  '(straight-host-usernames
    '((gitlab . "jasonhemann")
 	 (github . "jasonhemann")
