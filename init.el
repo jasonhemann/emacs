@@ -1,13 +1,16 @@
 
 ;;; Commentary:
 
-;;; This is Jason Hemann's .emacs setup, intended for OSX and some linux machines. It is currently in an
-;;; unstable state, and the dependencies outside my .emacs are not listed. Several aspects of this rely on
-;;; packages from homebrew, and a number of other downloaded files and hard-coded directories.
+;;; This is Jason Hemann's .emacs setup, intended for OSX and some
+;;; linux machines. It is currently in an unstable state, and the
+;;; dependencies outside my .emacs are not listed. Several aspects of
+;;; this rely on packages from homebrew, and a number of other
+;;; downloaded files and hard-coded directories.
 
 ;;; Code:
 
-;; Need to be set before we load straight.el, to correct a flycheck incompatibility.
+;; Need to be set before we load straight.el, to correct a flycheck
+;; incompatibility.
 (setq straight-fix-flycheck t
 	  use-package-compute-statistics t
 ;; Configuration for how straight.el should load.
@@ -30,8 +33,7 @@
 (require 'straight-x) ;; Adds the straight-x commands to clean up straight install
 
 ;; What if we are not online? We ignore that problem here.
-;; (ignore-error "Failed to run \"git\"; see buffer *straight-process*"
-;;   (straight-pull-recipe-repositories))
+(straight-pull-recipe-repositories)
 
 (setq straight-check-for-modifications '(check-on-save find-when-checking))
 
@@ -39,14 +41,14 @@
 ;; (ruler-mode 1)
 
 ;; From my package.el days
-;;  htmlize seems unnecessary. Org and markdown are all I would use it for and those are already supported elsewhere.
-;;  x-dict emacs attic, so no need.
-;;  dictionary is also a emacs 21 era thing, so no need.
+;; Don’t need htmlize. I’d only use it w/.org and .md; those are supported elsewhere.
+;; x-dict is emacs attic, so no need.
+;; dictionary is also a emacs 21 era thing, so no need.
 
 (straight-use-package 'delight)
-
 (straight-use-package 'use-package)
 (straight-use-package 'use-package-ensure-system-package)
+
 ;; So that I can publicly VC my config w/o leaking secret keys &c.
 (straight-use-package
  '(use-package-secret :host github
@@ -323,7 +325,11 @@
 
 ;;  el-mock Maybe I need it, but I don't think so.
 (straight-use-package 'el-patch)
-(straight-use-package 'eldoc) ;; the argument list of the function call you are currently writing
+
+(use-package eldoc ;; the argument list of the function call you are currently writing
+  :straight t
+  :delight)
+
 ;; The following package requires some set-up to work with org-mode or w/e.
 (straight-use-package 'elmacro) ;; https://github.com/Silex/elmacro#elmacro-processors
 
@@ -862,6 +868,7 @@
   :config
   (setq ws-butler-global-mode t))
 
+(straight-use-package 'xr) ;; The reverse regex library (regex->Human)
 (straight-use-package 'yafolding) ;; Yet another folding extension for Emacs
 (straight-use-package 'yaml-mode) ;; The emacs major mode for editing files in the YAML data serialization format.
 (straight-use-package 'zones)
@@ -1371,7 +1378,7 @@
  '(TeX-auto-save t)
  '(TeX-auto-untabify t)
  '(TeX-engine 'xetex)
- '(TeX-master 'dwim)
+ '(TeX-master 'dwim t)
  '(TeX-parse-self t)
  '(ac-modes
    '(emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode haskell-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode racket-mode Racket-mode racket-repl-mode idris-mode idris-repl-mode))
