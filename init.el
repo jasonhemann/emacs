@@ -1589,47 +1589,12 @@
         (kmacro-exec-ring-item
 		 (quote ([134217749 134217749 134217749 134217734 134217732 134217732 134217732 134217749 201326624 134217847 134217749 134217730 134217734 25 134217730 134217730 201326624 134217847 134217732 25 32 134217749 201326624 134217765 32 return 32 44 return 33 134217749 96 2 201326624 23 134217732 134217734 134217734 return 25 134217732 25 201326624 201326624 23 134217749 134217730 134217734 201326624 23 134217749 134217749 201326624 tab 134217730 134217734 134217748 2 2 2 134217730 134217730 134217734 25 134217749 201326624 tab 134217734 134217730 134217734 2 134217730 134217730 134217734] 0 "%d")) arg)))
 
-;; I need to write a keyboard macro for going from let* to begin/set!
-
-;; Indent regions C-x <tab> left or right. Mix with C-u `num` for multi
-;; M-x set-input-method RETURN TeX RETURN write unicode chars
-;; in Racket M-\ to change input mode.
-;; point-to-register C-x r SPC
-;; jump-to-register C-x r j
-;; M-x LaTeX-math-cal Ret <the letter>
-;; M-x smog-check, smog-check-region I thought used to exist but must not be autoloaded
-;; In org-mode C-' on a table.el table lets you edit it nicely, like that.
-;; C-h r for the manual, then g (for "goto node").
-;; M-x table-capture https://www.gnu.org/software/emacs/manual/html_node/emacs/Table-Conversion.html
-;; M-x list-processes
-;; key-description gives a description of the key sequences captures by a keyboard macro.
-;; (often that's opaque, so you'll want C-x C-k e (C-c C-c M-x) then the macro name.
-;; C-s search C-q C-i a literal tab character (q for quoted input)
-;; custom-file is the variable to set location of customizations
-;; C-h v custom-enabled-themes to describe the current theme(s) loaded
-;; M-x describe-theme gives the deets on whatever theme is running
-;; M-x straight-normalize-all
-;; M-x find-library to a bunch of libraries in their locations
-;; M-x proced is the emacs ps replacement
-;; M-x find-grep is an improved way to use find and grep together
-;; M-x find-grep-dired is like that but it opens in a dired buffer
-;; Diminish mode will help me clean up my modeline
-;; straight--build-cache has the dependencies listed
-;; C-x = to get a whole bunch of char info incl. overlays
-;; C-h o ⇒ What's this thing?
-;; C-h e ⇒ What'd /Emacs/ do?
-;; C-h l ⇒ What'd /I/ do?
-;; C-h ? ⇒ What're the help topics? —gives possible completions to “C-h ⋯”.
-;; “I accidentally hit a key, which one and what did it do!?” ⇒ C-h e and C-h l, then use C-h o to get more details on the action. ;-)
-;; Finally, C-h d asks nicely what 'd'ocumentation you're interested in. After providing a few keywords, the apropos tool yields possible functions and variables that may accomplish my goal.
-;; Init problems w/o traces, use (setq debug-on-message "Eager macro-expansion failure:"), then (load "~/.emacs.d/init.el")
-;; M-x toggle-truncate-lines to switch b/t line-wrap and not.
-
 ;; Emacs desiderata
-;;
+;; I need to write a keyboard macro for going from let* to begin/set!
 ;; Setup emacs calendar to sync with google calendar
 ;; Spacing with parens in various non-lisp modes that you use w/paredit mode.
 ;; use David Christiansen's .emacs as a sample, to set things up properly.
+;; Cleanup the mode settings sitting here commented out.
 
 ;; From https://github.com/Vidianos-Giannitsis/Dotfiles/tree/master/emacs/.emacs.d
 ;; I believe, how to do things in GUI and non-GUI mode
