@@ -888,6 +888,7 @@
 (use-package all-the-icons–dired
   :straight (:host github :repo "wyuenho/all-the-icons-dired")
   :custom (all-the-icons-dired-monochrome nil)
+  :delight
   :hook (dired-mode . all-the-icons-dired-mode))
 
 ;; global-set-key is a shortcut here for:
