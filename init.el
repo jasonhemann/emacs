@@ -885,7 +885,7 @@
 
 ;; Also, does this need to be graphics-only, like all-the-icons?
 ;; https://github.com/domtronn/all-the-icons.el#installation
-(use-package all-the-icons–dired
+(use-package all-the-icons-dired
   :straight (:host github :repo "wyuenho/all-the-icons-dired")
   :custom (all-the-icons-dired-monochrome nil)
   :delight
