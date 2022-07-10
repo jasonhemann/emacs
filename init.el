@@ -767,7 +767,9 @@
 
 (use-package smartparens
   :straight t
-  :config (require 'smartparens-config)
+  :config
+  (require 'smartparens-config)
+  (sp-use-paredit-bindings +1)
   :hook ((prog-mode text-mode) . turn-on-smartparens-strict-mode))
 
 (straight-use-package 'sml-mode)
