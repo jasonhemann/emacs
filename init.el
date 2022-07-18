@@ -305,6 +305,8 @@
 (straight-use-package 'dash) ;; A modern list library for Emacs
 (straight-use-package 'dash-functional)
 
+(straight-use-package 'dirvish)
+
 (straight-use-package '(dired-hacks-utils :host github :repo "Fuco1/dired-hacks" :fork (:host github :repo "jasonhemann/dired-hacks")))
 
 (use-package dired-collapse
@@ -389,7 +391,10 @@
   ;; :config (global-flycheck-mode +1)
   ;;  Consider as a fix to flycheck-mode, see https://github.com/flycheck/flycheck/issues/153#issuecomment-19450255
   :custom (flycheck-highlighting-mode 'lines)
-          (global-flycheck-mode t))
+		  (flycheck-check-syntax-automatically '(save idle-change mode-enabled) nil nil "flycheck was a time-hog w/Racket mode, so I disabled newline check & delayed to 4sec")
+		  (flycheck-idle-change-delay 4)
+		  (flyspell-issue-welcome-flag nil)
+		  (global-flycheck-mode t))
 
 (straight-use-package '(flycheck-textlint :type git :host github :repo "kisaragi-hiu/flycheck-textlint" :fork nil))
 
@@ -1423,9 +1428,6 @@
  ;;
  ;; '(display-time-use-mail-icon t)
  '(find-file-visit-truename t)
- '(flycheck-check-syntax-automatically '(save idle-change mode-enabled) nil nil "flycheck was a time-hog w/Racket mode, so I disabled newline check & delayed to 4sec")
- '(flycheck-idle-change-delay 4)
- '(flyspell-issue-welcome-flag nil)
  '(fringe-mode 2 nil (fringe))
  '(global-auto-revert-non-file-buffers t)
  '(global-display-line-numbers-mode t)
