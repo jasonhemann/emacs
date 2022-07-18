@@ -62,6 +62,14 @@
 
 (use-package org
   :straight t
+  :config
+  (add-to-list 'org-latex-classes
+               '("letter"
+                 "\\documentclass{report}"
+                 ("\\chapter{%s}" . "\\chapter*{%s}")
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
   :bind (("C-c l" . org-store-link)
 		 ("C-c a" . org-agenda)
 		 ("C-c c" . org-capture)))
@@ -110,6 +118,13 @@
 (use-package org-roam
   :demand t
   :config (org-roam-db-autosync-mode)
+		  (add-to-list
+		   'display-buffer-alist
+		   '("\\*org-roam\\*"
+			 (display-buffer-in-direction)
+			 (direction . right)
+			 (window-width . 0.33)
+			 (window-height . fit-window-to-buffer)))
   :straight t
   :custom
   (org-roam-directory (file-truename "~/.org/"))
@@ -122,24 +137,16 @@
 		 ("C-c n i" . org-roam-insert)
 		 ("C-c n I" . org-roam-insert-immediate)))
 
-(add-to-list
- 'display-buffer-alist
- '("\\*org-roam\\*"
-   (display-buffer-in-direction)
-   (direction . right)
-   (window-width . 0.33)
-   (window-height . fit-window-to-buffer)))
-
 ;; I don't know when I need an ~:after~ flag
-;; (use-package org-roam-ui
-;;     :straight (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out"))
-;;     :after org-roam
-;;     :hook (after-init . org-roam-ui-mode)
-;;     :custom
-;; 	(org-roam-ui-sync-theme t)
-;; 	(org-roam-ui-follow t)
-;; 	(org-roam-ui-update-on-save t)
-;; 	(org-roam-ui-open-on-start t))
+(use-package org-roam-ui
+    :straight (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out"))
+    :after org-roam
+    :hook (after-init . org-roam-ui-mode)
+    :custom
+	(org-roam-ui-sync-theme t)
+	(org-roam-ui-follow t)
+	(org-roam-ui-update-on-save t)
+	(org-roam-ui-open-on-start t))
 
 (straight-use-package 'academic-phrases)
 
@@ -857,6 +864,8 @@
   :custom
   (wrap-region-global-mode t))
 
+;; ⮐
+
 (use-package writegood-mode
   :straight t
   :delight " 💯"
@@ -1113,26 +1122,16 @@
 ;;  (auto-encryption-mode)
 ;;  (auto-fill-mode)
 ;;  (auto-save-mode)
-;;  (blink-cursor-mode)
-;;  (column-number-mode)
 ;;  (company-tng-mode)
 ;;  (counsel-mode)
 ;;  (display-line-numbers-mode)
-;;  (doom-modeline-mode)
 ;;  (electric-indent-mode)
 ;;  (emojify-mode)
-;;  (evil-collection-unimpaired-mode)
-;;  (evil-local-mode)
-;;  (evil-mode)
-;;  (evil-surround-mode)
 ;;  (file-name-shadow-mode)
 ;;  (fira-code-mode)
 ;;  (font-lock-mode)
-;;  (global-display-line-numbers-mode)
 ;;  (global-eldoc-mode)
 ;;  (global-emojify-mode)
-;;  (global-evil-collection-unimpaired-mode)
-;;  (global-evil-surround-mode)
 ;;  (global-font-lock-mode)
 ;;  (ivy-mode)
 ;;  (ivy-prescient-mode)
@@ -1143,11 +1142,10 @@
 ;;  (paredit-mode)
 ;;  (prescient-persist-mode)
 ;;  (prettify-symbols-mode)
-;;  (rainbow-delimiters-mode)
 ;;  (semantic-minor-modes-format)
 ;;  (shell-dirtrack-mode)
-;;  (transient-mark-mode)
-;;  (which-key-mode))
+;;  (transient-mark-mode))
+
 ;; (disabled-minor-modes
 ;;  (abbrev-mode)
 ;;  (archive-subfile-mode)
@@ -1617,14 +1615,6 @@
  '(diary ((t (:foreground "dark red"))))
  '(font-lock-function-name-face ((t (:foreground "#385e6b" :weight bold)))))
 
-(with-eval-after-load 'ox-latex
-   (add-to-list 'org-latex-classes
-                '("letter"
-                  "\\documentclass{report}"
-                  ("\\chapter{%s}" . "\\chapter*{%s}")
-                  ("\\section{%s}" . "\\section*{%s}")
-                  ("\\subsection{%s}" . "\\subsection*{%s}")
-                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
 
 
 (require 'org-protocol)
@@ -1642,6 +1632,12 @@
 
 ;; relies on phantomjs, which is discontinued upstream
 ;; (straight-use-package 'ob-browser)
+
+(use-package org-babel-eval-in-repl
+  :straight t
+  :bind (:map org-mode-map
+		 ("C-<return>" . 'ober-eval-in-repl)
+		 ("M-<return>" . 'ober-eval-block-in-repl)))
 
 (use-package ob-racket
   :after org
