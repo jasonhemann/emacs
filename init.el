@@ -302,7 +302,7 @@
 (use-package dr-racket-like-unicode
   :straight t
   :hook
-  ((racket-mode racket-repl) . racket-unicode-input-method-enable))
+  ((racket-mode racket-repl scribble-mode) . racket-unicode-input-method-enable))
 
 (straight-use-package 'clean-aindent-mode) ;; Emacs extension for simple indent and unindent
 (straight-use-package 'dtrt-indent) ;; A minor mode that guesses the indentation offset originally used for creating source code
@@ -739,6 +739,13 @@
   (racket-mode . (lambda () (flycheck-mode -1))) ;; disable flycheck in racket b/c Rk✓
   (racket-repl-mode . racket-smart-open-bracket-mode)
   :custom (racket-program "racket")
+  (mapc (lambda (pr) (put (car pr) 'racket-indent-function (cdr pr)))
+      '((conde . 0)
+        (fresh . 1)
+        (run . 1)
+        (run* . 1)
+        (run . 2)
+		(letrec . 0)))
   :delight (racket-smart-open-bracket-mode)
   :mode ("\\.rkt\\'" . racket-mode))
 
@@ -1061,6 +1068,9 @@
   (langtool-autoshow-message-function 'langtool-autoshow-detail-popup)
   (langtool-default-language "en-US")
   :config
+  ;; Not sure that I need to do the w-e-a-l 'langtool, but I might
+  ;; need to delay the defun until after we load it, and I’m not sure
+  ;; the scope of this defun defined here.
   (with-eval-after-load 'langtool
 	(defun langtool-autoshow-detail-popup (overlays)
 	  "OVERLAYS."
@@ -1106,12 +1116,12 @@
 
 ;; TeX-latex-mode, LaTeX-mode, TeX-mode, tex-mode, latex-mode, auxtex-mode
 (add-hook 'TeX-mode-hook (function (lambda () (setq ispell-parser 'tex))))
-(add-hook 'tex-mode-hook (lambda () (define-key tex-mode-map (kbd "C-c C-k") 'compile)))
-(add-hook 'tex-mode-hook (lambda () (define-key tex-mode-map (kbd "C-c |") 'align-current)))
+(add-hook 'tex-mode-hook (function (lambda () (define-key tex-mode-map (kbd "C-c C-k") 'compile))))
+(add-hook 'tex-mode-hook (function (lambda () (define-key tex-mode-map (kbd "C-c |") 'align-current))))
 
 (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
 (add-hook 'LaTeX-mode-hook 'LaTeX-preview-setup)
-(add-hook 'LaTeX-mode-hook 'turn-on-reftex)   ; with AUCTeX LaTeX mode
+(add-hook 'LaTeX-mode-hook 'turn-on-reftex) ;; with AUCTeX LaTeX mode
 (add-hook 'TeX-mode-hook 'TeX-source-correlate-mode)
 (add-hook 'TeX-mode-hook 'TeX-PDF-mode)
 (add-hook 'TeX-mode-hook 'TeX-fold-mode) ;; Automatically activate TeX-fold-mode.
@@ -1211,8 +1221,6 @@
 ;;  (outline-minor-mode)
 ;;  (overwrite-mode)
 ;;  (paragraph-indent-minor-mode)
-;;  (racket-smart-open-bracket-mode)
-;;  (racket-xp-mode)
 ;;  (rectangle-mark-mode)
 ;;  (reveal-mode)
 ;;  (semantic-highlight-edits-mode)
@@ -1225,11 +1233,6 @@
 ;;  (show-smartparens-global-mode)
 ;;  (show-smartparens-mode)
 ;;  (size-indication-mode)
-;;  (slime-edit-value-mode)
-;;  (slime-editing-mode)
-;;  (slime-macroexpansion-minor-mode)
-;;  (slime-mode)
-;;  (slime-popup-buffer-mode)
 ;;  (smartparens-global-mode)
 ;;  (smartparens-global-strict-mode)
 ;;  (smartparens-mode)
@@ -1354,14 +1357,6 @@
 
 ;; So that I can find scryer-prolog
 (add-to-list 'exec-path (expand-file-name (substitute-in-file-name "$HOME/.cargo/bin")))
-
-(mapc (lambda (pr) (put (car pr) 'racket-indent-function (cdr pr)))
-      '((conde . 0)
-        (fresh . 1)
-        (run . 1)
-        (run* . 1)
-        (run . 2)
-	(letrec . 0)))
 
 ;; From https://stackoverflow.com/questions/36183071/how-can-i-preview-markdown-in-emacs-in-real-time/36189456
 ;; For use with impatient-mode
