@@ -62,17 +62,18 @@
 
 (use-package org
   :straight t
-  :config
-  (add-to-list 'org-latex-classes
-               '("letter"
-                 "\\documentclass{report}"
-                 ("\\chapter{%s}" . "\\chapter*{%s}")
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
   :bind (("C-c l" . org-store-link)
 		 ("C-c a" . org-agenda)
 		 ("C-c c" . org-capture)))
+
+  ;; :config
+  ;; (add-to-list 'org-latex-classes
+  ;;              '("letter"
+  ;;                "\\documentclass{report}"
+  ;;                ("\\chapter{%s}" . "\\chapter*{%s}")
+  ;;                ("\\section{%s}" . "\\section*{%s}")
+  ;;                ("\\subsection{%s}" . "\\subsection*{%s}")
+  ;;                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
 
 (use-package ob-prolog
   :after org
@@ -783,7 +784,7 @@
   :straight t
   :config
   (require 'smartparens-config)
-  (sp-use-paredit-bindings +1)
+  (sp-use-paredit-bindings)
   :hook ((prog-mode text-mode) . turn-on-smartparens-strict-mode))
 
 (straight-use-package 'sml-mode)
