@@ -70,7 +70,21 @@
   :straight t
   :bind (("C-c l" . org-store-link)
 		 ("C-c a" . org-agenda)
-		 ("C-c c" . org-capture)))
+		 ("C-c c" . org-capture))
+  :custom (org-agenda-files '("tasks.org"))
+		  (org-agenda-include-diary t)
+		  (org-agenda-start-with-log-mode 'only)
+		  (org-confirm-babel-evaluate nil)
+		  (org-directory "~/.org")
+		  (org-export-backends '(ascii html icalendar latex md org))
+		  (org-fold-catch-invisible-edits 'smart)
+		  (org-list-allow-alphabetical t)
+		  (org-log-done 'time)
+		  (org-modules '(ol-bbdb ol-bibtex ol-docview ol-doi ol-eww ol-gnus ol-info ol-irc ol-mhe ol-rmail ol-w3m))
+		  (org-src-tab-acts-natively t)
+		  (org-support-shift-select t)
+		  (org-time-stamp-custom-formats '("<%m/%d/%y %a>" . "<%a %_B %_d, %H:%M>"))
+		  (org-use-speed-commands t))
 
   ;; :config
   ;; (add-to-list 'org-latex-classes
@@ -124,8 +138,7 @@
 
 (use-package org-roam
   :demand t
-  :config (org-roam-db-autosync-mode)
-		  (add-to-list
+  :config (add-to-list
 		   'display-buffer-alist
 		   '("\\*org-roam\\*"
 			 (display-buffer-in-direction)
@@ -133,8 +146,8 @@
 			 (window-width . 0.33)
 			 (window-height . fit-window-to-buffer)))
   :straight t
-  :custom
-  (org-roam-directory (file-truename "~/.org/"))
+  :custom (org-roam-db-autosync-mode t)
+          (org-roam-directory (file-truename "~/.org/"))
   :bind (:map org-roam-mode-map
 		 ("C-c n l" . org-roam)
 		 ("C-c n f" . org-roam-find-file)
@@ -171,8 +184,7 @@
 (use-package anzu
   :straight t
   :delight
-  :config
-  (global-anzu-mode +1))
+  :custom (global-anzu-mode t))
 
 (straight-use-package 'apel) ;; portable emacs extensions; unclear how relevant
 
@@ -262,7 +274,7 @@
 (use-package company ;; Complete anything ;-)
   :straight t
   :delight " 🏭"
-  :config (global-company-mode))
+  :custom (global-company-mode t))
 
 (straight-use-package 'company-coq)
 (straight-use-package 'company-dict)
@@ -374,9 +386,10 @@
   :straight t
   ;; Commented because this way drops important data.
   ;; :delight " F✓"
-  :config (global-flycheck-mode +1)
+  ;; :config (global-flycheck-mode +1)
   ;;  Consider as a fix to flycheck-mode, see https://github.com/flycheck/flycheck/issues/153#issuecomment-19450255
-  :custom (flycheck-highlighting-mode 'lines))
+  :custom (flycheck-highlighting-mode 'lines)
+          (global-flycheck-mode t))
 
 (straight-use-package '(flycheck-textlint :type git :host github :repo "kisaragi-hiu/flycheck-textlint" :fork nil))
 
@@ -413,7 +426,7 @@
 ;; Intended to make flyspell zippier
 (use-package flyspell-lazy
   :straight t
-  :config (flyspell-lazy-mode +1))
+  :custom (flyspell-lazy-mode t))
 
 (use-package flyspell-popup
   :after flyspell
@@ -563,8 +576,7 @@
 
 (use-package multiple-cursors
   :straight t
-  :config
-  (multiple-cursors-mode +1)
+  :custom (multiple-cursors-mode t)
   :bind
   (("C-S-c C-S-c" . mc/edit-lines)
    ("C->" . mc/mark-next-like-this)
@@ -600,7 +612,7 @@
 
 (use-package org-roam-bibtex ;; Org-roam-bibtex
   :straight t
-  :config (org-roam-bibtex-mode +1)
+  :custom (org-roam-bibtex-mode t)
   :bind (:map org-roam-bibtex-mode-map
 	     ("C-c n a" . orb-note-actions)))
 
@@ -692,8 +704,8 @@
   (projectile-completion-system selectrum)
   (projectile-indexing-method hybrid) ; 'alien 'native
   (projectile-enable-caching t)
+  (projectile-mode t)
   :config
-  (projectile-mode +1)
   (setq projectile-mode-line-function '(lambda () (format " Projectile[%s]" (projectile-project-name))))
   ;; (setq projectile-switch-project-action 'projectile-dired)
   ;; (setq projectile-switch-project-action 'helm-projectile)
@@ -768,14 +780,12 @@
 
 (use-package selectrum
   :straight t
-  :config
-  (selectrum-mode +1)) ;; To turn on selectrum
+  :custom (selectrum-mode t)) ;; To turn on selectrum
 
 (use-package selectrum-prescient
   :straight t
-  :config
-  (selectrum-prescient-mode +1) ;; to make sorting and filtering more intelligent
-  (prescient-persist-mode +1)) ;; For selectrum, save your command history on disk, so the sorting gets more intelligent over time
+  :custom (selectrum-prescient-mode t) ;; to make sorting and filtering more intelligent
+          (prescient-persist-mode t)) ;; For selectrum, save your command history on disk, so the sorting gets more intelligent over time
 
 (use-package smex
   :straight t
@@ -815,14 +825,15 @@
 ;;  Not clear that I should need these configuration options, b/c dependencies.
 ;;  :demand t
 ;;  :after eshell
+  :custom
+  (eshell-vterm-mode t)
   :config
-  (eshell-vterm-mode)
   (defalias 'eshell/v 'eshell-exec-visual))
 
 (use-package volatile-highlights ;; Minor mode for visual feedback on some operations.
   :straight t
   :delight
-  :config (volatile-highlights-mode +1))
+  :custom (volatile-highlights-mode t))
 
 ;; I don't think I like undo-tree. Weird undo structure.
 ;; (use-package undo-tree ;; Treat undo history as a tree
@@ -892,8 +903,7 @@
 
 (use-package ws-butler ;; Unobtrusively trim extraneous white-space *ONLY* in lines edited.
   :straight t
-  :config
-  (setq ws-butler-global-mode t))
+  :custom (ws-butler-global-mode t))
 
 (straight-use-package 'xr) ;; The reverse regex library (regex->Human)
 (straight-use-package 'yafolding) ;; Yet another folding extension for Emacs
@@ -1431,22 +1441,7 @@
  '(ls-lisp-dirs-first t)
  '(make-backup-files nil)
  '(ns-alternate-modifier '(:ordinary meta :mouse alt))
- '(org-agenda-files '("tasks.org"))
- '(org-agenda-include-diary t)
- '(org-agenda-start-with-log-mode 'only)
- '(org-confirm-babel-evaluate nil)
- '(org-directory "~/.org")
- '(org-export-backends '(ascii html icalendar latex md org))
- '(org-fold-catch-invisible-edits 'smart)
- '(org-list-allow-alphabetical t)
- '(org-log-done 'time)
- '(org-modules
-   '(ol-bbdb ol-bibtex ol-docview ol-doi ol-eww ol-gnus ol-info ol-irc ol-mhe ol-rmail ol-w3m))
- '(org-src-tab-acts-natively t)
- '(org-support-shift-select t)
- '(org-time-stamp-custom-formats '("<%m/%d/%y %a>" . "<%a %_B %_d, %H:%M>"))
  '(org-trello-current-prefix-keybinding "C-c o" nil (org-trello) "Customized with use-package org-trello")
- '(org-use-speed-commands t)
  '(preview-auto-cache-preamble t)
  '(prolog-compile-string
    '((eclipse "[%f].")
