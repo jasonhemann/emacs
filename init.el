@@ -665,12 +665,11 @@
 		 ("h"   . 'pdf-annot-add-highlight-markup-annotation)
 		 ("t"   . 'pdf-annot-add-text-annotation)
 		 ("D"   . 'pdf-annot-delete)
-		 ("C-s" . 'isearch-forward))
-              ;; ("m"   . 'mrb/mailfile)
-              ;; :map pdf-annot-edit-contents-minor-mode-map
-              ;; ("<return>"   . 'pdf-annot-edit-contents-commit)
-              ;; ("<S-return>" .  'newline)
-			  )
+		 ("C-s" . 'isearch-forward)
+         ;; ("m"   . 'mrb/mailfile)
+		 :map pdf-annot-edit-contents-minor-mode-map
+         ("<return>"   . 'pdf-annot-edit-contents-commit)
+         ("<S-return>" .  'newline)))
 
 ;; Visual Popup Interface Library for Emacs
 ;; (straight-use-package 'popup)
@@ -740,6 +739,7 @@
   (racket-mode . (lambda () (flycheck-mode -1))) ;; disable flycheck in racket b/c Rk✓
   (racket-repl-mode . racket-smart-open-bracket-mode)
   :custom (racket-program "racket")
+  :delight (racket-smart-open-bracket-mode)
   :mode ("\\.rkt\\'" . racket-mode))
 
 (straight-use-package 'scribble-mode)
