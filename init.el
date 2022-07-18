@@ -198,7 +198,10 @@
 ;; (require 'auto-complete-config)
 ;; (ac-mode 1)
 ;; (ac-config-default)
+;; '(ac-modes
+;;   '(emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode haskell-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode racket-mode Racket-mode racket-repl-mode idris-mode idris-repl-mode))
 ;; (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+
 ;; (straight-use-package 'ac-math) commented in favor of company-math
 ;; (straight-use-package 'auto-complete-auctex)
 
@@ -710,19 +713,22 @@
   (projectile-indexing-method hybrid) ; 'alien 'native
   (projectile-enable-caching t)
   (projectile-mode t)
-  :config
-  (setq projectile-mode-line-function '(lambda () (format " Projectile[%s]" (projectile-project-name))))
-  ;; (setq projectile-switch-project-action 'projectile-dired)
+  (projectile-mode-line-prefix " Proj")
+  (projectile-switch-project-action projectile-dired)
+  ;; (setq projectile-completion-system 'helm)
   ;; (setq projectile-switch-project-action 'helm-projectile)
 
-  (with-eval-after-load 'projectile
-	(defun projectile-find-file-other-window (&optional invalidate-cache)
-	  "Jump to a project's file using completion and show it in another window. With a prefix arg INVALIDATE-CACHE invalidates the cache first."
-	  (interactive "P")
-	  (progn
-		(setq split-window-preferred-function 'split-window-sensibly
-			  split-window-preferred-function nil)
-		(projectile--find-file invalidate-cache #'find-file-other-window))))
+  :config
+  ;; My own version which ensures we use the split-window-sensibly here,
+  ;; no matter what the usual default is.
+  (defun projectile-find-file-other-window (&optional invalidate-cache)
+	"Jump to a project's file using completion and show it in another window. With a prefix arg INVALIDATE-CACHE invalidates the cache first."
+	(interactive "P")
+	(let ((split-window-preferred-function-usual split-window-preferred-function))
+	  (setq split-window-preferred-function-usual 'split-window-sensibly)
+	  (projectile--find-file invalidate-cache #'find-file-other-window)
+	  (setq split-window-preferred-function split-window-preferred-function-usual)))
+  (projectile-global-mode)
   :bind-keymap ("C-c p" . projectile-command-map)
   :bind (:map projectile-mode-map
 		 ("C-c p" . projectile-command-map)))
@@ -1109,8 +1115,6 @@
 ;; (setq-default TeX-master "master") ; set a master for in the future.
 (setq-default TeX-master nil)
 
-(setq reftex-default-bibliography '("~/old-microKanren.bib"))
-
 ;; I grabbed this code off of the internet. The reftex-ref-style-alist
 ;; variables already had some of these cleveref options, so not sure
 ;; if I needed all of this.
@@ -1150,38 +1154,20 @@
 (add-hook 'TeX-mode-hook 'TeX-PDF-mode)
 (add-hook 'TeX-mode-hook 'TeX-fold-mode) ;; Automatically activate TeX-fold-mode.
 
+;; Modes someone had enabled that I want to investigate.
+;;
 ;; (enabled-minor-modes
-;;  (auto-composition-mode)
-;;  (auto-compression-mode)
-;;  (auto-encryption-mode)
 ;;  (auto-fill-mode)
 ;;  (auto-save-mode)
 ;;  (company-tng-mode)
 ;;  (counsel-mode)
-;;  (display-line-numbers-mode)
-;;  (electric-indent-mode)
 ;;  (emojify-mode)
-;;  (file-name-shadow-mode)
 ;;  (fira-code-mode)
-;;  (font-lock-mode)
-;;  (global-eldoc-mode)
 ;;  (global-emojify-mode)
-;;  (global-font-lock-mode)
-;;  (ivy-mode)
-;;  (ivy-prescient-mode)
-;;  (ivy-rich-mode)
-;;  (line-number-mode)
-;;  (mouse-wheel-mode)
-;;  (override-global-mode)
-;;  (paredit-mode)
-;;  (prescient-persist-mode)
 ;;  (prettify-symbols-mode)
-;;  (semantic-minor-modes-format)
-;;  (shell-dirtrack-mode)
-;;  (transient-mark-mode))
+;;  (semantic-minor-modes-format))
 
 ;; (disabled-minor-modes
-;;  (abbrev-mode)
 ;;  (archive-subfile-mode)
 ;;  (auto-complete-mode)
 ;;  (auto-fill-function)
@@ -1191,24 +1177,18 @@
 ;;  (buffer-face-mode)
 ;;  (buffer-read-only)
 ;;  (cl-old-struct-compat-mode)
-;;  (company-mode)
-;;  (company-search-mode)
 ;;  (compilation-minor-mode)
 ;;  (compilation-shell-minor-mode)
 ;;  (completion-in-region-mode)
-;;  (dash-fontify-mode)
 ;;  (defining-kbd-macro)
 ;;  (delete-selection-mode)
 ;;  (diff-auto-refine-mode)
 ;;  (diff-minor-mode)
 ;;  (dired-hide-details-mode)
-;;  (eldoc-mode)
 ;;  (electric-layout-mode)
 ;;  (electric-quote-mode)
 ;;  (emojify-debug-mode)
 ;;  (emojify-mode-line-mode)
-;;  (evil-smartparens-mode)
-;;  (flyspell-mode)
 ;;  (general-override-local-mode)
 ;;  (general-override-mode)
 ;;  (global-auto-complete-mode)
@@ -1231,7 +1211,6 @@
 ;;  (image-minor-mode)
 ;;  (isearch-mode)
 ;;  (ispell-minor-mode)
-;;  (ivy-rich-project-root-cache-mode)
 ;;  (jit-lock-debug-mode)
 ;;  (ligature-mode)
 ;;  (menu-bar-mode)
@@ -1398,10 +1377,8 @@
  '(TeX-auto-save t)
  '(TeX-auto-untabify t)
  '(TeX-engine 'xetex)
- '(TeX-master 'dwim t)
+ '(TeX-master 'dwim)
  '(TeX-parse-self t)
- '(ac-modes
-   '(emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode haskell-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode racket-mode Racket-mode racket-repl-mode idris-mode idris-repl-mode))
  '(ad-redefinition-action 'accept)
  '(apropos-sort-by-scores t)
  '(auto-save-interval 75)
@@ -1423,10 +1400,8 @@
  '(display-time-24hr-format t)
  '(display-time-day-and-date t)
  '(display-time-mode t)
- ;; I don’t think I want this; when I set it and created a new email
- ;; in emacs, it signalled an error wrt this setting.
- ;;
- ;; '(display-time-use-mail-icon t)
+ '(enable-local-variables ':safe)
+ '(enable-local-eval ':safe)
  '(find-file-visit-truename t)
  '(fringe-mode 2 nil (fringe))
  '(global-auto-revert-non-file-buffers t)
@@ -1498,6 +1473,7 @@
 	 (azprolog
 	  (9 . 63))))
  '(reftex-cite-format 'biblatex)
+ '(reftex-default-bibliography '("~/old-microKanren.bib"))
  '(reftex-extra-bindings t)
  '(reftex-plug-into-AUCTeX t)
  '(require-final-newline t nil nil "Add an EOL to files when I save them.")
@@ -1646,14 +1622,8 @@
   :after org
   :hook (ob-racket-pre-runtime-library-load . ob-racket-raco-make-runtime-library)
   :config (add-to-list 'org-babel-load-languages '(racket . t)))
-
-;; (use-package ob-racket
-;;   :after org
-;;   :hook (ob-racket-pre-runtime-library-load . ob-racket-raco-make-runtime-library)
-;;   :config
 ;;   (setq org-babel-command:racket "/usr/local/bin/racket")
-;;   (add-to-list 'org-babel-load-languages '(racket . t))
-;;   :straight (:type git :host github :repo "togakangaroo/ob-racket" :files ("*.el" "*.rkt")))
+;;   :straight (:type git :host github :repo "togakangaroo/ob-racket" :files ("*.el" "*.rkt"))
 
 (setq-default major-mode 'text-mode)
 ;; Pick a random theme.
