@@ -142,6 +142,8 @@
 (use-package org-roam-ui
     :straight (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out"))
     :after org-roam
+	:delight (org-roam-ui-mode "ORUI")
+	         (org-roam-ui-follow-mode " F-")
     :hook (after-init . org-roam-ui-mode)
     :custom
 	(org-roam-ui-sync-theme t)
