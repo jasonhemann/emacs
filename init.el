@@ -55,6 +55,12 @@
 					  :repo "emacswatcher/use-package-secret"
 					  :fork (:host github :repo "jasonhemann/use-package-secret")))
 
+(use-package emacs
+  :delight
+  (auto-revert-mode)
+  (auto-fill-function " AF")
+  (visual-line-mode))
+
 (use-package exec-path-from-shell ;; Make Emacs use the $PATH set up by the user's shell
   :if (memq window-system '(mac ns))
   :straight t
