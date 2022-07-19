@@ -1403,9 +1403,10 @@
  '(dired-dwim-target 'dired-dwim-target-recent nil nil "Not obvious which option is *best*, but this at least works when I put two direds side-by-side.")
  '(dired-listing-switches "-alGh1v --group-directories-first --time-style=long-iso" nil nil "long format, w/hidden files, w/o group information, w/good numeric sorting human-readable sizes, and w/directories first")
  '(dired-recursive-copies 'always nil nil "I shouldn't be prompted to recursively copy dirs")
- '(display-time-24hr-format t)
- '(display-time-day-and-date t)
- '(display-time-mode t)
+ ;; Commenting b/c it’s on OSX and modeline real estate too precious
+ ;; '(display-time-24hr-format t)
+ ;; '(display-time-day-and-date t)
+ ;; '(display-time-mode t)
  '(enable-local-variables ':safe)
  '(enable-local-eval ':safe)
  '(find-file-visit-truename t)
