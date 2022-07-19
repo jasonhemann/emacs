@@ -104,6 +104,9 @@
 ;; display/update images in the buffer after evaluation
 ;; This has 'org-display-inline-images already installed, so just the append.
 ;; (add-hook 'org-babel-after-execute-hook 'org-display-inline-images 'append)
+;;
+;; Don’t know where this code came from, possible this should now be
+;; org-display-remote-inline-images. Still don’t understand the append.
 
 (use-package agda2-mode
   :straight (:includes (eri annotation))
@@ -120,6 +123,62 @@
 (straight-use-package '(let-alist :type built-in))
 (straight-use-package '(which-key :custom (which-key-mode)))
 (straight-use-package '(helm :files ("*.el" "emacs-helm.sh" (:exclude "helm-lib.el" "helm-source.el" "helm-multi-match.el" "helm-core.el" "helm-core-pkg.el") "helm-pkg.el")))
+;; These helm commands I commented because they seemed annoying when I used them.
+;; helm-browse-project: handles project files and buffers; defaults to current directory; works with helm-find-files; recommended with helm-ls-git, helm-ls-hg and helm-ls-svn for a better handling of version control files. Each time a project under version control is visited it is added to helm-browse-project-history and can be visted with helm-projects-history.
+;; helm-dabbrev: enhanced dabbrev implementation with helm completion; does not use emacs code.
+;; helm-imenu and helm-imenu-in-all-buffers: provide imenus for current or all buffers.
+;; helm-etags-select: enhanced etags with helm-completion; usable everywhere with helm-find-files.
+;; Grep: launch from any helm file commands; supports back-ends grep, ack-grep, git-grep, ag and custom implementation of pt.
+;; helm-gid: Helm interface for gid from id-utils.
+;; helm-show-kill-ring: A helm browser for kill ring.
+;; helm-all-mark-rings: A helm browser for mark ring; retrieves last positions in buffers.
+;; helm-filtered-bookmarks: enhanced browser for bookmarks.
+;; helm-list-elisp-packages: enhanced browser for elisp package management.
+;; These helm commands I commented because I wanted to try without helm, and try selectrum instead.
+;; (straight-use-package 'helm)
+;; (straight-use-package 'helm-addressbook)
+;; (straight-use-package 'helm-bibtex)
+;; (straight-use-package 'helm-chrome)
+;; (straight-use-package 'helm-company)
+;; (straight-use-package 'helm-descbinds)
+;; (straight-use-package 'helm-dictionary)
+;; (straight-use-package 'helm-dirset)
+;; (straight-use-package 'helm-emms)
+;; (straight-use-package 'helm-eww)
+;; (straight-use-package 'helm-firefox)
+;; (straight-use-package 'helm-fuzzy)
+;; (straight-use-package 'helm-google)
+;; (straight-use-package 'helm-idris)
+;; (straight-use-package 'helm-lean)
+;; (straight-use-package 'helm-ls-git)
+;; (straight-use-package 'helm-mu)
+;; (straight-use-package 'helm-shell)
+;; (straight-use-package 'helm-system-packages)
+;; (straight-use-package 'helm-tramp)
+;; (straight-use-package 'helm-wordnet)
+
+;; (helm-mode 1)
+;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
+;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
+;; (global-set-key (kbd "C-c h") 'helm-command-prefix)
+;; (global-unset-key (kbd "C-x c"))
+;; (require 'helm-config)
+
+;; (global-set-key (kbd "C-x b") 'helm-buffers-list) ;; helm-buffers-list: provides enhanced buffers listing.
+;; (global-set-key (kbd "C-h a") 'helm-apropos) ;; enhanced apropos for functions and variables that C-h commands provide.
+;; (global-set-key (kbd "C-c h o") 'helm-occur) ;; helm-occur: enhanced occur for one or more buffers; launch from helm-buffers-list or current-buffer.
+;; (global-set-key (kbd "M-x") 'helm-M-x)
+;; (global-set-key (kbd "C-x C-f") 'helm-find-files) ;; helm-find-files: one command that handles all the files related commands
+;; (global-set-key (kbd "M-y") 'helm-show-kill-ring)
+;; (global-set-key (kbd "C-x r b") 'helm-filtered-bookmarks)
+
+;; (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
+;; (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
+;; (define-key helm-map (kbd "C-z") 'helm-select-action) ; list actions using C-z
+
+;; (when (executable-find "curl")
+;;   (setq helm-google-suggest-use-curl-p t))
+;; (global-set-key (kbd "<f6>") #'org-ref-helm-insert-cite-link)
 
 (straight-use-package '(rg :ensure-system-package rg))
 
@@ -462,40 +521,6 @@
 ;; (straight-use-package 'hc-zenburn-theme)
 ;; (straight-use-package 'solarized-emacs)
 
-;; These helm commands I commented because they seemed annoying when I used them.
-;; helm-browse-project: handles project files and buffers; defaults to current directory; works with helm-find-files; recommended with helm-ls-git, helm-ls-hg and helm-ls-svn for a better handling of version control files. Each time a project under version control is visited it is added to helm-browse-project-history and can be visted with helm-projects-history.
-;; helm-dabbrev: enhanced dabbrev implementation with helm completion; does not use emacs code.
-;; helm-imenu and helm-imenu-in-all-buffers: provide imenus for current or all buffers.
-;; helm-etags-select: enhanced etags with helm-completion; usable everywhere with helm-find-files.
-;; Grep: launch from any helm file commands; supports back-ends grep, ack-grep, git-grep, ag and custom implementation of pt.
-;; helm-gid: Helm interface for gid from id-utils.
-;; helm-show-kill-ring: A helm browser for kill ring.
-;; helm-all-mark-rings: A helm browser for mark ring; retrieves last positions in buffers.
-;; helm-filtered-bookmarks: enhanced browser for bookmarks.
-;; helm-list-elisp-packages: enhanced browser for elisp package management.
-;; These helm commands I commented because I wanted to try without helm, and try selectrum instead.
-;; (straight-use-package 'helm)
-;; (straight-use-package 'helm-addressbook)
-;; (straight-use-package 'helm-bibtex)
-;; (straight-use-package 'helm-chrome)
-;; (straight-use-package 'helm-company)
-;; (straight-use-package 'helm-descbinds)
-;; (straight-use-package 'helm-dictionary)
-;; (straight-use-package 'helm-dirset)
-;; (straight-use-package 'helm-emms)
-;; (straight-use-package 'helm-eww)
-;; (straight-use-package 'helm-firefox)
-;; (straight-use-package 'helm-fuzzy)
-;; (straight-use-package 'helm-google)
-;; (straight-use-package 'helm-idris)
-;; (straight-use-package 'helm-lean)
-;; (straight-use-package 'helm-ls-git)
-;; (straight-use-package 'helm-mu)
-;; (straight-use-package 'helm-shell)
-;; (straight-use-package 'helm-system-packages)
-;; (straight-use-package 'helm-tramp)
-;; (straight-use-package 'helm-wordnet)
-
 (use-package helpful
   :straight t
   :bind
@@ -779,6 +804,8 @@
         (run . 2)
 		(letrec . 0)))
   :delight (racket-smart-open-bracket-mode)
+           (racket-xp-mode " ✗")
+		   (racket-mode " Rkt")
   :mode ("\\.rkt\\'" . racket-mode))
 
 (straight-use-package 'scribble-mode)
@@ -1021,29 +1048,6 @@
   (when gnu-ls-path
     (setq insert-directory-program gnu-ls-path)))
 
-;; (helm-mode 1)
-;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
-;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
-;; (global-set-key (kbd "C-c h") 'helm-command-prefix)
-;; (global-unset-key (kbd "C-x c"))
-;; (require 'helm-config)
-
-;; (global-set-key (kbd "C-x b") 'helm-buffers-list) ;; helm-buffers-list: provides enhanced buffers listing.
-;; (global-set-key (kbd "C-h a") 'helm-apropos) ;; enhanced apropos for functions and variables that C-h commands provide.
-;; (global-set-key (kbd "C-c h o") 'helm-occur) ;; helm-occur: enhanced occur for one or more buffers; launch from helm-buffers-list or current-buffer.
-;; (global-set-key (kbd "M-x") 'helm-M-x)
-;; (global-set-key (kbd "C-x C-f") 'helm-find-files) ;; helm-find-files: one command that handles all the files related commands
-;; (global-set-key (kbd "M-y") 'helm-show-kill-ring)
-;; (global-set-key (kbd "C-x r b") 'helm-filtered-bookmarks)
-
-;; (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
-;; (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
-;; (define-key helm-map (kbd "C-z") 'helm-select-action) ; list actions using C-z
-
-;; (when (executable-find "curl")
-;;   (setq helm-google-suggest-use-curl-p t))
-;; (global-set-key (kbd "<f6>") #'org-ref-helm-insert-cite-link)
-
 ;; C-x 8 S (interactive (insert "§"))
 (global-set-key (kbd "C-c (") (lambda () (interactive (insert "ಠ_ಠ"))))
 (global-set-key (kbd "C-c )") (lambda () (interactive (insert "¯\\_(ツ)_/¯"))))
@@ -1115,6 +1119,8 @@
 ;; (setq-default TeX-master "master") ; set a master for in the future.
 (setq-default TeX-master nil)
 
+
+;; ※ Suggest to use the reference mark, preceeding, for Reftex.
 ;; I grabbed this code off of the internet. The reftex-ref-style-alist
 ;; variables already had some of these cleveref options, so not sure
 ;; if I needed all of this.
