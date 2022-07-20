@@ -955,7 +955,7 @@
 (use-package all-the-icons
   :straight t
   :config
-  (ignore-error end-of-file
+  (ignore-error end-of-file ; I suspect this is not the error I wanted to raise.
 	(all-the-icons-install-fonts t)))
 
 ;; Also, does this need to be graphics-only, like all-the-icons?
