@@ -80,7 +80,7 @@
 		  (org-fold-catch-invisible-edits 'smart)
 		  (org-list-allow-alphabetical t)
 		  (org-log-done 'time)
-		  (org-modules '(ol-bbdb ol-bibtex ol-docview ol-doi ol-eww ol-gnus ol-info ol-irc ol-mhe ol-rmail ol-w3m))
+		  (org-modules '(org-tempo ol-bbdb ol-bibtex ol-docview ol-doi ol-eww ol-gnus ol-info ol-irc ol-mhe ol-rmail ol-w3m))
 		  (org-src-tab-acts-natively t)
 		  (org-support-shift-select t)
 		  (org-time-stamp-custom-formats '("<%m/%d/%y %a>" . "<%a %_B %_d, %H:%M>"))
@@ -191,9 +191,9 @@
 ;; In order to search for synonyms.
 (use-package www-synonyms
   :straight t
-  :secret api-key
+  :secret thesaurus-api-key
   :config
-  (setq www-synonyms-key api-key))
+  (setq www-synonyms-key thesaurus-api-key))
 
 (use-package org-roam
   :demand t
