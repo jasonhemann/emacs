@@ -850,6 +850,7 @@
 (straight-use-package 'sx) ;; Stackoverflow mode ;-)
 (straight-use-package 'svg-tag-mode)
 (straight-use-package 'tabbar)
+(straight-use-package 'tramp)
 (straight-use-package 'treepy) ;; tree-walk functionality like a clojure library implementation
 (straight-use-package 'ts) ;; A bunch of nice utilities for time and date parsing, better than the built-ins
 
@@ -946,6 +947,7 @@
 (straight-use-package 'xr) ;; The reverse regex library (regex->Human)
 (straight-use-package 'yafolding) ;; Yet another folding extension for Emacs
 (straight-use-package 'yaml-mode) ;; The emacs major mode for editing files in the YAML data serialization format.
+(straight-use-package 'yaml-pro)  ;; Perhaps an improved version?
 (straight-use-package 'zones)
 
 (use-package zygospore
@@ -1403,12 +1405,8 @@
  '(dired-dwim-target 'dired-dwim-target-recent nil nil "Not obvious which option is *best*, but this at least works when I put two direds side-by-side.")
  '(dired-listing-switches "-alGh1v --group-directories-first --time-style=long-iso" nil nil "long format, w/hidden files, w/o group information, w/good numeric sorting human-readable sizes, and w/directories first")
  '(dired-recursive-copies 'always nil nil "I shouldn't be prompted to recursively copy dirs")
- ;; Commenting b/c it’s on OSX and modeline real estate too precious
- ;; '(display-time-24hr-format t)
- ;; '(display-time-day-and-date t)
- ;; '(display-time-mode t)
- '(enable-local-variables ':safe)
  '(enable-local-eval ':safe)
+ '(enable-local-variables ':safe)
  '(find-file-visit-truename t)
  '(fringe-mode 2 nil (fringe))
  '(global-auto-revert-non-file-buffers t)
@@ -1521,6 +1519,7 @@
  '(tab-always-indent 'complete)
  '(tab-width 4 nil nil "Switching to a 4-space tab")
  '(tool-bar-mode nil)
+ '(trash-directory "~/.Trash")
  '(truncate-lines t)
  '(vc-follow-symlinks t)
  '(vc-make-backup-files t)
@@ -1664,3 +1663,4 @@
 
 (provide 'init.el)
 ;;; init.el ends here
+(put 'downcase-region 'disabled nil)
