@@ -216,14 +216,15 @@
 		 ("C-c n i" . org-roam-insert)
 		 ("C-c n I" . org-roam-insert-immediate)))
 
-;; I don't know when I need an ~:after~ flag
 (use-package org-roam-ui
-    :straight (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out"))
-    :after org-roam
+	:straight (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out"))
+	;; I don't know when I need an ~:after~ flag
+	:after org-roam
 	:delight (org-roam-ui-mode "ORUI")
-	         (org-roam-ui-follow-mode " F-")
-    :hook (after-init . org-roam-ui-mode)
-    :custom
+	(org-roam-ui-follow-mode " F-")
+	;; Cannot use hook here, b/c need to catch possible error.
+	;; :hook (after-init . org-roam-ui-mode)
+	:custom
 	(org-roam-ui-sync-theme t)
 	(org-roam-ui-follow t)
 	(org-roam-ui-update-on-save t)
@@ -1659,6 +1660,10 @@
 ;; Start the emacs server, so that I can use emacsclient to connect to the existing emacs instance
 ;; I need another way to do this. To instead have an Emacs.app -like thing do it
 ;; (server-start)
+
+;; Try to run org-roam-ui-mode, but A-okay if socket is taken
+(ignore-error file-error
+  (org-roam-ui-mode))
 
 
 (provide 'init.el)
