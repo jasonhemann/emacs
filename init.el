@@ -312,6 +312,13 @@
 ;; No need for howm-mode; org-mode + roam for me
 ;; (straight-use-package 'calfw-howm)
 
+;; Disabled until I get my .edu copilot mode back.
+;; (use-package copilot
+;;   :straight (:host github :repo "zerolfx/copilot.el"
+;;                    :files ("dist" "copilot.el"))
+;;   :ensure t
+;;   :hook prog-mode)
+
 (straight-use-package 'cbm) ;; cycle by major mode
 
 (use-package cdlatex
@@ -388,7 +395,7 @@
 (use-package dr-racket-like-unicode
   :straight t
   :hook
-  ((racket-mode racket-repl scribble-mode) . racket-unicode-input-method-enable))
+  ((racket-mode racket-repl) . racket-unicode-input-method-enable)) ;;  scribble-mode deprecated
 
 (straight-use-package 'clean-aindent-mode) ;; Emacs extension for simple indent and unindent
 (straight-use-package 'dtrt-indent) ;; A minor mode that guesses the indentation offset originally used for creating source code
@@ -608,6 +615,12 @@
   :straight t
   :custom (midnight-hook '(calendar)))
 
+;; Currently broken, see https://github.com/countvajhula/mindstream/issues/1
+;;
+(use-package mindstream
+  :straight (mindstream :type git :host github :repo "countvajhula/mindstream")
+  :config (mindstream-initialize))
+
 (use-package multiple-cursors
   :straight t
   :custom (multiple-cursors-mode t)
@@ -809,7 +822,12 @@
 		   (racket-mode " Rkt")
   :mode ("\\.rkt\\'" . racket-mode))
 
-(straight-use-package 'scribble-mode)
+;; Deprecated, b/c Racket mode w/scribble files is better
+;;
+;; FYI, also alt scribble-mode at
+;; https://www.neilvandyke.org/scribble-emacs/scribble.el
+;;
+;; (straight-use-package 'scribble-mode)
 
 (straight-use-package 'reazon)
 (straight-use-package 'refine)
@@ -826,12 +844,15 @@
   :custom (selectrum-prescient-mode t) ;; to make sorting and filtering more intelligent
           (prescient-persist-mode t)) ;; For selectrum, save your command history on disk, so the sorting gets more intelligent over time
 
-(use-package smex
-  :straight t
-  :config (smex-initialize) ; Can be omitted. This might cause a (minimal) delay when Smex is auto-initialized on its first run.
-  :bind (("M-x" . smex)
-		 ("M-X" . smex-major-mode-commands)
-		 ("C-c C-c M-x" . execute-extended-command))) ;; This is your old M-x.
+;; SMEX was causing a major slowdown w/my config.
+;;
+;; (use-package smex
+;;   :straight t
+;;   :config (smex-initialize) ; Can be omitted. This might cause a (minimal) delay when Smex is auto-initialized on its first run.
+;;   :bind (("M-x" . smex)
+;; 		 ("M-X" . smex-major-mode-commands)
+;; 		 ("C-c C-c M-x" . execute-extended-command)))
+;; This is your old M-x.
 
 (straight-use-package 'semi)
 (straight-use-package 'sh-script) ;; The major mode for editing Unix and GNU/Linux shell script code
@@ -839,8 +860,10 @@
 
 (use-package smartparens
   :straight t
-  :config
+  :init ;; https://github.com/Fuco1/smartparens/issues/1088#issuecomment-854714652
   (require 'smartparens-config)
+  :config
+  (smartparens-global-mode)
   (sp-use-paredit-bindings)
   :hook ((prog-mode text-mode) . turn-on-smartparens-strict-mode))
 
