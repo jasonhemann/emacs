@@ -188,6 +188,11 @@
 ;; A preferred synonyms package, but check use-cases.
 (straight-use-package 'powerthesaurus)
 
+;; (use-package aweshell
+;;   :straight (:host github :repo "manateelazycat/aweshell" :files ("*.el" "out"))
+;;   ;; https://github.com/manateelazycat/aweshell
+;;   )
+
 ;; In order to search for synonyms.
 (use-package www-synonyms
   :straight t
@@ -1067,8 +1072,9 @@
 ;; Flim is a help package for dev w/wanderlust
 ;; (straight-use-package 'flim)
 
-(if (file-exists-p "~/Documents/acl2/scripts-master/.lisp.el")
-    (load-file "~/Documents/acl2/scripts-master/.lisp.el"))
+;; Not needed unless I’m back to doing ACL2 work.
+;; (if (file-exists-p "~/Documents/acl2/scripts-master/.lisp.el")
+;;     (load-file "~/Documents/acl2/scripts-master/.lisp.el"))
 
 (let ((gnu-ls-path (executable-find "gls")))
   (when gnu-ls-path
