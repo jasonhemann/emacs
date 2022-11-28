@@ -752,13 +752,13 @@
 (use-package projectile ;; Project Interaction Library for Emacs
   :straight t
   :custom
-  (projectile-sort-order recently-active)
-  (projectile-completion-system selectrum)
-  (projectile-indexing-method hybrid) ; 'alien 'native
+  (projectile-sort-order 'recently-active)
+  (projectile-completion-system 'selectrum)
+  (projectile-indexing-method 'hybrid) ; 'alien 'native
   (projectile-enable-caching t)
   (projectile-mode t)
   (projectile-mode-line-prefix " Proj")
-  (projectile-switch-project-action projectile-dired)
+  (projectile-switch-project-action #'projectile-dired)
   ;; (setq projectile-completion-system 'helm)
   ;; (setq projectile-switch-project-action 'helm-projectile)
 
@@ -1396,9 +1396,6 @@
 ;; (add-hook 'ciao-mode-hook #'enable-paredit-mode) ;; not til fix paren space issue.
 ;; tex-mode has paredit-mode issue too.
 
-;; So that I can find scryer-prolog
-(add-to-list 'exec-path (expand-file-name (substitute-in-file-name "$HOME/.cargo/bin")))
-
 ;; From https://stackoverflow.com/questions/36183071/how-can-i-preview-markdown-in-emacs-in-real-time/36189456
 ;; For use with impatient-mode
 (defun markdown-html (buffer)
@@ -1415,7 +1412,7 @@
  '(TeX-auto-save t)
  '(TeX-auto-untabify t)
  '(TeX-engine 'xetex)
- '(TeX-master 'dwim)
+ '(TeX-master 'dwim t)
  '(TeX-parse-self t)
  '(ad-redefinition-action 'accept)
  '(apropos-sort-by-scores t)
@@ -1446,9 +1443,9 @@
  '(indicate-empty-lines t)
  '(inhibit-startup-screen t)
  '(initial-scratch-message nil)
- '(ispell-highlight-face 'highlight)
- '(ispell-highlight-p t)
- '(ispell-program-name "aspell")
+ '(ispell-highlight-face 'highlight t)
+ '(ispell-highlight-p t t)
+ '(ispell-program-name "aspell" t)
  '(load-home-init-file t t)
  '(ls-lisp-dirs-first t)
  '(make-backup-files nil)
