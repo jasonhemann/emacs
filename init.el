@@ -84,16 +84,15 @@
 		  (org-src-tab-acts-natively t)
 		  (org-support-shift-select t)
 		  (org-time-stamp-custom-formats '("<%m/%d/%y %a>" . "<%a %_B %_d, %H:%M>"))
-		  (org-use-speed-commands t))
-
-  ;; :config
-  ;; (add-to-list 'org-latex-classes
-  ;;              '("letter"
-  ;;                "\\documentclass{report}"
-  ;;                ("\\chapter{%s}" . "\\chapter*{%s}")
-  ;;                ("\\section{%s}" . "\\section*{%s}")
-  ;;                ("\\subsection{%s}" . "\\subsection*{%s}")
-  ;;                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
+		  (org-use-speed-commands t)
+  :config
+  (add-to-list 'org-latex-classes
+               '("letter"
+                 "\\documentclass{letter}"
+                 ("\\chapter{%s}" . "\\chapter*{%s}")
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
 
 (use-package ob-prolog
   :after org
@@ -346,10 +345,20 @@
    :map org-mode-map
    ("M-;" . 'org-comment-dwim-2)))
 
-(use-package company ;; Complete anything ;-)
+(straight-use-package company)
+
+(use-package company-fuzzy
   :straight t
+  :hook (company-mode . company-fuzzy-mode)
+  ;; :init (setq company-fuzzy-sorting-backend 'flx
+  ;; 			  company-fuzzy-prefix-on-top nil
+  ;; 			  company-fuzzy-trigger-symbols '("." "->" "<" "\"" "'" "@"))
   :delight " 🏭"
-  :custom (global-company-mode t))
+  :custom
+  (company-fuzzy-sorting-backend 'flx)
+  (company-fuzzy-prefix-on-top nil)
+  (company-fuzzy-trigger-symbols '("." "->" "<" "\"" "'" "@"))
+  (global-company-fuzzy-mode t))
 
 (straight-use-package 'company-coq)
 (straight-use-package 'company-dict)
@@ -657,6 +666,7 @@
 ;; See (org-ref-manual) for some documentation
 ;; Unclear if I actually _want_ this system, or if I'll prefer the built-in org-cite behavior.
 (use-package org-ref ;; Org-ref
+  :after (ox-pandoc)
   :straight t
   :config
   (setq org-ref-default-bibliography '("~/old-microKanrenbib.bib")))
@@ -1080,7 +1090,7 @@
   (when gnu-ls-path
     (setq insert-directory-program gnu-ls-path)))
 
-;; C-x 8 S (interactive (insert "§"))
+;; C-x 8 S (interactive (insert "§")) ;; section
 (global-set-key (kbd "C-c (") (lambda () (interactive (insert "ಠ_ಠ"))))
 (global-set-key (kbd "C-c )") (lambda () (interactive (insert "¯\\_(ツ)_/¯"))))
 (global-set-key (kbd "C-c C-x (") (lambda () (interactive (insert "ᕕ( ᐛ )ᕗ"))))
@@ -1443,9 +1453,9 @@
  '(indicate-empty-lines t)
  '(inhibit-startup-screen t)
  '(initial-scratch-message nil)
- '(ispell-highlight-face 'highlight t)
- '(ispell-highlight-p t t)
- '(ispell-program-name "aspell" t)
+ '(ispell-highlight-face 'highlight)
+ '(ispell-highlight-p t)
+ '(ispell-program-name "aspell")
  '(load-home-init-file t t)
  '(ls-lisp-dirs-first t)
  '(make-backup-files nil)
@@ -1654,9 +1664,11 @@
   :straight (ob-racket :type git :host github :repo "hasu/emacs-ob-racket" :files ("*.el" "*.rkt"))
   :after org
   :hook (ob-racket-pre-runtime-library-load . ob-racket-raco-make-runtime-library)
-  :config (add-to-list 'org-babel-load-languages '(racket . t)))
+  :config (add-to-list 'org-babel-load-languages '(racket . t))
 ;;   (setq org-babel-command:racket "/usr/local/bin/racket")
 ;;   :straight (:type git :host github :repo "togakangaroo/ob-racket" :files ("*.el" "*.rkt"))
+
+)
 
 (setq-default major-mode 'text-mode)
 ;; Pick a random theme.
@@ -1694,4 +1706,3 @@
 
 (provide 'init.el)
 ;;; init.el ends here
-(put 'downcase-region 'disabled nil)
