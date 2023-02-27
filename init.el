@@ -85,7 +85,10 @@
 		  (org-support-shift-select t)
 		  (org-time-stamp-custom-formats '("<%m/%d/%y %a>" . "<%a %_B %_d, %H:%M>"))
 		  (org-use-speed-commands t)
-  :config
+		  )
+
+;; https://superuser.com/a/1106691/963448 b/c ox-latex not loaded w/org.
+(with-eval-after-load 'ox-latex
   (add-to-list 'org-latex-classes
                '("letter"
                  "\\documentclass{letter}"
@@ -345,17 +348,17 @@
    :map org-mode-map
    ("M-;" . 'org-comment-dwim-2)))
 
-(straight-use-package company)
+(straight-use-package 'company-mode)
 
 (use-package company-fuzzy
   :straight t
-  :hook (company-mode . company-fuzzy-mode)
+  :hook company-mode.
   ;; :init (setq company-fuzzy-sorting-backend 'flx
   ;; 			  company-fuzzy-prefix-on-top nil
   ;; 			  company-fuzzy-trigger-symbols '("." "->" "<" "\"" "'" "@"))
   :delight " 🏭"
   :custom
-  (company-fuzzy-sorting-backend 'flx)
+  ; (company-fuzzy-sorting-backend 'flx) ; https://github.com/PythonNut/company-flx
   (company-fuzzy-prefix-on-top nil)
   (company-fuzzy-trigger-symbols '("." "->" "<" "\"" "'" "@"))
   (global-company-fuzzy-mode t))
@@ -629,6 +632,8 @@
   :straight t
   :custom (midnight-hook '(calendar)))
 
+(straight-use-package 'minimap)
+
 ;; Currently broken, see https://github.com/countvajhula/mindstream/issues/1
 ;;
 (use-package mindstream
@@ -741,9 +746,13 @@
 
 (use-package pdf-tools
   :straight t
+  :ensure t
 ;;  :after (pdf-annot fullframe)
   :magic ("%PDF" . pdf-view-mode)
   :config (pdf-tools-install :no-query) ;; if this slows things down try (pdf-loader-install)
+  (setenv "PKG_CONFIG_PATH" "/opt/homebrew/Cellar/poppler/23.01.0/lib/pkgconfig:/opt/homebrew/lib/pkgconfig:/opt/X11/lib/pkgconfig/:/opt/homebrew/Cellar/poppler/23.01.0/lib/pkgconfig:/opt/X11/share/pkgconfig")
+  (pdf-tools-install)
+  :custom (pdf-tools-handle-upgrades t)
   :bind (:map pdf-view-mode-map
 		 ("h"   . 'pdf-annot-add-highlight-markup-annotation)
 		 ("t"   . 'pdf-annot-add-text-annotation)
@@ -1638,7 +1647,7 @@
 
 
 (require 'org-protocol)
-(require 'org-roam-protocol)
+;; (require 'org-roam-protocol) ;; b/c busted when I reloaded
 
 ;; Draw tabs with the same color as trailing whitespace
 ;; (add-hook 'font-lock-mode-hook
