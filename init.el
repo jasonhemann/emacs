@@ -574,6 +574,9 @@
 
 (straight-use-package 'ibuffer-vc) ;; Let Emacs' ibuffer-mode group files by git project etc., and show file state
 
+(use-package idris2-mode
+  :straight (:host github :repo "idris-community/idris2-mode" :files ("*.el" "*.png" "Makefile")))
+
 ;; Not needed, b/c I was using helm. Now I'm using selectrum instead.
 ;; (straight-use-package 'ido-vertical-mode) ;; makes ido-mode display vertically
 (straight-use-package 'iedit) ;; Emacs minor mode and allows you to edit one occurrence of some text in a buffer
