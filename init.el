@@ -77,6 +77,7 @@
 		  (org-confirm-babel-evaluate nil)
 		  (org-directory "~/.org")
 		  (org-export-backends '(ascii html icalendar latex md org))
+		  (org-export-allow-bind-keywords t)
 		  (org-fold-catch-invisible-edits 'smart)
 		  (org-list-allow-alphabetical t)
 		  (org-log-done 'time)
@@ -202,8 +203,11 @@
   :config
   (setq www-synonyms-key thesaurus-api-key))
 
+(straight-use-package 'emacsql-sqlite-builtin)
+
 (use-package org-roam
   :demand t
+  :after emacsql-sqlite-builtin
   :config (add-to-list
 		   'display-buffer-alist
 		   '("\\*org-roam\\*"
@@ -212,7 +216,8 @@
 			 (window-width . 0.33)
 			 (window-height . fit-window-to-buffer)))
   :straight t
-  :custom (org-roam-db-autosync-mode t)
+  :custom (org-roam-db-connection-type 'sqlite-builtin)
+          (org-roam-db-autosync-mode t)
           (org-roam-directory (file-truename "~/.org/"))
   :bind (:map org-roam-mode-map
 		 ("C-c n l" . org-roam)
@@ -391,6 +396,9 @@
 
 (straight-use-package 'dash) ;; A modern list library for Emacs
 (straight-use-package 'dash-functional)
+
+(require 'dash)
+(require 'dash-functional)
 
 (straight-use-package 'dirvish)
 
@@ -663,13 +671,33 @@
   :straight t
   :hook ((org-mode org-roam-mode) . org-bullets-mode))
 
-(straight-use-package 'org-dropbox)
-(straight-use-package 'org-doing)
-(straight-use-package 'org-dotemacs)
-(straight-use-package 'org-inline-pdf)
-(straight-use-package 'org-jekyll)
-(straight-use-package 'org-journal)
-(straight-use-package 'org-ql)
+(use-package org-dropbox
+  :straight t
+  :hook org-mode)
+
+(use-package org-doing
+  :straight t
+  :hook org-mode)
+
+(use-package org-dotemacs
+  :straight t
+  :hook org-mode)
+
+(use-package org-inline-pdf
+  :straight t
+  :hook org-mode)
+
+(use-package org-jekyll
+  :straight t
+  :hook org-mode)
+
+(use-package org-journal
+  :straight t
+  :hook org-mode)
+
+(use-package org-ql
+  :straight t
+  :hook org-mode)
 
 ;; See (org-ref-manual) for some documentation
 ;; Unclear if I actually _want_ this system, or if I'll prefer the built-in org-cite behavior.
@@ -677,30 +705,53 @@
   :after (ox-pandoc)
   :straight t
   :config
-  (setq org-ref-default-bibliography '("~/old-microKanrenbib.bib")))
+  (setq org-ref-default-bibliography '("~/old-microKanrenbib.bib"))
+  :hook org-mode)
 ;; Set up bibliography
 
 (use-package org-roam-bibtex ;; Org-roam-bibtex
   :straight t
   :custom (org-roam-bibtex-mode t)
   :bind (:map org-roam-bibtex-mode-map
-	     ("C-c n a" . orb-note-actions)))
+			  ("C-c n a" . orb-note-actions))
+  :hook org-roam)
 
 ;; (straight-use-package 'org-roam-server) defunct, org-roam-ui is the good one
-(straight-use-package 'org-rtm)
-(straight-use-package 'org-sidebar)
-(straight-use-package 'org-super-agenda)
+(use-package org-rtm
+  :straight t
+  :hook org-mode)
+
+(use-package org-sidebar
+  :straight t
+  :hook org-modef)
+
+(use-package org-super-agenda
+  :straight t
+  :hook org-mode)
 
 ;; TODO: org-trello-mode, when I load it, seems to change how the
 ;; org-mode files indent and breaks tab-through org-mode behavior.
 (use-package org-trello
   :straight t
-  :custom (org-trello-current-prefix-keybinding "C-c o"))
+  :custom (org-trello-current-prefix-keybinding "C-c o")
+  :hook org-mode)
 
-(straight-use-package 'org2web)
-(straight-use-package 'ox-gfm) ;; for el2org, instead of ox-md fallback cf https://github.com/tumashu/el2org
-(straight-use-package 'ox-jekyll-md)
-(straight-use-package 'ox-pandoc)
+(use-package org2web
+  :straight t
+  :hook org-mode)
+
+(use-package ox-gfm  ;; for el2org, instead of ox-md fallback cf https://github.com/tumashu/el2org
+  :straight t
+  :hook org-mode)
+
+(use-package ox-jekyll-md
+  :straight t
+  :hook org-mode)
+
+(use-package ox-pandoc
+  :straight t
+  :hook org-mode)
+
 (straight-use-package 'paradox)
 
 
@@ -753,7 +804,7 @@
 ;;  :after (pdf-annot fullframe)
   :magic ("%PDF" . pdf-view-mode)
   :config (pdf-tools-install :no-query) ;; if this slows things down try (pdf-loader-install)
-  (setenv "PKG_CONFIG_PATH" "/opt/homebrew/Cellar/poppler/23.01.0/lib/pkgconfig:/opt/homebrew/lib/pkgconfig:/opt/X11/lib/pkgconfig/:/opt/homebrew/Cellar/poppler/23.01.0/lib/pkgconfig:/opt/X11/share/pkgconfig")
+  (setenv "PKG_CONFIG_PATH" (concat (getenv "PKG_CONFIG_PATH") ":/opt/homebrew/Cellar/poppler/23.01.0/lib/pkgconfig:/opt/homebrew/lib/pkgconfig:/opt/X11/lib/pkgconfig/:/opt/homebrew/Cellar/poppler/23.01.0/lib/pkgconfig:/opt/X11/share/pkgconfig"))
   (pdf-tools-install)
   :custom (pdf-tools-handle-upgrades t)
   :bind (:map pdf-view-mode-map
@@ -1621,6 +1672,104 @@
 		(interactive "p")
         (kmacro-exec-ring-item
 		 (quote ([134217749 134217749 134217749 134217734 134217732 134217732 134217732 134217749 201326624 134217847 134217749 134217730 134217734 25 134217730 134217730 201326624 134217847 134217732 25 32 134217749 201326624 134217765 32 return 32 44 return 33 134217749 96 2 201326624 23 134217732 134217734 134217734 return 25 134217732 25 201326624 201326624 23 134217749 134217730 134217734 201326624 23 134217749 134217749 201326624 tab 134217730 134217734 134217748 2 2 2 134217730 134217730 134217734 25 134217749 201326624 tab 134217734 134217730 134217734 2 134217730 134217730 134217734] 0 "%d")) arg)))
+
+(defun dynamic-name-from-buffer (options backend)
+  "Set title dynamically for export any OPTIONS via any BACKEND."
+  (plist-put options :title (buffer-name)))
+
+;; (defun my/org-percent-to-letter-grade (percent)
+;;   "Convert PERCENT to letter grade."
+;;   (cond ((>= percent 90) "A")
+;;         ((>= percent 80) "B")
+;;         ((>= percent 70) "C")
+;;         ((>= percent 60) "D")
+;;         (t "F")))
+
+;; (defun my/org-update-statistics-cookies (a b)
+;;   "Update statistics cookies according to values and weights of checkboxes."
+;;   ;; Get current headline level and point position.
+;;   (let ((level (-max-item '(l . nil) (-map #'car (-filter #'cdr org-outline-regexp-bol-cache))))
+;; 		(pos (-max-item '(l . nil) (-map #'car (-filter #'cdr org-outline-regexp-bol-cache)))))
+;; 	;; Go through each direct child headline.
+;; 	(--each (-filter #'cdr (--mapcat (-zip-pair it (--split-with (> level it) (--drop-while (< posit) (--map #'car org-outline-regexp-bol-cache)))) org-outline-regexp-bol-cache))
+;; 	  ;; Get value and weight properties of each checkbox item under the headline.
+;; 	  (--each (-filter #'cdr (--mapcat (-zip-pair it (--split-with (> level (+ level it))
+;; 																   (--drop-while (< pos (+posit)) (--map #'car org-outline-regexp-bol-cache))))
+;; 									   org-outline-regexp-bol-cache))
+;; 		(let ((value-property-name "value")
+;; 			  value-property-value
+;; 			  weight-property-name
+;; 			  weight-property-value
+;; 			  total-value
+;; 			  total-weight
+;; 			  average-value
+;; 			  statistics-cookie-start
+;; 			  statistics-cookie-end
+;; 			  statistics-cookie-format
+;; 			  statistics-cookie-value
+;; 			  new-statistics-cookie-value
+;; 			  new-statistics-cookie-string
+;; 			  old-point-position)
+;; 		  ;; Get value property name and value.
+;; 		  ;;
+;; 		  ;; If there is no such property for current checkbox item,
+;; 		  ;; use default name ("value") and default value (1).
+;; 		  (setq value-property-name
+;; 				(or (org-entry-get nil "VALUE_PROPERTY_NAME") "value"))
+;; 		  (setq value-property-value
+;; 				(string-to-number
+;; 				 (or (org-entry-get nil (upcase value-property-name)) "1")))
+;; 		  ;; Get weight property name and value.
+;; 		  ;;
+;; 		  ;; If there is no such property for current checkbox item,
+;; 		  ;; use default name ("weight") and default value (1).
+;; 		  (setq weight-property-name
+;; 				(or (org-entry-get nil "WEIGHT_PROPERTY_NAME") "weight"))
+;; 		  (setq weight-property-value
+;; 				(string-to-number
+;; 				 (or (org-entry-get nil (upcase weight-property-name)) "1")))
+;; 		  ;; Update total value by adding current checkbox's weighted value,
+;; 		  ;; which equals its own value times its own weight.
+;; 		  (cl-incf total-value (* value-property-value weight-property-value))
+;; 		  ;; Update total weight by adding current checkbox's own weight.
+;; 		  (cl-incf total-weight weight-property-value)))
+;; 	  ;; Calculate average value by dividing total weighted sum by total weight sum.
+;; 	  (setq average-value (/ total-value total-weight))
+;; 	  ;; Find where statistic cookie starts/ends for current headline,
+;; 	  ;; get its format and value.
+;; 	  (save-excursion
+;; 		(goto-char posit)
+;; 		(re-search-forward "\\[[0-9]+%\\(\\|/[0-9]+\\)\\]" nil t)
+;; 		(setq statistics-cookie-start (match-beginning 0))
+;; 		(setq statistics-cookie-end (match-end 0))
+;; 		(setq statistics-cookie-format
+;; 			  (buffer-substring-no-properties statistics-cookie-start statistics-cookie-end))
+;; 		(string-match "\\([0-9]+\\)%\\(\\|/\\([0-9]+\\)\\)" statistics-cookie-format)
+;; 		(setq statistics-cookie-value
+;; 			  (string-to-number (match-string 1 statistics-cookie-format)))
+;; 		(if (match-string 3 statistics-cookie-format)
+;; 			(setq total-checkboxes
+;; 				  (string-to-number (match-string 3 statistics-cookie-format)))))
+;; 	  ;; Calculate new statistic cookie value based on average value,
+;; 	  ;; round it to integer.
+;; 	  (setq new-statistics-cookie-value	(round average-value))
+;; 	  ;; If new statistic cookie value is different than old one,
+;; 	  ;; update it in buffer.
+;; 	  (unless (= new-statistics-cookie-value statistics-cookie-value)
+;; 		;; Format new statistic cookie string based on old format.
+;; 		(if total-checkboxes
+;; 			(setq new-statistics-cookie-string
+;; 				  (format "[%d/%d]" new-statistics-cookie-value total-checkboxes))
+;; 		  (setq new-statistics-cookie-string
+;; 				(format "[%d%%]" new-statistics-cookie-value)))
+;; 		;; Replace old statistic cookie string with new one in buffer.
+;; 		(save-excursion
+;; 		  (goto-char posit)
+;; 		  (delete-region statistics-cookie-start statistics-cookie-end)
+;; 		  (insert new-statistics-cookie-string))))))
+
+;; (add-hook 'org-after-todo-statistics-hook 'my/org-update-statistics-cookies)
+
 
 ;; Emacs desiderata
 ;; I need to write a keyboard macro for going from let* to begin/set!
