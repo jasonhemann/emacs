@@ -398,7 +398,7 @@
 (straight-use-package 'dash-functional)
 
 (require 'dash)
-(require 'dash-functional)
+;; (require 'dash-functional) Package dash-functional is obsolete; use dash 2.18.0 instead
 
 (straight-use-package 'dirvish)
 
