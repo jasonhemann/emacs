@@ -733,8 +733,10 @@
 
 ;; TODO: org-trello-mode, when I load it, seems to change how the
 ;; org-mode files indent and breaks tab-through org-mode behavior.
+;; https://github.com/org-trello/org-trello/issues/418#issuecomment-1462483881
 (use-package org-trello
-  :straight t
+  :build (:not compile)
+  :straight (:no-byte-compile t)
   :custom (org-trello-current-prefix-keybinding "C-c o")
   :hook org-mode)
 
