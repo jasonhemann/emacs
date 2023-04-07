@@ -582,6 +582,8 @@
 
 (straight-use-package 'ibuffer-vc) ;; Let Emacs' ibuffer-mode group files by git project etc., and show file state
 
+
+;; (straight-use-package 'idris-mode) ;; Strictly prefer idris2-moed
 (use-package idris2-mode
   :straight (:host github :repo "idris-community/idris2-mode" :files ("*.el" "*.png" "Makefile")))
 
@@ -1463,8 +1465,6 @@
 ;;     (eldoc-mode)))
 
 ;; I don't know if this is what I want here.
-
-(straight-use-package 'idris-mode)
 
 ;; (add-hook 'ciao-mode-hook #'enable-paredit-mode) ;; not til fix paren space issue.
 ;; tex-mode has paredit-mode issue too.
