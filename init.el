@@ -720,12 +720,12 @@
 
 ;; (straight-use-package 'org-roam-server) defunct, org-roam-ui is the good one
 (use-package org-rtm
-  :straight t
-  :hook org-mode)
+  :after org
+  :straight t)
 
 (use-package org-sidebar
-  :straight t
-  :hook org-modef)
+  :after org
+  :straight t)
 
 (use-package org-super-agenda
   :straight t
@@ -735,26 +735,25 @@
 ;; org-mode files indent and breaks tab-through org-mode behavior.
 ;; https://github.com/org-trello/org-trello/issues/418#issuecomment-1462483881
 (use-package org-trello
-  :build (:not compile)
-  :straight (:no-byte-compile t)
+  :straight (:build (:not compile))
   :custom (org-trello-current-prefix-keybinding "C-c o")
   :hook org-mode)
 
 (use-package org2web
-  :straight t
-  :hook org-mode)
+  :after org-mode
+  :straight t)
 
 (use-package ox-gfm  ;; for el2org, instead of ox-md fallback cf https://github.com/tumashu/el2org
   :straight t
-  :hook org-mode)
+  :after org-mode)
 
 (use-package ox-jekyll-md
-  :straight t
-  :hook org-mode)
+  :after org-mode
+  :straight t)
 
 (use-package ox-pandoc
-  :straight t
-  :hook org-mode)
+  :after org-mode
+  :straight t)
 
 (straight-use-package 'paradox)
 
@@ -1628,6 +1627,7 @@
  '(version-control t)
  '(view-read-only t)
  '(visible-bell t)
+ '(warning-suppress-types '((comp)))
  '(window-combination-resize t))
 
 ;; IIRC I didn't want to use ~with-eval-after-load~
