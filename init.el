@@ -727,17 +727,18 @@
   :after org
   :straight t)
 
-(use-package org-super-agenda
-  :straight t
-  :hook org-mode)
+;; Complains about agenda file missing
+;; (use-package org-super-agenda
+;;   :straight t
+;;   :hook org-mode)
 
 ;; TODO: org-trello-mode, when I load it, seems to change how the
 ;; org-mode files indent and breaks tab-through org-mode behavior.
 ;; https://github.com/org-trello/org-trello/issues/418#issuecomment-1462483881
-(use-package org-trello
-  :straight (:build (:not compile))
-  :custom (org-trello-current-prefix-keybinding "C-c o")
-  :hook org-mode)
+;; (use-package org-trello
+;;   :straight (:build (:not compile))
+;;   :custom (org-trello-current-prefix-keybinding "C-c o")
+;;   :hook org-mode)
 
 (use-package org2web
   :after org-mode
@@ -1486,7 +1487,7 @@
  '(TeX-auto-save t)
  '(TeX-auto-untabify t)
  '(TeX-engine 'xetex)
- '(TeX-master 'dwim t)
+ '(TeX-master 'dwim)
  '(TeX-parse-self t)
  '(ad-redefinition-action 'accept)
  '(apropos-sort-by-scores t)
@@ -1858,13 +1859,9 @@
 ;; (if (file-exists-p "/usr/local/lib/ciao/ciao-mode-init.el")
 ;;     (load-file "/usr/local/lib/ciao/ciao-mode-init.el"))
 
-;; Start the emacs server, so that I can use emacsclient to connect to the existing emacs instance
-;; I need another way to do this. To instead have an Emacs.app -like thing do it
-;; (server-start)
-
 ;; Try to run org-roam-ui-mode, but A-okay if socket is taken
-(ignore-error file-error
-  (org-roam-ui-mode))
+;; (ignore-error file-error
+;;   (org-roam-ui-mode))
 
 
 (provide 'init.el)
