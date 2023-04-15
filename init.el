@@ -673,43 +673,42 @@
   :straight t
   :hook ((org-mode org-roam-mode) . org-bullets-mode))
 
-(use-package org-dropbox
-  :straight t
-  :hook org-mode)
+
+;; org-dropbox-mode starts up a daemon to sync org-notes via dropbox.
+;; Not using, possibly deprecated in favor of other solutions
+;; (straight-use-package '(org-dropbox :hook org-mode))
 
 (use-package org-doing
-  :straight t
-  :hook org-mode)
+  :straight t)
 
 (use-package org-dotemacs
-  :straight t
-  :hook org-mode)
+  :straight t)
 
 (use-package org-inline-pdf
   :straight t
   :hook org-mode)
 
 (use-package org-jekyll
-  :straight t
-  :hook org-mode)
+  :straight t)
 
+;; :hook org-mode causes an infinite loop.
 (use-package org-journal
-  :straight t
-  :hook org-mode)
+  :straight t)
 
-(use-package org-ql
-  :straight t
-  :hook org-mode)
+(straight-use-package 'org-ql)
 
 ;; See (org-ref-manual) for some documentation
 ;; Unclear if I actually _want_ this system, or if I'll prefer the built-in org-cite behavior.
 (use-package org-ref ;; Org-ref
-  :after (ox-pandoc)
+  :after (org ox-pandoc)
   :straight t
   :config
   (setq org-ref-default-bibliography '("~/old-microKanrenbib.bib"))
-  :hook org-mode)
+  ;; (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f"))
+  )
 ;; Set up bibliography
+
+
 
 (use-package org-roam-bibtex ;; Org-roam-bibtex
   :straight t
