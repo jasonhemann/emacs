@@ -228,6 +228,28 @@
 		 ("C-c n i" . org-roam-insert)
 		 ("C-c n I" . org-roam-insert-immediate)))
 
+;; Disabled until I get my .edu copilot mode back.
+(use-package copilot
+  :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "copilot.el"))
+  :ensure t
+  :hook prog-mode
+  :bind (:map prog-mode-map
+			  ("C-c C-a" . copilot-accept-completion)
+			  ("C-c C-RET" . copilot-toggle-completion)
+			  ("C-c C-c" . copilot-cancel-completion)
+			  ("C-c C-d" . copilot-decline-completion)
+			  ("C-c C-n" . copilot-next-completion)
+			  ("C-c C-p" . copilot-previous-completion)
+			  ("C-c C-r" . copilot-restart-completion)
+			  ("C-c C-s" . copilot-start-completion)
+			  ("C-c C-t" . copilot-try-complete)
+			  ("C-c C-u" . copilot-update-completion)
+			  ("C-c C-v" . copilot-visit-completion)
+			  ("C-c C-x" . copilot-visit-completion-other-frame)
+			  ("C-c C-z" . copilot-visit-completion-other-tab)
+			  ("C-c C-w" . copilot-visit-completion-other-window)))
+
+
 (use-package org-roam-ui
 	:straight (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out"))
 	;; I don't know when I need an ~:after~ flag
@@ -323,13 +345,6 @@
 (straight-use-package 'calfw-org)
 ;; No need for howm-mode; org-mode + roam for me
 ;; (straight-use-package 'calfw-howm)
-
-;; Disabled until I get my .edu copilot mode back.
-;; (use-package copilot
-;;   :straight (:host github :repo "zerolfx/copilot.el"
-;;                    :files ("dist" "copilot.el"))
-;;   :ensure t
-;;   :hook prog-mode)
 
 (straight-use-package 'cbm) ;; cycle by major mode
 
@@ -583,9 +598,11 @@
 (straight-use-package 'ibuffer-vc) ;; Let Emacs' ibuffer-mode group files by git project etc., and show file state
 
 
-;; (straight-use-package 'idris-mode) ;; Strictly prefer idris2-moed
+;; (straight-use-package 'idris-mode) ;; Strictly prefer idris2-mode
 (use-package idris2-mode
-  :straight (:host github :repo "idris-community/idris2-mode" :files ("*.el" "*.png" "Makefile")))
+  :straight (:host github :repo "idris-community/idris2-mode" :files ("*.el" "*.png" "Makefile"))
+  :hook (lambda () (turn-off-smartparens-mode))
+)
 
 ;; Not needed, b/c I was using helm. Now I'm using selectrum instead.
 ;; (straight-use-package 'ido-vertical-mode) ;; makes ido-mode display vertically
@@ -946,7 +963,8 @@
   :config
   (smartparens-global-mode)
   (sp-use-paredit-bindings)
-  :hook ((prog-mode text-mode) . turn-on-smartparens-strict-mode))
+  :hook ((prog-mode text-mode) . turn-on-smartparens-strict-mode)
+        ((prog-mode text-mode) . show-smartparens-mode))
 
 (straight-use-package 'sml-mode)
 (straight-use-package 'sml-modeline)
@@ -1608,8 +1626,6 @@
  '(scroll-bar-mode 'right)
  '(select-enable-clipboard t)
  '(sentence-end-double-space nil)
- '(show-paren-delay 0)
- '(show-paren-mode t)
  '(show-trailing-whitespace t)
  '(sort-fold-case t nil nil "Make buffer-sort functions case-insensitive")
  '(straight-host-usernames
