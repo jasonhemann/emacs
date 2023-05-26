@@ -2,8 +2,8 @@
 ;;; Commentary:
 
 ;;; This is Jason Hemann's .emacs setup, intended for OSX and some
-;;; linux machines. It is currently in an unstable state, and the
-;;; dependencies outside my .emacs are not listed. Several aspects of
+;;; linux machines.  It is currently in an unstable state, and the
+;;; dependencies outside my .emacs are not listed.  Several aspects of
 ;;; this rely on packages from homebrew, and a number of other
 ;;; downloaded files and hard-coded directories.
 
@@ -476,6 +476,10 @@
 ;; s-u-p elscreen ?
 (straight-use-package 'elscreen-separate-buffer-list)
 
+; Too difficult to set up
+;; (use-package emacspeak)
+
+
 ;; Emacs start up profiler isn't working the way it should
 (use-package esup
   ;; :custom `(esup-user-init-file ,(file-truename "~/init.el")) I thought this would help, but alas
@@ -508,11 +512,11 @@
 
 (straight-use-package '(flycheck-textlint :type git :host github :repo "kisaragi-hiu/flycheck-textlint" :fork nil))
 
-(use-package gradle-mode ;; I should want maven, I think, tbqh
-  :straight t
-  :hook java-mode)
-
-(straight-use-package 'flycheck-gradle)
+;; (use-package gradle-mode ;; I should want maven, I think, tbqh
+;;   :straight t
+;;   :hook java-mode)
+;;
+;; (straight-use-package 'flycheck-gradle)
 
 ;; Another java mode
 (straight-use-package 'meghanada)
@@ -597,12 +601,10 @@
 
 (straight-use-package 'ibuffer-vc) ;; Let Emacs' ibuffer-mode group files by git project etc., and show file state
 
-
-;; (straight-use-package 'idris-mode) ;; Strictly prefer idris2-mode
+;; (straight-use-package 'idris-mode) ;; We strictly prefer idris2-mode
 (use-package idris2-mode
   :straight (:host github :repo "idris-community/idris2-mode" :files ("*.el" "*.png" "Makefile"))
-  :hook (lambda () (turn-off-smartparens-mode))
-)
+  :hook (idris2-mode . (lambda () (setq smartparens-global-mode nil) (setq smartparens-mode nil) (setq smartparens-strict-mode nil))))
 
 ;; Not needed, b/c I was using helm. Now I'm using selectrum instead.
 ;; (straight-use-package 'ido-vertical-mode) ;; makes ido-mode display vertically
@@ -712,6 +714,9 @@
 (use-package org-journal
   :straight t)
 
+;; org-lms, once we have canvas---worth looking into
+
+
 (straight-use-package 'org-ql)
 
 ;; See (org-ref-manual) for some documentation
@@ -751,6 +756,9 @@
 ;; TODO: org-trello-mode, when I load it, seems to change how the
 ;; org-mode files indent and breaks tab-through org-mode behavior.
 ;; https://github.com/org-trello/org-trello/issues/418#issuecomment-1462483881
+;;
+;; renatofdds's fork seems to have a fix w/ a PR w/possibly a solution.
+;;
 ;; (use-package org-trello
 ;;   :straight (:build (:not compile))
 ;;   :custom (org-trello-current-prefix-keybinding "C-c o")
@@ -962,6 +970,7 @@
   (require 'smartparens-config)
   :config
   (smartparens-global-mode)
+  (show-smartparens-global-mode)
   (sp-use-paredit-bindings)
   :hook ((prog-mode text-mode) . turn-on-smartparens-strict-mode)
         ((prog-mode text-mode) . show-smartparens-mode))
@@ -972,6 +981,17 @@
 (straight-use-package 'sourcemap) ;;  Sourmap parser in Emacs Lisp
 (straight-use-package 'sx) ;; Stackoverflow mode ;-)
 (straight-use-package 'svg-tag-mode)
+
+;; Sublimity is annoying, the minimap is more annoying than useful.
+;; (use-package sublimity
+;;   :straight t
+;;   :config
+;;   (require 'sublimity-scroll)
+;; ;;   (require 'sublimity-map)
+;; ;;  (require 'sublimity-attractive)
+
+;;   :hook ((prog-mode text-mode) . sublimity-mode))
+
 (straight-use-package 'tabbar)
 (straight-use-package 'tramp)
 (straight-use-package 'treepy) ;; tree-walk functionality like a clojure library implementation
