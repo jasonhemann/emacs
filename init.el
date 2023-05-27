@@ -898,6 +898,7 @@
 
 (use-package racket-mode
   :straight t
+  :ensure-system-package racket
   :bind (:map racket-mode-map ("C-c r" . racket-run))
   :hook
   (racket-mode . racket-xp-mode)
@@ -1029,7 +1030,7 @@
 (use-package wc-mode
   :straight t
   :hook text-mode
-  :bind ("C-c \C-cw" . wc-mode))
+  :bind ("\C-cw" . wc-mode))
 
 (use-package w3m
   :straight t
