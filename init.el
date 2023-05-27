@@ -76,7 +76,7 @@
 		  (org-agenda-start-with-log-mode 'only)
 		  (org-confirm-babel-evaluate nil)
 		  (org-directory "~/.org")
-		  (org-export-backends '(ascii html icalendar latex md org))
+		  (org-export-backends '(ascii html icalendar latex odt md org))
 		  (org-export-allow-bind-keywords t)
 		  (org-fold-catch-invisible-edits 'smart)
 		  (org-list-allow-alphabetical t)
@@ -207,7 +207,7 @@
 
 (use-package org-roam
   :demand t
-  :after emacsql-sqlite-builtin
+  :after (emacsql-sqlite-builtin org)
   :config (add-to-list
 		   'display-buffer-alist
 		   '("\\*org-roam\\*"
@@ -219,12 +219,11 @@
   :custom (org-roam-db-connection-type 'sqlite-builtin)
           (org-roam-db-autosync-mode t)
           (org-roam-directory (file-truename "~/.org/"))
-  :bind (:map org-roam-mode-map
+  :bind (:map org-mode-map
 		 ("C-c n l" . org-roam)
 		 ("C-c n f" . org-roam-find-file)
 		 ("C-c n g" . org-roam-graph)
 		 ([mouse-1] . org-roam-visit-thing)
-		 :map org-mode-map
 		 ("C-c n i" . org-roam-insert)
 		 ("C-c n I" . org-roam-insert-immediate)))
 
@@ -235,19 +234,9 @@
   :hook prog-mode
   :bind (:map prog-mode-map
 			  ("C-c C-a" . copilot-accept-completion)
-			  ("C-c C-RET" . copilot-toggle-completion)
-			  ("C-c C-c" . copilot-cancel-completion)
-			  ("C-c C-d" . copilot-decline-completion)
+			  ("C-c C-c" . copilot-current-completion)
 			  ("C-c C-n" . copilot-next-completion)
-			  ("C-c C-p" . copilot-previous-completion)
-			  ("C-c C-r" . copilot-restart-completion)
-			  ("C-c C-s" . copilot-start-completion)
-			  ("C-c C-t" . copilot-try-complete)
-			  ("C-c C-u" . copilot-update-completion)
-			  ("C-c C-v" . copilot-visit-completion)
-			  ("C-c C-x" . copilot-visit-completion-other-frame)
-			  ("C-c C-z" . copilot-visit-completion-other-tab)
-			  ("C-c C-w" . copilot-visit-completion-other-window)))
+			  ("C-c C-p" . copilot-previous-completion)))
 
 
 (use-package org-roam-ui
@@ -1040,7 +1029,7 @@
 (use-package wc-mode
   :straight t
   :hook text-mode
-  :bind ("\C-cw" . wc-mode))
+  :bind ("C-c \C-cw" . wc-mode))
 
 (use-package w3m
   :straight t
@@ -1194,12 +1183,32 @@
   (when gnu-ls-path
     (setq insert-directory-program gnu-ls-path)))
 
+(defun insert-look-of-disapproval ()
+  "A function to insert the look of disapproval."
+  (interactive (insert "ಠ_ಠ")))
+
+(defun insert-shrug ()
+  "A function to insert the shrug."
+  (interactive (insert "¯\\_(ツ)_/¯")))
+
+(defun insert-caffeine ()
+  "A function to insert a caffeine guy."
+  (interactive (insert "ᕕ( ᐛ )ᕗ")))
+
+(defun insert-facepalm ()
+  "A function to insert a facepalm."
+  (interactive (insert "(－‸ლ)")))
+
+(defun insert-fury ()
+  "A function to insert a furious face."
+  (interactive (insert "!(•̀ᴗ•́)و ̑̑")))
+
 ;; C-x 8 S (interactive (insert "§")) ;; section
-(global-set-key (kbd "C-c (") (lambda () (interactive (insert "ಠ_ಠ"))))
-(global-set-key (kbd "C-c )") (lambda () (interactive (insert "¯\\_(ツ)_/¯"))))
-(global-set-key (kbd "C-c C-x (") (lambda () (interactive (insert "ᕕ( ᐛ )ᕗ"))))
-(global-set-key (kbd "C-c C-x )") (lambda () (interactive (insert "(－‸ლ)"))))
-(global-set-key (kbd "C-c C-x x") (lambda () (interactive (insert "!(•̀ᴗ•́)و ̑̑"))))
+(global-set-key (kbd "C-c (") 'insert-look-of-disapproval)
+(global-set-key (kbd "C-c )") 'insert-shrug)
+(global-set-key (kbd "C-c C-x (") 'insert-caffeine)
+(global-set-key (kbd "C-c C-x )") 'insert-facepalm)
+(global-set-key (kbd "C-c C-x x") 'insert-fury)
 
 (defun prime-it ()
   "A function to add a prime character."
@@ -1852,19 +1861,23 @@
 ;; relies on phantomjs, which is discontinued upstream
 ;; (straight-use-package 'ob-browser)
 
-(use-package org-babel-eval-in-repl
-  :straight t
-  :bind (:map org-mode-map
-		 ("C-<return>" . 'ober-eval-in-repl)
-		 ("M-<return>" . 'ober-eval-block-in-repl)))
+;; Presumes geiser-mode, at least by default.
+;; Documentation shows how to add racket-mode
+;; However issue says there is a bug, expecting an old racket-mode function
+;; Documentation shows how to add prolog support
+;; (use-package org-babel-eval-in-repl
+;;   :straight t
+;;   :bind (:map org-mode-map
+;; 		 ("C-<return>" . 'ober-eval-in-repl)
+;; 		 ("M-<return>" . 'ober-eval-block-in-repl)))
 
 (use-package ob-racket
   :after org
   :straight (ob-racket :type git :host github :repo "hasu/emacs-ob-racket" :files ("*.el" "*.rkt"))
-  :after org
+  :demand t
   :hook (ob-racket-pre-runtime-library-load . ob-racket-raco-make-runtime-library)
   :config (add-to-list 'org-babel-load-languages '(racket . t))
-;;   (setq org-babel-command:racket "/usr/local/bin/racket")
+  (setq org-babel-command:racket (executable-find "racket"))
 ;;   :straight (:type git :host github :repo "togakangaroo/ob-racket" :files ("*.el" "*.rkt"))
 
 )
