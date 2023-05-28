@@ -59,7 +59,8 @@
   :delight
   (auto-revert-mode)
   (auto-fill-function " AF")
-  (visual-line-mode))
+  ;; (visual-line-mode)
+)
 
 (use-package exec-path-from-shell ;; Make Emacs use the $PATH set up by the user's shell
   :if (memq window-system '(mac ns))
@@ -86,6 +87,7 @@
 		  (org-support-shift-select t)
 		  (org-time-stamp-custom-formats '("<%m/%d/%y %a>" . "<%a %_B %_d, %H:%M>"))
 		  (org-use-speed-commands t)
+  :hook org-cd-latex-mode
 		  )
 
 ;; https://superuser.com/a/1106691/963448 b/c ox-latex not loaded w/org.
@@ -121,6 +123,8 @@
 (use-package impatient-mode ;; replacement for flymd
   :straight t
   :hook markdown-mode)
+
+
 
 (straight-use-package '(faceup :type built-in)) ;; b/c this is newer than the one from straight, lexical binding
 (straight-use-package '(let-alist :type built-in))
@@ -488,6 +492,7 @@
 ;; fontawesome is abandonware
 
 (use-package flycheck
+;;  :ensure-system-package proselint
   :straight t
   ;; Commented because this way drops important data.
   ;; :delight " F✓"
@@ -496,8 +501,33 @@
   :custom (flycheck-highlighting-mode 'lines)
 		  (flycheck-check-syntax-automatically '(save idle-change mode-enabled) nil nil "flycheck was a time-hog w/Racket mode, so I disabled newline check & delayed to 4sec")
 		  (flycheck-idle-change-delay 4)
-		  (flyspell-issue-welcome-flag nil)
-		  (global-flycheck-mode t))
+		  ;; (flyspell-issue-welcome-flag nil)
+		  (global-flycheck-mode t)
+  :config
+	(flycheck-define-checker proselint
+	  "A linter for prose"
+	  :command ("proselint" source-inplace)
+	  :error-patterns
+	  ((warning line-start (file-name) ":" line ":" column ": "
+				(id (one-or-more (not (any " "))))
+				(message (one-or-more not-newline)
+						 (zero-or-more "\n" (any " ") (one-or-more not-newline)))
+				line-end))
+	  :modes (text-mode markdown-mode gfm-mode org-mode))
+	(add-to-list 'flycheck-checkers 'proselint)
+	(global-set-key (kbd "C-S-<f8>") 'flyspell-mode)
+	(global-set-key (kbd "C-M-<f8>") 'flyspell-buffer)
+	(global-set-key (kbd "C-<f8>") 'flyspell-check-previous-highlighted-word)
+
+	(defun flyspell-check-next-highlighted-word ()
+	  "Custom function to spell check next highlighted word."
+	  (interactive)
+	  (flyspell-goto-next-error)
+	  (ispell-word))
+
+   (global-set-key (kbd "M-<f8>") 'flyspell-check-next-highlighted-word)
+
+)
 
 (straight-use-package '(flycheck-textlint :type git :host github :repo "kisaragi-hiu/flycheck-textlint" :fork nil))
 
@@ -965,6 +995,90 @@
   :hook ((prog-mode text-mode) . turn-on-smartparens-strict-mode)
         ((prog-mode text-mode) . show-smartparens-mode))
 
+;; (defmacro def-pairs (pairs)
+;;   "Define functions for pairing. PAIRS is an alist of (NAME . STRING)
+;; conses, where NAME is the function name that will be created and
+;; STRING is a single-character string that marks the opening character.
+
+;;   (def-pairs ((paren . \"(\")
+;;               (bracket . \"[\"))
+
+;; defines the functions WRAP-WITH-PAREN and WRAP-WITH-BRACKET,
+;; respectively."
+;;   `(progn
+;;      ,@(loop for (key . val) in pairs
+;;              collect
+;;              `(defun ,(read (concat
+;;                              "wrap-with-"
+;;                              (prin1-to-string key)
+;;                              "s"))
+;;                   (&optional arg)
+;;                 (interactive "p")
+;;                 (sp-wrap-with-pair ,val)))))
+
+;; (def-pairs ((paren . "(")
+;;             (bracket . "[")
+;;             (brace . "{")
+;;             (single-quote . "'")
+;;             (double-quote . "\"")
+;;             (back-quote . "`")))
+
+;; (bind-keys
+;;  :map smartparens-mode-map
+;;  ("C-M-a" . sp-beginning-of-sexp)
+;;  ("C-M-e" . sp-end-of-sexp)
+
+;;  ("C-<down>" . sp-down-sexp)
+;;  ("C-<up>"   . sp-up-sexp)
+;;  ("M-<down>" . sp-backward-down-sexp)
+;;  ("M-<up>"   . sp-backward-up-sexp)
+
+;;  ("C-M-f" . sp-forward-sexp)
+;;  ("C-M-b" . sp-backward-sexp)
+
+;;  ("C-M-n" . sp-next-sexp)
+;;  ("C-M-p" . sp-previous-sexp)
+
+;;  ("C-S-f" . sp-forward-symbol)
+;;  ("C-S-b" . sp-backward-symbol)
+
+;;  ("C-<right>" . sp-forward-slurp-sexp)
+;;  ("M-<right>" . sp-forward-barf-sexp)
+;;  ("C-<left>"  . sp-backward-slurp-sexp)
+;;  ("M-<left>"  . sp-backward-barf-sexp)
+
+;;  ("C-M-t" . sp-transpose-sexp)
+;;  ("C-M-k" . sp-kill-sexp)
+;;  ("C-k"   . sp-kill-hybrid-sexp)
+;;  ("M-k"   . sp-backward-kill-sexp)
+;;  ("C-M-w" . sp-copy-sexp)
+;;  ("C-M-d" . delete-sexp)
+
+;;  ("M-<backspace>" . backward-kill-word)
+;;  ("C-<backspace>" . sp-backward-kill-word)
+;;  ([remap sp-backward-kill-word] . backward-kill-word)
+
+;;  ("M-[" . sp-backward-unwrap-sexp)
+;;  ("M-]" . sp-unwrap-sexp)
+
+;;  ("C-x C-t" . sp-transpose-hybrid-sexp)
+
+;;  ("C-c ("  . wrap-with-parens)
+;;  ("C-c ["  . wrap-with-brackets)
+;;  ("C-c {"  . wrap-with-braces)
+;;  ("C-c '"  . wrap-with-single-quotes)
+;;  ("C-c \"" . wrap-with-double-quotes)
+;;  ("C-c _"  . wrap-with-underscores)
+;;  ("C-c `"  . wrap-with-back-quotes))
+;;  (smartparens-global-mode)
+;;  (smartparens-global-strict-mode)
+;;  (smartparens-mode)
+;;  (smartparens-strict-mode)
+;;  (show-smartparens-global-mode)
+;;  (show-smartparens-mode)
+
+
+
 (straight-use-package 'sml-mode)
 (straight-use-package 'sml-modeline)
 (straight-use-package 'smog)
@@ -1215,17 +1329,6 @@
   "A function to add a prime character."
   (interactive (insert "′")))
 
-(flycheck-define-checker proselint
-  "A linter for prose."
-  :command ("proselint" source-inplace)
-  :error-patterns
-  ((warning line-start (file-name) ":" line ":" column ": "
-	    (id (one-or-more (not (any " "))))
-	    (message) line-end))
-  :modes (text-mode markdown-mode gfm-mode))
-
-(add-to-list 'flycheck-checkers 'proselint)
-
 ;; Only in Emacs mac-port
 (when (eq system-type 'darwin)
   (setq mac-auto-operator-composition-mode t
@@ -1304,8 +1407,10 @@
 ;; https://github.com/Fuco1/smartparens/issues/854
 (add-hook 'text-mode-hook 'electric-quote-mode)
 
+
 ;; TeX-latex-mode, LaTeX-mode, TeX-mode, tex-mode, latex-mode, auxtex-mode
 (add-hook 'TeX-mode-hook (function (lambda () (setq ispell-parser 'tex))))
+(add-hook 'TeX-mode-hook (function (lambda () (setq electric-quote-mode nil))))
 (add-hook 'tex-mode-hook (function (lambda () (define-key tex-mode-map (kbd "C-c C-k") 'compile))))
 (add-hook 'tex-mode-hook (function (lambda () (define-key tex-mode-map (kbd "C-c |") 'align-current))))
 
@@ -1326,18 +1431,29 @@
 ;;  (emojify-mode)
 ;;  (fira-code-mode)
 ;;  (global-emojify-mode)
-;;  (prettify-symbols-mode)
+
 ;;  (semantic-minor-modes-format))
 
 ;; (disabled-minor-modes
+
+;;  (prettify-symbols-mode) ;; font ligatures, no
+;;  (global-ligature-mode)
+;;  (global-prettify-symbols-mode)
+;;  (ligature-mode)
+;;  (visual-line-mode)
+;;  (global-visual-line-mode)
+;;
+;;  (electric-layout-mode) ;; automatically set up some fancy newline stuff. Nah.
+;;  (size-indication-mode) ;; how big is the buffer
+;;  (ispell-minor-mode) ;; I already have flyspell-mode, which does more
+;;  (horizontal-scroll-bar-mode)
+
 ;;  (archive-subfile-mode)
-;;  (auto-complete-mode)
+
 ;;  (auto-fill-function)
 ;;  (auto-package-update-minor-mode)
 ;;  (auto-save-visited-mode)
 ;;  (avy-linum-mode)
-;;  (buffer-face-mode)
-;;  (buffer-read-only)
 ;;  (cl-old-struct-compat-mode)
 ;;  (compilation-minor-mode)
 ;;  (compilation-shell-minor-mode)
@@ -1347,43 +1463,37 @@
 ;;  (diff-auto-refine-mode)
 ;;  (diff-minor-mode)
 ;;  (dired-hide-details-mode)
-;;  (electric-layout-mode)
-;;  (electric-quote-mode)
+
 ;;  (emojify-debug-mode)
 ;;  (emojify-mode-line-mode)
 ;;  (general-override-local-mode)
 ;;  (general-override-mode)
-;;  (global-auto-complete-mode)
-;;  (global-company-mode)
+
 ;;  (global-dash-fontify-mode)
 ;;  (global-emojify-mode-line-mode)
 ;;  (global-fira-code-mode)
-;;  (global-ligature-mode)
-;;  (global-prettify-symbols-mode)
 ;;  (global-reveal-mode)
 ;;  (global-semantic-highlight-edits-mode)
 ;;  (global-semantic-highlight-func-mode)
 ;;  (global-semantic-show-parser-state-mode)
 ;;  (global-semantic-show-unmatched-syntax-mode)
 ;;  (global-semantic-stickyfunc-mode)
-;;  (global-visual-line-mode)
-;;  (horizontal-scroll-bar-mode)
+
+
 ;;  (hs-minor-mode)
 ;;  (ido-everywhere)
 ;;  (image-minor-mode)
 ;;  (isearch-mode)
-;;  (ispell-minor-mode)
+
 ;;  (jit-lock-debug-mode)
-;;  (ligature-mode)
 ;;  (menu-bar-mode)
 ;;  (next-error-follow-minor-mode)
-;;  (org-cdlatex-mode)
 ;;  (org-list-checkbox-radio-mode)
 ;;  (org-src-mode)
 ;;  (org-table-follow-field-mode)
 ;;  (org-table-header-line-mode)
 ;;  (orgtbl-mode)
-;;  (outline-minor-mode)
+
 ;;  (overwrite-mode)
 ;;  (paragraph-indent-minor-mode)
 ;;  (rectangle-mark-mode)
@@ -1395,13 +1505,9 @@
 ;;  (semantic-show-unmatched-syntax-mode)
 ;;  (semantic-stickyfunc-mode)
 ;;  (sh-electric-here-document-mode)
-;;  (show-smartparens-global-mode)
-;;  (show-smartparens-mode)
-;;  (size-indication-mode)
-;;  (smartparens-global-mode)
-;;  (smartparens-global-strict-mode)
-;;  (smartparens-mode)
-;;  (smartparens-strict-mode)
+
+;;  (outline-minor-mode)
+
 ;;  (tab-bar-history-mode)
 ;;  (tab-bar-mode)
 ;;  (tar-subfile-mode)
@@ -1416,85 +1522,9 @@
 ;;  (vc-parent-buffer)
 ;;  (view-mode)
 ;;  (visible-mode)
-;;  (visual-line-mode)
+
 ;;  (window-divider-mode)
 ;;  (xref-etags-mode))
-
-;; (defmacro def-pairs (pairs)
-;;   "Define functions for pairing. PAIRS is an alist of (NAME . STRING)
-;; conses, where NAME is the function name that will be created and
-;; STRING is a single-character string that marks the opening character.
-
-;;   (def-pairs ((paren . \"(\")
-;;               (bracket . \"[\"))
-
-;; defines the functions WRAP-WITH-PAREN and WRAP-WITH-BRACKET,
-;; respectively."
-;;   `(progn
-;;      ,@(loop for (key . val) in pairs
-;;              collect
-;;              `(defun ,(read (concat
-;;                              "wrap-with-"
-;;                              (prin1-to-string key)
-;;                              "s"))
-;;                   (&optional arg)
-;;                 (interactive "p")
-;;                 (sp-wrap-with-pair ,val)))))
-
-;; (def-pairs ((paren . "(")
-;;             (bracket . "[")
-;;             (brace . "{")
-;;             (single-quote . "'")
-;;             (double-quote . "\"")
-;;             (back-quote . "`")))
-
-;; (bind-keys
-;;  :map smartparens-mode-map
-;;  ("C-M-a" . sp-beginning-of-sexp)
-;;  ("C-M-e" . sp-end-of-sexp)
-
-;;  ("C-<down>" . sp-down-sexp)
-;;  ("C-<up>"   . sp-up-sexp)
-;;  ("M-<down>" . sp-backward-down-sexp)
-;;  ("M-<up>"   . sp-backward-up-sexp)
-
-;;  ("C-M-f" . sp-forward-sexp)
-;;  ("C-M-b" . sp-backward-sexp)
-
-;;  ("C-M-n" . sp-next-sexp)
-;;  ("C-M-p" . sp-previous-sexp)
-
-;;  ("C-S-f" . sp-forward-symbol)
-;;  ("C-S-b" . sp-backward-symbol)
-
-;;  ("C-<right>" . sp-forward-slurp-sexp)
-;;  ("M-<right>" . sp-forward-barf-sexp)
-;;  ("C-<left>"  . sp-backward-slurp-sexp)
-;;  ("M-<left>"  . sp-backward-barf-sexp)
-
-;;  ("C-M-t" . sp-transpose-sexp)
-;;  ("C-M-k" . sp-kill-sexp)
-;;  ("C-k"   . sp-kill-hybrid-sexp)
-;;  ("M-k"   . sp-backward-kill-sexp)
-;;  ("C-M-w" . sp-copy-sexp)
-;;  ("C-M-d" . delete-sexp)
-
-;;  ("M-<backspace>" . backward-kill-word)
-;;  ("C-<backspace>" . sp-backward-kill-word)
-;;  ([remap sp-backward-kill-word] . backward-kill-word)
-
-;;  ("M-[" . sp-backward-unwrap-sexp)
-;;  ("M-]" . sp-unwrap-sexp)
-
-;;  ("C-x C-t" . sp-transpose-hybrid-sexp)
-
-;;  ("C-c ("  . wrap-with-parens)
-;;  ("C-c ["  . wrap-with-brackets)
-;;  ("C-c {"  . wrap-with-braces)
-;;  ("C-c '"  . wrap-with-single-quotes)
-;;  ("C-c \"" . wrap-with-double-quotes)
-;;  ("C-c _"  . wrap-with-underscores)
-;;  ("C-c `"  . wrap-with-back-quotes))
 
 ;; must be after font locking is set up for the buffer on!
 ;; ... whatever that means
@@ -1653,7 +1683,7 @@
  '(save-place-mode t)
  '(savehist-mode t)
  '(scheme-program-name "scheme" nil nil "scheme defaults to chez scheme on my system.")
- '(scroll-bar-mode 'right)
+ '(scroll-bar-mode nil)
  '(select-enable-clipboard t)
  '(sentence-end-double-space nil)
  '(show-trailing-whitespace t)
@@ -1675,32 +1705,6 @@
  '(visible-bell t)
  '(warning-suppress-types '((comp)))
  '(window-combination-resize t))
-
-;; IIRC I didn't want to use ~with-eval-after-load~
-(with-eval-after-load "flycheck-mode"
-  (flycheck-define-checker proselint
-    "A linter for prose"
-    :command ("proselint" source-inplace)
-    :error-patterns
-    ((warning line-start (file-name) ":" line ":" column ": "
-              (id (one-or-more (not (any " "))))
-              (message (one-or-more not-newline)
-                       (zero-or-more "\n" (any " ") (one-or-more not-newline)))
-              line-end))
-    :modes (text-mode markdown-mode gfm-mode org-mode))
-  (add-to-list 'flycheck-checkers 'proselint))
-
-(global-set-key (kbd "C-S-<f8>") 'flyspell-mode)
-(global-set-key (kbd "C-M-<f8>") 'flyspell-buffer)
-(global-set-key (kbd "C-<f8>") 'flyspell-check-previous-highlighted-word)
-
-(defun flyspell-check-next-highlighted-word ()
-  "Custom function to spell check next highlighted word."
-  (interactive)
-  (flyspell-goto-next-error)
-  (ispell-word))
-
-(global-set-key (kbd "M-<f8>") 'flyspell-check-next-highlighted-word)
 
 ;; Add opam emacs directory to the load-path This whole substring
 ;; thing just strips the newline. Seems weird way to do it. Check 's'
