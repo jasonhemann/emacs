@@ -864,6 +864,23 @@
          ("<return>"   . 'pdf-annot-edit-contents-commit)
          ("<S-return>" .  'newline)))
 
+;; https://www.emacswiki.org/emacs/LineNumbers#h5o-1
+;; Plus the eval-after-load to make sure that it happens in the right sequence.
+(eval-after-load "display-line-numbers"
+  '(progn
+	 (defcustom display-line-numbers-exempt-modes
+	   '(vterm-mode eshell-mode shell-mode term-mode ansi-term-mode doc-view-mode pdf-view-mode)
+	   "Major modes on which to disable line numbers."
+	   :group 'display-line-numbers
+	   :type 'list
+	   :version "green")
+
+	 (defun display-line-numbers--turn-on ()
+	   "Turn on line numbers except for certain major modes. Exempt major modes are defined in `display-line-numbers-exempt-modes'."
+	   (unless (or (minibufferp)
+				   (member major-mode display-line-numbers-exempt-modes))
+		 (display-line-numbers-mode)))))
+
 ;; Visual Popup Interface Library for Emacs
 ;; (straight-use-package 'popup)
 ;; probably useful if I'm developing some GUI packages, but I don't see why I need to manually require it. Straight!
