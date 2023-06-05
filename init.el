@@ -237,10 +237,10 @@
   :ensure t
   :hook prog-mode
   :bind (:map prog-mode-map
-			  ("C-c C-a" . copilot-accept-completion)
-			  ("C-c C-c" . copilot-current-completion)
-			  ("C-c C-n" . copilot-next-completion)
-			  ("C-c C-p" . copilot-previous-completion)))
+		 ("C-c C-a" . copilot-accept-completion)
+		 ("C-c C-c" . copilot-current-completion)
+		 ("C-c C-n" . copilot-next-completion)
+		 ("C-c C-p" . copilot-previous-completion)))
 
 
 (use-package org-roam-ui
@@ -336,6 +336,7 @@
 (straight-use-package 'calfw-gcal)
 (straight-use-package 'calfw-ical)
 (straight-use-package 'calfw-org)
+
 ;; No need for howm-mode; org-mode + roam for me
 ;; (straight-use-package 'calfw-howm)
 
@@ -623,7 +624,19 @@
 ;; (straight-use-package 'idris-mode) ;; We strictly prefer idris2-mode
 (use-package idris2-mode
   :straight (:host github :repo "idris-community/idris2-mode" :files ("*.el" "*.png" "Makefile"))
-  :hook (idris2-mode . (lambda () (setq smartparens-global-mode nil) (setq smartparens-mode nil) (setq smartparens-strict-mode nil))))
+  :after copilot
+  :config
+  (keymap-unset idris2-mode-map "C-c C-c")  ;; default idris2-case-dwim clobbers too much
+  :hook (idris2-mode . (lambda ()
+						 (setq smartparens-global-mode nil)
+						 (setq smartparens-mode nil)
+						 (setq smartparens-strict-mode nil)))
+  :bind (:map idris2-mode-map
+			  ("C-c c"       . idris2-case-dwim)
+			  ("C-c C-c C-a" . copilot-accept-completion)
+			  ("C-c C-c C-c" . copilot-current-completion)
+			  ("C-c C-c C-n" . copilot-next-completion)
+			  ("C-c C-c C-p" . copilot-previous-completion)))
 
 ;; Not needed, b/c I was using helm. Now I'm using selectrum instead.
 ;; (straight-use-package 'ido-vertical-mode) ;; makes ido-mode display vertically
@@ -1151,10 +1164,10 @@
 
 (use-package visual-regexp  ;; A regexp/replace command for Emacs with interactive visual feedback
   :straight t
-  :bind (("C-c r" . vr/replace)
-         ("C-c q". vr/query-replace)
+  :bind (("C-c C-v r" . vr/replace)
+         ("C-c C-v q". vr/query-replace)
 		 ;; if you use multiple-cursors, this is for you:
-		 ("C-c m" . 'vr/mc-mark)))
+		 ("C-c C-v m" . 'vr/mc-mark)))
 
 (straight-use-package 'visual-regexp-steroids) ;; Extends visual-regexp to support other regexp engines
 
@@ -1933,6 +1946,6 @@
 ;; (ignore-error file-error
 ;;   (org-roam-ui-mode))
 
-
+(define-key global-map "\C-c\C-c" nil)
 (provide 'init.el)
 ;;; init.el ends here
