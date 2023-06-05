@@ -624,9 +624,7 @@
 ;; (straight-use-package 'idris-mode) ;; We strictly prefer idris2-mode
 (use-package idris2-mode
   :straight (:host github :repo "idris-community/idris2-mode" :files ("*.el" "*.png" "Makefile"))
-  :after copilot
-  :config
-  (keymap-unset idris2-mode-map "C-c C-c")  ;; default idris2-case-dwim clobbers too much
+  :config (keymap-unset idris2-mode-map "C-c C-c")  ;; default idris2-case-dwim clobbers too much
   :hook (idris2-mode . (lambda ()
 						 (setq smartparens-global-mode nil)
 						 (setq smartparens-mode nil)
