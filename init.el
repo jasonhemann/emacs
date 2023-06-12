@@ -2,10 +2,8 @@
 ;;; Commentary:
 
 ;;; This is Jason Hemann's .emacs setup, intended for OSX and some
-;;; linux machines.  It is currently in an unstable state, and the
-;;; dependencies outside my .emacs are not listed.  Several aspects of
-;;; this rely on packages from homebrew, and a number of other
-;;; downloaded files and hard-coded directories.
+;;; linux machines. Several aspects of this rely on packages from
+;;; homebrew.
 
 ;;; Code:
 
@@ -71,7 +69,13 @@
   :straight t
   :bind (("C-c l" . org-store-link)
 		 ("C-c a" . org-agenda)
-		 ("C-c c" . org-capture))
+		 ("C-c c" . org-capture)
+		 ("C-c b" . org-switchb)
+		 ("C-c C-x C-d" . org-clock-display)
+		 ("C-c C-x C-e" . org-clock-modify-effort-estimate)
+		 ("C-c C-x C-x" . org-clock-in-last)
+		 ("C-c C-x C-i" . org-clock-in)
+		 ("C-c C-x C-o" . org-clock-out))
   :custom (org-agenda-files '("tasks.org"))
 		  (org-agenda-include-diary t)
 		  (org-agenda-start-with-log-mode 'only)
@@ -624,7 +628,7 @@
 ;; (straight-use-package 'idris-mode) ;; We strictly prefer idris2-mode
 (use-package idris2-mode
   :straight (:host github :repo "idris-community/idris2-mode" :files ("*.el" "*.png" "Makefile"))
-  :config (keymap-unset idris2-mode-map "C-c C-c")  ;; default idris2-case-dwim clobbers too much
+  :config (keymap-unset idris2-mode-map "C-c C-c") ;; default idris2-case-dwim clobbers too much
   :hook (idris2-mode . (lambda ()
 						 (setq smartparens-global-mode nil)
 						 (setq smartparens-mode nil)
