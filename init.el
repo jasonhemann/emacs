@@ -750,6 +750,8 @@
 
 ;; org-lms, once we have canvas---worth looking into
 
+(use-package org-noter
+  :straight t)
 
 (straight-use-package 'org-ql)
 
