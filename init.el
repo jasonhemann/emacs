@@ -862,6 +862,8 @@
 
 (straight-use-package 'parent-mode)
 
+(straight-use-package 'powershell-mode)
+
 (use-package pdf-tools
   :straight t
   :ensure t
@@ -1177,7 +1179,6 @@
 
 (use-package wc-mode
   :straight t
-  :hook text-mode
   :bind ("\C-cw" . wc-mode))
 
 (use-package w3m
@@ -1216,7 +1217,7 @@
 (use-package writegood-mode
   :straight t
   :delight " 💯"
-  :hook (org-mode text-mode)
+  :hook text-mode
   :bind (("C-c g"     . writegood-mode)
 		 ("C-c C-g g" . writegood-grade-level)
 		 ("C-c C-g e" . writegood-reading-ease)))
@@ -1598,7 +1599,7 @@
  '(TeX-auto-save t)
  '(TeX-auto-untabify t)
  '(TeX-engine 'xetex)
- '(TeX-master 'dwim)
+ '(TeX-master 'dwim t)
  '(TeX-parse-self t)
  '(ad-redefinition-action 'accept)
  '(apropos-sort-by-scores t)
@@ -1636,7 +1637,8 @@
  '(ls-lisp-dirs-first t)
  '(make-backup-files nil)
  '(ns-alternate-modifier '(:ordinary meta :mouse alt))
- '(org-trello-current-prefix-keybinding "C-c o" nil (org-trello) "Customized with use-package org-trello")
+ '(org-attach-method 'lns)
+ '(org-trello-current-prefix-keybinding "C-c o" nil nil "Customized with use-package org-trello")
  '(preview-auto-cache-preamble t)
  '(prolog-compile-string
    '((eclipse "[%f].")
