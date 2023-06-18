@@ -264,7 +264,7 @@
 (straight-use-package 'academic-phrases)
 
 (use-package artbollocks-mode
-  :straight t
+  :straight (:host github :repo "jasonhemann/artbollocks-mode" :files ("*.el" "out"))
   :delight
   :hook text-mode)
 
@@ -816,6 +816,17 @@
   :after org-mode
   :straight t)
 
+(use-package org-transclusion
+  :after org-mode
+  :straight t
+  :hook org-mode
+  :config
+  (setq org-transclusion-include-first-section t)
+  (setq org-transclusion-include-last-section t)
+  (:bind (:map org-mode-map
+		 ("<f12>" . org-transclusion-add))))
+
+
 (straight-use-package 'paradox)
 
 
@@ -1179,7 +1190,7 @@
 
 (use-package wc-mode
   :straight t
-  :bind ("\C-cw" . wc-mode))
+  :bind ("\C-cw" . wc-mode)) ;; Shadowed, need another binding
 
 (use-package w3m
   :straight t
@@ -1215,12 +1226,15 @@
 ;; ⮐
 
 (use-package writegood-mode
+  :after artbollocks-mode
   :straight t
   :delight " 💯"
   :hook text-mode
-  :bind (("C-c g"     . writegood-mode)
-		 ("C-c C-g g" . writegood-grade-level)
-		 ("C-c C-g e" . writegood-reading-ease)))
+  ;; Because I want these added to the artbollocks-mode-map, not the global map.
+  ;; Note we demand artbollocks-mode, so this should be safe.
+  :bind (:map artbollocks-mode-keymap
+		 ("C-c M-a 2 g" . writegood-grade-level)
+		 ("C-c M-a 2 e" . writegood-reading-ease)))
 
 (use-package ws-butler ;; Unobtrusively trim extraneous white-space *ONLY* in lines edited.
   :straight t
