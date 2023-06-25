@@ -44,6 +44,7 @@
 ;; dictionary is also a emacs 21 era thing, so no need.
 
 (straight-use-package 'delight)
+(straight-use-package 'djvu)
 (straight-use-package 'use-package)
 (straight-use-package 'use-package-ensure-system-package)
 
@@ -205,10 +206,10 @@
 ;; A preferred synonyms package, but check use-cases.
 (straight-use-package 'powerthesaurus)
 
-;; (use-package aweshell
-;;   :straight (:host github :repo "manateelazycat/aweshell" :files ("*.el" "out"))
-;;   ;; https://github.com/manateelazycat/aweshell
-;;   )
+;; https://github.com/manateelazycat/aweshell
+;; An improvement over the author's multi-term package
+(use-package aweshell
+  :straight (:host github :repo "manateelazycat/aweshell" :files ("*.el" "out")))
 
 ;; In order to search for synonyms.
 (use-package www-synonyms
@@ -721,7 +722,7 @@
    ("C-<" . mc/mark-previous-like-this)
    ("C-c C-<" . mc/mark-all-like-this)))
 
-(straight-use-package 'mc-extras)
+(straight-use-package 'nov.el)
 
 (straight-use-package 'mustache)
 (straight-use-package 'neotree) ;; A emacs tree plugin like NerdTree for Vim.
@@ -757,6 +758,7 @@
 ;; org-lms, once we have canvas---worth looking into
 
 (use-package org-noter
+  :after (pdf-tools nov djvu)
   :straight t)
 
 (straight-use-package 'org-ql)
@@ -1047,7 +1049,38 @@
   (show-smartparens-global-mode)
   (sp-use-paredit-bindings)
   :hook ((prog-mode text-mode) . turn-on-smartparens-strict-mode)
-        ((prog-mode text-mode) . show-smartparens-mode))
+        ((prog-mode text-mode) . show-smartparens-mode)
+  :bind (:map smartparens-mode-map
+		 ;; Shadows lisp.el beginning and end of defun; seem useful
+		 ;; ("C-M-a" . sp-beginning-of-sexp)
+		 ;; ("C-M-e" . sp-end-of-sexp)
+		 ;; Need new bindings for these, these conflict/taken.
+		 ;;  ("????C-M-n" . sp-next-sexp)
+		 ;;  ("????C-M-p" . sp-previous-sexp)
+		 ;;  ("????C-M-w" . sp-copy-sexp)---I can live without
+		 ("C-S-f" . sp-forward-symbol)
+		 ("C-S-b" . sp-backward-symbol)
+		 ("C-<left>" . nil)
+		 ("C-<right>" . nil)
+		 ("C-M-<left>" . nil) ;; These can be used, just should decide what to do
+		 ("C-M-<right>" . nil) ;; These can be used, just should decide what to do
+		 ([remap kill-sexp] . sp-kill-sexp)
+		 ([remap backward-kill-sexp] . sp-backward-kill-sexp)
+		 ([remap transpose-lines] . sp-transpose-hybrid-sexp)
+		 ([remap forward-sexp] . sp-forward-sexp)
+		 ([remap backward-sexp] . sp-backward-sexp)
+		 ("M-[" . sp-backward-unwrap-sexp)
+		 ("M-]" . sp-unwrap-sexp)))
+
+
+;; WRAP-REGION PACKAGE SHOULD HELP ME WRITE THESE BETTER
+;;  ("C-c ("  . wrap-with-parens)
+;;  ("C-c ["  . wrap-with-brackets)
+;;  ("C-c {"  . wrap-with-braces)
+;;  ("C-c '"  . wrap-with-single-quotes)
+;;  ("C-c \"" . wrap-with-double-quotes)
+;;  ("C-c _"  . wrap-with-underscores)
+;;  ("C-c `"  . wrap-with-back-quotes))
 
 ;; (defmacro def-pairs (pairs)
 ;;   "Define functions for pairing. PAIRS is an alist of (NAME . STRING)
@@ -1077,60 +1110,15 @@
 ;;             (double-quote . "\"")
 ;;             (back-quote . "`")))
 
-;; (bind-keys
-;;  :map smartparens-mode-map
-;;  ("C-M-a" . sp-beginning-of-sexp)
-;;  ("C-M-e" . sp-end-of-sexp)
-
-;;  ("C-<down>" . sp-down-sexp)
-;;  ("C-<up>"   . sp-up-sexp)
-;;  ("M-<down>" . sp-backward-down-sexp)
-;;  ("M-<up>"   . sp-backward-up-sexp)
-
-;;  ("C-M-f" . sp-forward-sexp)
-;;  ("C-M-b" . sp-backward-sexp)
-
-;;  ("C-M-n" . sp-next-sexp)
-;;  ("C-M-p" . sp-previous-sexp)
-
-;;  ("C-S-f" . sp-forward-symbol)
-;;  ("C-S-b" . sp-backward-symbol)
-
-;;  ("C-<right>" . sp-forward-slurp-sexp)
-;;  ("M-<right>" . sp-forward-barf-sexp)
-;;  ("C-<left>"  . sp-backward-slurp-sexp)
-;;  ("M-<left>"  . sp-backward-barf-sexp)
-
-;;  ("C-M-t" . sp-transpose-sexp)
-;;  ("C-M-k" . sp-kill-sexp)
-;;  ("C-k"   . sp-kill-hybrid-sexp)
-;;  ("M-k"   . sp-backward-kill-sexp)
-;;  ("C-M-w" . sp-copy-sexp)
-;;  ("C-M-d" . delete-sexp)
-
-;;  ("M-<backspace>" . backward-kill-word)
-;;  ("C-<backspace>" . sp-backward-kill-word)
-;;  ([remap sp-backward-kill-word] . backward-kill-word)
-
-;;  ("M-[" . sp-backward-unwrap-sexp)
-;;  ("M-]" . sp-unwrap-sexp)
-
-;;  ("C-x C-t" . sp-transpose-hybrid-sexp)
-
-;;  ("C-c ("  . wrap-with-parens)
-;;  ("C-c ["  . wrap-with-brackets)
-;;  ("C-c {"  . wrap-with-braces)
-;;  ("C-c '"  . wrap-with-single-quotes)
-;;  ("C-c \"" . wrap-with-double-quotes)
-;;  ("C-c _"  . wrap-with-underscores)
-;;  ("C-c `"  . wrap-with-back-quotes))
-;;  (smartparens-global-mode)
-;;  (smartparens-global-strict-mode)
-;;  (smartparens-mode)
-;;  (smartparens-strict-mode)
-;;  (show-smartparens-global-mode)
-;;  (show-smartparens-mode)
-
+;; I think this would be useful for block comments, but I am not sure
+;; if this is what this is supposed to be for.
+;;
+;; EDIT: For things like HTML where you have many paired delimiters.
+(use-package wrap-region ;; Emacs minor mode to wrap region with tag or punctuations
+  :straight (:host github :repo "jasonhemann/wrap-region.el" :files ("*.el" "out"))
+  :delight
+  :custom
+  (wrap-region-global-mode t))
 
 
 (straight-use-package 'sml-mode)
@@ -1220,15 +1208,6 @@
   :delight " ✒"
   :straight t
   :hook text-mode)
-
-;; I think this would be useful for block comments, but I am not sure
-;; if this is what this is supposed to be for.
-;;
-(use-package wrap-region ;; Emacs minor mode to wrap region with tag or punctuations
-  :straight t
-  :delight
-  :custom
-  (wrap-region-global-mode t))
 
 ;; ⮐
 
