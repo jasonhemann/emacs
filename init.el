@@ -67,7 +67,8 @@
 
 (use-package org
   :straight t
-  :bind (("C-c l" . org-store-link)
+  :bind (:map org-mode-map
+		 ("C-c l" . org-store-link)
 		 ("C-c a" . org-agenda)
 		 ("C-c c" . org-capture)
 		 ("C-c b" . org-switchb)
@@ -75,7 +76,9 @@
 		 ("C-c C-x C-e" . org-clock-modify-effort-estimate)
 		 ("C-c C-x C-x" . org-clock-in-last)
 		 ("C-c C-x C-i" . org-clock-in)
-		 ("C-c C-x C-o" . org-clock-out))
+		 ("C-c C-x C-o" . org-clock-out)
+		 ("C-c M-<up>" . org-metaup)
+		 ("C-c M-<down>" . org-metadown))
   :custom (org-agenda-files '("tasks.org"))
 		  (org-agenda-include-diary t)
 		  (org-agenda-start-with-log-mode 'only)
@@ -1613,7 +1616,7 @@
  '(TeX-auto-save t)
  '(TeX-auto-untabify t)
  '(TeX-engine 'xetex)
- '(TeX-master 'dwim t)
+ '(TeX-master 'dwim)
  '(TeX-parse-self t)
  '(ad-redefinition-action 'accept)
  '(apropos-sort-by-scores t)
@@ -1713,6 +1716,13 @@
  '(require-final-newline t nil nil "Add an EOL to files when I save them.")
  '(revert-without-query '("'(\".*\")"))
  '(ring-bell-function 'ignore)
+ '(safe-local-eval-forms
+   '((add-hook 'write-file-hooks 'time-stamp)
+	 (add-hook 'write-file-functions 'time-stamp)
+	 (add-hook 'before-save-hook 'time-stamp nil t)
+	 (add-hook 'before-save-hook 'delete-trailing-whitespace nil t)
+	 (visual-line-mode 0)
+	 (setq-local truncate-lines t)))
  '(safe-local-variable-values
    '((TeX-command-extra-options . "-shell-escape")
 	 (eval progn
