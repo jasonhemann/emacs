@@ -77,6 +77,9 @@
 		 ("C-c C-x C-x" . org-clock-in-last)
 		 ("C-c C-x C-i" . org-clock-in)
 		 ("C-c C-x C-o" . org-clock-out)
+		 ;; Because smartparens shadows these, we rebind them otherwise.
+		 ("M-<up>" . nil)
+		 ("M-<down>" . nil)
 		 ("C-c M-<up>" . org-metaup)
 		 ("C-c M-<down>" . org-metadown))
   :custom (org-agenda-files '("tasks.org"))
@@ -903,7 +906,7 @@
 (eval-after-load "display-line-numbers"
   '(progn
 	 (defcustom display-line-numbers-exempt-modes
-	   '(vterm-mode eshell-mode shell-mode term-mode ansi-term-mode doc-view-mode pdf-view-mode)
+	   '(vterm-mode eshell-mode shell-mode term-mode ansi-term-mode doc-view-mode pdf-view-mode image-mode)
 	   "Major modes on which to disable line numbers."
 	   :group 'display-line-numbers
 	   :type 'list
