@@ -51,9 +51,7 @@
 
 ;; So that I can publicly VC my config w/o leaking secret keys &c.
 (straight-use-package
- '(use-package-secret :host github
-					  :repo "emacswatcher/use-package-secret"
-					  :fork (:host github :repo "jasonhemann/use-package-secret")))
+ '(use-package-secret :host github :repo "emacswatcher/use-package-secret" :fork t))
 
 (use-package emacs
   :delight
@@ -207,7 +205,6 @@
 ;; A preferred synonyms package, but check use-cases.
 (straight-use-package 'powerthesaurus)
 
-;; https://github.com/manateelazycat/aweshell
 ;; An improvement over the author's multi-term package
 (use-package aweshell
   :straight (:host github :repo "manateelazycat/aweshell" :files ("*.el" "out")))
@@ -272,7 +269,7 @@
 (straight-use-package 'academic-phrases)
 
 (use-package artbollocks-mode
-  :straight (:host github :repo "jasonhemann/artbollocks-mode" :files ("*.el" "out"))
+  :straight (:host github :repo "sachac/artbollocks-mode" :fork t :files ("*.el" "out"))
   :delight
   :hook text-mode)
 
@@ -306,7 +303,8 @@
 
 ;; (straight-use-package 'auto-package-update) ;; straight has this feature already
 
-(straight-use-package 'autopair)
+;; No longer needed as of 24.X see electric pair mode
+;; (straight-use-package 'autopair)
 (straight-use-package 'bbdb) ;; Emacs address book
 (straight-use-package 'biblio)
 (straight-use-package 'bibtex-completion)
@@ -369,10 +367,7 @@
 
 (use-package comment-dwim-2 ;; A replacement for the emacs' built-in command comment-dwim
   :straight t
-  :bind
-  (("M-;" . comment-dwim-2)
-   :map org-mode-map
-   ("M-;" . 'org-comment-dwim-2)))
+  :bind (("M-;" . comment-dwim-2)))
 
 (straight-use-package 'company-mode)
 
@@ -406,9 +401,7 @@
 
 (use-package company-try-hard
   :straight t
-  :bind (("C-z" . company-try-hard)
-		 :map company-active-map
-		 ("C-z" . company-try-hard)))
+  :bind (("C-z" . company-try-hard)))
 
 (straight-use-package 'company-fuzzy)
 (straight-use-package 'consult) ;; the counsel equivalent for selectrum
@@ -416,18 +409,16 @@
 (straight-use-package 'crux) ;; collection of emacs extensions
 
 (straight-use-package 'dash) ;; A modern list library for Emacs
-(straight-use-package 'dash-functional)
 
-(require 'dash)
-;; (require 'dash-functional) Package dash-functional is obsolete; use dash 2.18.0 instead
+;; Package dash-functional is obsolete; use dash 2.18.0 instead
+;; (straight-use-package 'dash-functional)
 
 (straight-use-package 'dirvish)
 
-(straight-use-package '(dired-hacks-utils :host github :repo "Fuco1/dired-hacks" :fork (:host github :repo "jasonhemann/dired-hacks")))
+(straight-use-package '(dired-hacks-utils :host github :repo "Fuco1/dired-hacks" :fork t))
 
 (use-package dired-collapse
-  :straight (:host github :repo "Fuco1/dired-hacks"
-		    :fork (:host github :repo "jasonhemann/dired-hacks")) ;; This is now correct
+  :straight (:host github :repo "Fuco1/dired-hacks" :fork t) ;; This is now correct
   :hook dired-mode)
 
 (use-package dired+
@@ -542,7 +533,7 @@
 
 )
 
-(straight-use-package '(flycheck-textlint :type git :host github :repo "kisaragi-hiu/flycheck-textlint" :fork nil))
+(straight-use-package '(flycheck-textlint :type git :host github :repo "kisaragi-hiu/flycheck-textlint"))
 
 ;; (use-package gradle-mode ;; I should want maven, I think, tbqh
 ;;   :straight t
@@ -1122,7 +1113,7 @@
 ;;
 ;; EDIT: For things like HTML where you have many paired delimiters.
 (use-package wrap-region ;; Emacs minor mode to wrap region with tag or punctuations
-  :straight (:host github :repo "jasonhemann/wrap-region.el" :files ("*.el" "out"))
+  :straight (:host github :repo "rejeep/wrap-region.el" :fork t :files ("*.el" "out"))
   :delight
   :custom
   (wrap-region-global-mode t))
