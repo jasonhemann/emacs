@@ -42,6 +42,7 @@
 ;; Don’t need htmlize. I’d only use it w/.org and .md; those are supported elsewhere.
 ;; x-dict is emacs attic, so no need.
 ;; dictionary is also a emacs 21 era thing, so no need.
+(server-start)
 
 (straight-use-package 'delight)
 (straight-use-package 'djvu)
@@ -727,12 +728,16 @@
 (straight-use-package 'mustache)
 (straight-use-package 'neotree) ;; A emacs tree plugin like NerdTree for Vim.
 ;; (straight-use-package 'nlinum) %% with emacs 26 built-in line numbering, not wanted
-(straight-use-package '(org-ac :hook org-mode))
+(use-package org-ac
+  :straight t
+  :custom
+  (org-super-agenda-groups nil)
+  :config (org-ac/config-default)
+  :hook org-mode)
 
 (use-package org-bullets
   :straight t
   :hook ((org-mode org-roam-mode) . org-bullets-mode))
-
 
 ;; org-dropbox-mode starts up a daemon to sync org-notes via dropbox.
 ;; Not using, possibly deprecated in favor of other solutions
@@ -761,6 +766,7 @@
   :after (pdf-tools nov djvu)
   :straight t)
 
+;; Lets you write queries for org-agenda like views
 (straight-use-package 'org-ql)
 
 ;; See (org-ref-manual) for some documentation
@@ -793,9 +799,10 @@
   :straight t)
 
 ;; Complains about agenda file missing
-;; (use-package org-super-agenda
-;;   :straight t
-;;   :hook org-mode)
+;; Lets you group items in agenda by tags
+(use-package org-super-agenda
+  :straight t
+  :hook org-agenda-mode)
 
 ;; TODO: org-trello-mode, when I load it, seems to change how the
 ;; org-mode files indent and breaks tab-through org-mode behavior.
@@ -1457,6 +1464,93 @@
 (add-hook 'TeX-mode-hook 'TeX-fold-mode) ;; Automatically activate TeX-fold-mode.
 
 ;; Modes someone had enabled that I want to investigate.
+
+
+
+;; (defconst required-packages
+;;   '(
+;;     adaptive-wrap
+;;     ample-theme
+;;     anaphora
+;;     auto-highlight-symbol
+;;     avy
+;;     color-theme-modern
+;;     company-prescient
+;;     company-quickhelp
+;;     csharp-mode
+;;     counsel-projectile
+;;     dashboard
+;;     dim
+;;     dired-single
+;;     dired-subtree
+;;     edit-server
+;;     elpy
+;;     ethan-wspace
+;;     fish-mode
+;;     geiser geiser-chez geiser-racket
+;;     git-gutter
+;;     gmail-message-mode
+;;     golden-ratio
+;;     graphviz-dot-mode
+;;     gruvbox-theme
+;;     haskell-mode
+;;     hide-lines
+;;     highlight-escape-sequences
+;;     hl-todo
+;;     htmlize
+;;     iedit
+;;     indent-guide
+;;     ivy
+;;     ivy-prescient
+;;     ivy-rich
+;;     java-snippets
+;;     json-mode
+;;     logview
+;;     lua-mode
+;;     markdown-mode
+;;     markdown-preview-mode
+;;     minimap
+;;     modern-cpp-font-lock
+;;     omni-scratch
+;;     org-preview-html
+;;     origami
+;;     pandoc-mode
+;;     persistent-scratch
+;;     plantuml-mode
+;;     protobuf-mode
+;;     py-autopep8
+;;     pyenv-mode
+;;     rainbow-delimiters
+;;     rainbow-mode
+;;     slime
+;;     smart-mode-line
+;;     smart-mode-line-powerline-theme
+;;     separedit
+;;     sx
+;;     sr-speedbar
+;;     swiper
+;;     switch-window
+;;     tabbar
+;;     trashed
+;;     undo-tree
+;;     use-package
+;;     vlf
+;;     vimrc-mode
+;;     visual-fill-column
+;;     visual-regexp-steroids
+;;     websocket
+;;     wttrin
+;;     xcscope
+;;     yasnippet
+;;     yasnippet-snippets
+;;     ztree
+;;     cmake-font-lock
+;;     cmake-mode
+;;     cmake-project
+
+
+;;     ))
+
 ;;
 ;; (enabled-minor-modes
 ;;  (auto-fill-mode)
@@ -1466,7 +1560,6 @@
 ;;  (emojify-mode)
 ;;  (fira-code-mode)
 ;;  (global-emojify-mode)
-
 ;;  (semantic-minor-modes-format))
 
 ;; (disabled-minor-modes
@@ -1547,11 +1640,10 @@
 ;;  (tab-bar-mode)
 ;;  (tar-subfile-mode)
 ;;  (temp-buffer-resize-mode)
-;;  (text-scale-mode)
+;;  (text-scale-mode) ;; show the text scale adjustment in the modeline
 ;;  (tool-bar-mode)
 ;;  (tooltip-mode)
-;;  (unify-8859-on-decoding-mode)
-;;  (unify-8859-on-encoding-mode)
+
 ;;  (url-handler-mode)
 ;;  (use-hard-newlines)
 ;;  (vc-parent-buffer)
