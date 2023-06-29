@@ -61,7 +61,7 @@
 )
 
 (use-package exec-path-from-shell ;; Make Emacs use the $PATH set up by the user's shell
-  :if (memq window-system '(mac ns))
+  :if (not (eq system-type 'windows-nt))
   :straight t
   :config (exec-path-from-shell-initialize))
 
