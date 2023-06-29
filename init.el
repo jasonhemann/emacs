@@ -719,10 +719,9 @@
 (straight-use-package 'mustache)
 (straight-use-package 'neotree) ;; A emacs tree plugin like NerdTree for Vim.
 ;; (straight-use-package 'nlinum) %% with emacs 26 built-in line numbering, not wanted
+
 (use-package org-ac
   :straight t
-  :custom
-  (org-super-agenda-groups nil)
   :config (org-ac/config-default)
   :hook org-mode)
 
@@ -793,6 +792,8 @@
 ;; Lets you group items in agenda by tags
 (use-package org-super-agenda
   :straight t
+  :custom
+  (org-super-agenda-groups nil)
   :hook org-agenda-mode)
 
 ;; TODO: org-trello-mode, when I load it, seems to change how the
