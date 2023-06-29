@@ -2016,7 +2016,15 @@
 
 (setq-default major-mode 'text-mode)
 ;; Pick a random theme.
-(load-theme (nth (cl-random (length (custom-available-themes))) (custom-available-themes)) t) ;; To have it always remember this is safe
+
+(defvar my-theme-loaded nil)
+
+(unless my-theme-loaded
+  ;; Pick a random theme.
+  (load-theme (nth (cl-random (length (custom-available-themes))) (custom-available-themes)) t)
+  ;; Remember that the theme has been loaded
+  (setq my-theme-loaded t))
+
 (fset 'yes-or-no-p 'y-or-n-p)
 
 ;; default to mononoki, 22pt font
