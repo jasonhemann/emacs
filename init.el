@@ -10,9 +10,13 @@
 ;; Need to be set before we load straight.el, to correct a flycheck
 ;; incompatibility.
 (setq straight-fix-flycheck t
-	  use-package-compute-statistics t
+      use-package-compute-statistics t
 ;; Configuration for how straight.el should load.
-	  load-prefer-newer t)
+      load-prefer-newer t
+      straight-host-usernames '((gitlab . "jasonhemann")
+				(github . "jasonhemann")
+				(bitbucket . "jhemann"))      
+      )
 
 ;; The straight.el bootstrap code.
 (defvar bootstrap-version)
@@ -42,7 +46,7 @@
 ;; Don’t need htmlize. I’d only use it w/.org and .md; those are supported elsewhere.
 ;; x-dict is emacs attic, so no need.
 ;; dictionary is also a emacs 21 era thing, so no need.
-(server-start)
+;; (server-start)
 
 (straight-use-package 'delight)
 (straight-use-package 'djvu)
@@ -1815,10 +1819,6 @@
  '(sentence-end-double-space nil)
  '(show-trailing-whitespace t)
  '(sort-fold-case t nil nil "Make buffer-sort functions case-insensitive")
- '(straight-host-usernames
-   '((gitlab . "jasonhemann")
-	 (github . "jasonhemann")
-	 (bitbucket . "jhemann")))
  '(straight-use-package-by-default t)
  '(tab-always-indent 'complete)
  '(tab-width 4 nil nil "Switching to a 4-space tab")
