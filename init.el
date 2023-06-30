@@ -47,6 +47,10 @@
 ;; x-dict is emacs attic, so no need.
 ;; dictionary is also a emacs 21 era thing, so no need.
 
+(require 'server)
+(unless (server-running-p)
+  (server-start))
+
 (straight-use-package 'delight)
 (straight-use-package 'djvu)
 (straight-use-package 'use-package)
