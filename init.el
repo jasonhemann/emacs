@@ -757,8 +757,7 @@
 
 (use-package org-ac
   :straight t
-  :config (org-ac/config-default)
-  :hook org-mode)
+  :config (org-ac/config-default))
 
 (use-package org-bullets
   :straight t
