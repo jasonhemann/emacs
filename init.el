@@ -46,7 +46,6 @@
 ;; Don’t need htmlize. I’d only use it w/.org and .md; those are supported elsewhere.
 ;; x-dict is emacs attic, so no need.
 ;; dictionary is also a emacs 21 era thing, so no need.
-;; (server-start)
 
 (straight-use-package 'delight)
 (straight-use-package 'djvu)
@@ -71,6 +70,7 @@
 
 (use-package org
   :straight t
+  :after cdlatex
   :bind (:map org-mode-map
 		 ("C-c l" . org-store-link)
 		 ("C-c a" . org-agenda)
@@ -86,9 +86,17 @@
 		 ("M-<down>" . nil)
 		 ("C-c M-<up>" . org-metaup)
 		 ("C-c M-<down>" . org-metadown))
-  :custom (org-agenda-files '("tasks.org"))
-		  (org-agenda-include-diary t)
-		  (org-agenda-start-with-log-mode 'only)
+
+  :config 
+
+(defun org-cdlatex-setup ()
+  "Setup org-cdlatex."
+  (turn-on-cdlatex)   ;; Ensure cdlatex is on
+  (org-cdlatex-mode))
+
+ ;; Then enable org-cdlatex-mode
+  :custom (org-agenda-files '("tasks.org" "/Users/jhemann/class/2023/Summer/tfp/tfp-website-to-do-tasks.org"))
+		  (org-agenda-start-with-log-mode '(closed))
 		  (org-confirm-babel-evaluate nil)
 		  (org-directory "~/.org")
 		  (org-export-backends '(ascii html icalendar latex odt md org))
@@ -101,8 +109,8 @@
 		  (org-support-shift-select t)
 		  (org-time-stamp-custom-formats '("<%m/%d/%y %a>" . "<%a %_B %_d, %H:%M>"))
 		  (org-use-speed-commands t)
-  :hook org-cd-latex-mode
-		  )
+   :hook ((org-mode . org-cdlatex-setup)
+		  (org-mode . org-indent-mode)))
 
 ;; https://superuser.com/a/1106691/963448 b/c ox-latex not loaded w/org.
 (with-eval-after-load 'ox-latex
@@ -142,7 +150,7 @@
 
 (straight-use-package '(faceup :type built-in)) ;; b/c this is newer than the one from straight, lexical binding
 (straight-use-package '(let-alist :type built-in))
-(straight-use-package '(which-key :custom (which-key-mode)))
+(straight-use-package '(which-key :config (which-key-mode)))
 (straight-use-package '(helm :files ("*.el" "emacs-helm.sh" (:exclude "helm-lib.el" "helm-source.el" "helm-multi-match.el" "helm-core.el" "helm-core-pkg.el") "helm-pkg.el")))
 ;; These helm commands I commented because they seemed annoying when I used them.
 ;; helm-browse-project: handles project files and buffers; defaults to current directory; works with helm-find-files; recommended with helm-ls-git, helm-ls-hg and helm-ls-svn for a better handling of version control files. Each time a project under version control is visited it is added to helm-browse-project-history and can be visted with helm-projects-history.
@@ -289,7 +297,26 @@
 (straight-use-package 'apel) ;; portable emacs extensions; unclear how relevant
 
 ;; Need to think about how to set up hooks w/auctex.
-(straight-use-package 'auctex) ;; Not sure if I need w/dependency but trying just in case
+
+;;;;;;;;;
+(defun my-tex-mode-setup ()
+  "My customizations for TeX mode."
+  (setq ispell-parser 'tex)
+  (setq electric-quote-mode nil)
+  (define-key LaTeX-mode-map (kbd "C-c C-k") 'compile)
+  (define-key LaTeX-mode-map (kbd "C-c |") 'align-current))
+
+(use-package auctex
+  :straight t
+  :hook ((LaTeX-mode . my-tex-mode-setup)
+         (LaTeX-mode . LaTeX-math-mode)
+         (LaTeX-mode . LaTeX-preview-setup)
+         (LaTeX-mode . turn-on-reftex) ;; with AUCTeX LaTeX mode
+         (LaTeX-mode . turn-on-cdlatex)
+         (TeX-mode . TeX-source-correlate-mode)
+         (TeX-mode . TeX-PDF-mode)
+         (TeX-mode . TeX-fold-mode))) ;; Automatically activate TeX-fold-mode.
+
 (straight-use-package 'auctex-latexmk)
 (straight-use-package 'auto-compile) ;; Automatically compile Emacs Lisp libraries
 
@@ -361,7 +388,7 @@
   :delight
   :hook
   ;; with Emacs latex mode, then with AUCTeX LaTeX mode
-  ((latex-mode TeX-mode) . turn-on-cdlatex))
+  (LaTeX-mode . turn-on-cdlatex))
 
 (straight-use-package 'cl-lib) ;; Properly prefixed CL functions and macros
 
@@ -1414,7 +1441,7 @@
 			(popup-tip msg)))))))
 
 ;; (setq-default TeX-master "master") ; set a master for in the future.
-(setq-default TeX-master nil)
+
 
 
 ;; ※ Suggest to use the reference mark, preceeding, for Reftex.
@@ -1444,20 +1471,6 @@
 ;; See the following for a related issue and workaround. Gets complicated.
 ;; https://github.com/Fuco1/smartparens/issues/854
 (add-hook 'text-mode-hook 'electric-quote-mode)
-
-
-;; TeX-latex-mode, LaTeX-mode, TeX-mode, tex-mode, latex-mode, auxtex-mode
-(add-hook 'TeX-mode-hook (function (lambda () (setq ispell-parser 'tex))))
-(add-hook 'TeX-mode-hook (function (lambda () (setq electric-quote-mode nil))))
-(add-hook 'tex-mode-hook (function (lambda () (define-key tex-mode-map (kbd "C-c C-k") 'compile))))
-(add-hook 'tex-mode-hook (function (lambda () (define-key tex-mode-map (kbd "C-c |") 'align-current))))
-
-(add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
-(add-hook 'LaTeX-mode-hook 'LaTeX-preview-setup)
-(add-hook 'LaTeX-mode-hook 'turn-on-reftex) ;; with AUCTeX LaTeX mode
-(add-hook 'TeX-mode-hook 'TeX-source-correlate-mode)
-(add-hook 'TeX-mode-hook 'TeX-PDF-mode)
-(add-hook 'TeX-mode-hook 'TeX-fold-mode) ;; Automatically activate TeX-fold-mode.
 
 ;; Modes someone had enabled that I want to investigate.
 
@@ -1795,7 +1808,7 @@
 	 (visual-line-mode 0)
 	 (setq-local truncate-lines t)))
  '(safe-local-variable-values
-   '((TeX-command-extra-options . "-shell-escape")
+   '((TeX-command-extra-options . "--synctex=1 --shell-escape")
 	 (eval progn
 		   (let
 			   ((tt-root-directory
