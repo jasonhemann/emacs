@@ -14,9 +14,8 @@
 ;; Configuration for how straight.el should load.
       load-prefer-newer t
       straight-host-usernames '((gitlab . "jasonhemann")
-				(github . "jasonhemann")
-				(bitbucket . "jhemann"))      
-      )
+								(github . "jasonhemann")
+								(bitbucket . "jhemann")))
 
 ;; The straight.el bootstrap code.
 (defvar bootstrap-version)
@@ -32,12 +31,16 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
+(setq straight-fix-flycheck t
+      straight-check-for-modifications '(check-on-save find-when-checking)
+      straight-host-usernames '((gitlab . "jasonhemann")
+                                (github . "jasonhemann")
+                                (bitbucket . "jhemann")))
+
 (require 'straight-x) ;; Adds the straight-x commands to clean up straight install
 
 ;; What if we are not online? We ignore that problem here.
 (straight-pull-recipe-repositories)
-
-(setq straight-check-for-modifications '(check-on-save find-when-checking))
 
 ;; JBH 4/6/22 disabling because it was seeming slow
 ;; (ruler-mode 1)
@@ -53,7 +56,7 @@
 
 (straight-use-package 'delight)
 (straight-use-package 'djvu)
-(straight-use-package 'use-package)
+(straight-use-package '(use-package :custom (use-package-compute-statistics t)))
 (straight-use-package 'use-package-ensure-system-package)
 
 ;; So that I can publicly VC my config w/o leaking secret keys &c.
@@ -74,24 +77,20 @@
 
 (use-package org
   :straight t
-  :after cdlatex
   :bind (:map org-mode-map
 		 ("C-c l" . org-store-link)
 		 ("C-c a" . org-agenda)
 		 ("C-c c" . org-capture)
 		 ("C-c b" . org-switchb)
-		 ("C-c C-x C-d" . org-clock-display)
 		 ("C-c C-x C-e" . org-clock-modify-effort-estimate)
 		 ("C-c C-x C-x" . org-clock-in-last)
-		 ("C-c C-x C-i" . org-clock-in)
-		 ("C-c C-x C-o" . org-clock-out)
 		 ;; Because smartparens shadows these, we rebind them otherwise.
 		 ("M-<up>" . nil)
 		 ("M-<down>" . nil)
 		 ("C-c M-<up>" . org-metaup)
 		 ("C-c M-<down>" . org-metadown))
 
-  :config 
+  :config
 
 (defun org-cdlatex-setup ()
   "Setup org-cdlatex."
