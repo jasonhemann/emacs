@@ -90,13 +90,6 @@
 		 ("C-c M-<up>" . org-metaup)
 		 ("C-c M-<down>" . org-metadown))
 
-  :config
-
-(defun org-cdlatex-setup ()
-  "Setup org-cdlatex."
-  (turn-on-cdlatex)   ;; Ensure cdlatex is on
-  (org-cdlatex-mode))
-
  ;; Then enable org-cdlatex-mode
   :custom (org-agenda-files '("tasks.org" "/Users/jhemann/class/2023/Summer/tfp/tfp-website-to-do-tasks.org"))
 		  (org-agenda-start-with-log-mode '(closed))
@@ -112,8 +105,15 @@
 		  (org-support-shift-select t)
 		  (org-time-stamp-custom-formats '("<%m/%d/%y %a>" . "<%a %_B %_d, %H:%M>"))
 		  (org-use-speed-commands t)
-   :hook ((org-mode . org-cdlatex-setup)
-		  (org-mode . org-indent-mode)))
+    :hook (org-mode . org-indent-mode))
+
+;;   :config
+;; ORG-CDLATEX-KEYBINDINGS SHADOW ORG-CYCLE
+;; (org-mode . org-cdlatex-setup)
+;; (defun org-cdlatex-setup ()
+;;   "Setup org-cdlatex."
+;;   (turn-on-cdlatex)   ;; Ensure cdlatex is on
+;;   (org-cdlatex-mode))
 
 ;; https://superuser.com/a/1106691/963448 b/c ox-latex not loaded w/org.
 (with-eval-after-load 'ox-latex
@@ -309,9 +309,24 @@
   (define-key LaTeX-mode-map (kbd "C-c C-k") 'compile)
   (define-key LaTeX-mode-map (kbd "C-c |") 'align-current))
 
+(setq TeX-source-correlate-method 'synctex)
 (use-package auctex
   :straight t
-  :hook ((LaTeX-mode . my-tex-mode-setup)
+  :custom
+  (TeX-view-program-selection '((output-dvi "open")
+								(output-pdf (choice "PDF Tools" "Skim" "open"))
+								(output-html "open")))
+  (TeX-auto-TeX-command t)
+  (TeX-auto-save t)
+  (TeX-auto-untabify t)
+  (TeX-engine 'xetex)
+  (TeX-master 'dwim)
+  (TeX-parse-self t)
+  (TeX-source-correlate-start-server-maybe t)
+  :config
+  (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
+  :hook (;(LaTeX-mode . turn-on-auto-fill)
+		 (LaTeX-mode . my-tex-mode-setup)
          (LaTeX-mode . LaTeX-math-mode)
          (LaTeX-mode . LaTeX-preview-setup)
          (LaTeX-mode . turn-on-reftex) ;; with AUCTeX LaTeX mode
@@ -454,6 +469,8 @@
 (use-package dired-collapse
   :straight (:host github :repo "Fuco1/dired-hacks" :fork t) ;; This is now correct
   :hook dired-mode)
+
+(straight-use-package 'bookmark+)
 
 (use-package dired+
   :straight t
@@ -1699,11 +1716,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(TeX-auto-save t)
- '(TeX-auto-untabify t)
- '(TeX-engine 'xetex)
- '(TeX-master 'dwim)
- '(TeX-parse-self t)
  '(ad-redefinition-action 'accept)
  '(apropos-sort-by-scores t)
  '(auto-save-interval 75)
