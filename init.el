@@ -75,6 +75,7 @@
   :straight t
   :config (exec-path-from-shell-initialize))
 
+;; (org-mode . org-indent-mode) annoying, see emacs-deficiencies
 (use-package org
   :straight t
   :bind (:map org-mode-map
@@ -100,12 +101,11 @@
 		  (org-fold-catch-invisible-edits 'smart)
 		  (org-list-allow-alphabetical t)
 		  (org-log-done 'time)
-		  (org-modules '(org-tempo ol-bbdb ol-bibtex ol-docview ol-doi ol-eww ol-gnus ol-info ol-irc ol-mhe ol-rmail ol-w3m))
+		  (org-modules '(org-tempo ol-bbdb ol-bibtex ol-docview ol-doi ol-eww ol-gnus ol-info ol-irc ol-mhe ol-rmail)) ;; ol-w3m outdated
 		  (org-src-tab-acts-natively t)
 		  (org-support-shift-select t)
 		  (org-time-stamp-custom-formats '("<%m/%d/%y %a>" . "<%a %_B %_d, %H:%M>"))
-		  (org-use-speed-commands t)
-    :hook (org-mode . org-indent-mode))
+		  (org-use-speed-commands t))
 
 ;;   :config
 ;; ORG-CDLATEX-KEYBINDINGS SHADOW ORG-CYCLE
@@ -709,6 +709,15 @@
 
 (straight-use-package 'jump) ;; build functions which contextually jump between files
 
+(use-package khoj
+  :after org
+  :straight (khoj :type git :host github :repo "khoj-ai/khoj" :files (:defaults "src/interface/emacs/khoj.el"))
+  :bind ("C-c s" . 'khoj)
+  :config (setq khoj-org-directories '("~/docs/org-roam" "~/docs/notes")
+                khoj-org-files '("~/docs/todo.org" "~/docs/work.org")
+                khoj-openai-api-key "YOUR_OPENAI_API_KEY" ; required to enable chat)
+
+
 (use-package latex-unicode-math-mode
   :straight t
   :hook LaTeX-mode)
@@ -771,9 +780,11 @@
 (straight-use-package 'neotree) ;; A emacs tree plugin like NerdTree for Vim.
 ;; (straight-use-package 'nlinum) %% with emacs 26 built-in line numbering, not wanted
 
-(use-package org-ac
-  :straight t
-  :config (org-ac/config-default))
+;; Actually somewhat annoying in practice, at least in the default configuration.
+;; Also IMO, copilot does a better completion job.
+;; (use-package org-ac
+;;   :straight t
+;;   :config (org-ac/config-default))
 
 (use-package org-bullets
   :straight t
