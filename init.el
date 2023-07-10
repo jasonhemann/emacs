@@ -92,7 +92,9 @@
 		 ("C-c M-<down>" . org-metadown))
 
  ;; Then enable org-cdlatex-mode
-  :custom (org-agenda-files '("tasks.org" "/Users/jhemann/class/2023/Summer/tfp/tfp-website-to-do-tasks.org"))
+  :custom (org-agenda-files '("tasks.org"
+							  "/Users/jhemann/class/2023/Summer/tfp/tfp-website-to-do-tasks.org"
+							  "/Users/jhemann/class/2023/Summer/tfp/tfp-to-do.org"))
 		  (org-agenda-start-with-log-mode '(closed))
 		  (org-confirm-babel-evaluate nil)
 		  (org-directory "~/.org")
@@ -968,7 +970,7 @@
 (eval-after-load "display-line-numbers"
   '(progn
 	 (defcustom display-line-numbers-exempt-modes
-	   '(vterm-mode eshell-mode shell-mode term-mode ansi-term-mode doc-view-mode pdf-view-mode image-mode)
+	   '(vterm-mode eshell-mode shell-mode term-mode ansi-term-mode doc-view-mode pdf-view-mode image-mode circe-mode erc-mode compilation-mode org-mode text-mode dired-mode pdf-annot-list-mode image-dired-mode pdf-outline-buffer-mode))
 	   "Major modes on which to disable line numbers."
 	   :group 'display-line-numbers
 	   :type 'list
@@ -1745,8 +1747,8 @@
  '(dired-dwim-target 'dired-dwim-target-recent nil nil "Not obvious which option is *best*, but this at least works when I put two direds side-by-side.")
  '(dired-listing-switches "-alGh1v --group-directories-first --time-style=long-iso" nil nil "long format, w/hidden files, w/o group information, w/good numeric sorting human-readable sizes, and w/directories first")
  '(dired-recursive-copies 'always nil nil "I shouldn't be prompted to recursively copy dirs")
- '(enable-local-eval ':safe)
- '(enable-local-variables ':safe)
+ '(enable-local-eval t)
+ '(enable-local-variables t)
  '(find-file-visit-truename t)
  '(fringe-mode 2 nil (fringe))
  '(global-auto-revert-non-file-buffers t)
@@ -1829,9 +1831,7 @@
    '((add-hook 'write-file-hooks 'time-stamp)
 	 (add-hook 'write-file-functions 'time-stamp)
 	 (add-hook 'before-save-hook 'time-stamp nil t)
-	 (add-hook 'before-save-hook 'delete-trailing-whitespace nil t)
-	 (visual-line-mode 0)
-	 (setq-local truncate-lines t)))
+	 (add-hook 'before-save-hook 'delete-trailing-whitespace nil t)))
  '(safe-local-variable-values
    '((TeX-command-extra-options . "--synctex=1 --shell-escape")
 	 (eval progn
