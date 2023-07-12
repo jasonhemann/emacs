@@ -106,8 +106,24 @@
 		  (org-modules '(org-tempo ol-bbdb ol-bibtex ol-docview ol-doi ol-eww ol-gnus ol-info ol-irc ol-mhe ol-rmail)) ;; ol-w3m outdated
 		  (org-src-tab-acts-natively t)
 		  (org-support-shift-select t)
+		  (org-tags-column 0)
 		  (org-time-stamp-custom-formats '("<%m/%d/%y %a>" . "<%a %_B %_d, %H:%M>"))
-		  (org-use-speed-commands t))
+		  (org-todo-keywords '((sequence "TODO" "IN-PROGRESS" "WAITING" "|" "DONE" "CANCELED")))
+		  (org-todo-keyword-faces '(("TODO" . "red")
+									("IN-PROGRESS" . "yellow")
+									("WAITING" . "orange")
+									("DONE" . "green")
+									("CANCELED" . "white")))
+		  (org-use-fast-todo-selection t)
+		  (org-use-speed-commands t)
+		  (org-use-sub-superscripts '{})
+		  (org-use-tag-inheritance nil)
+		  :config
+		  (defun org--disable-wordsmith-mode ()
+			  "Disable wordsmith mode."
+			  (wordsmith-mode -1))
+
+		  :hook (org-mode . org--disable-wordsmith-mode))
 
 ;;   :config
 ;; ORG-CDLATEX-KEYBINDINGS SHADOW ORG-CYCLE
