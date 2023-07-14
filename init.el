@@ -78,6 +78,11 @@
 ;; (org-mode . org-indent-mode) annoying, see emacs-deficiencies
 (use-package org
   :straight t
+  :after wordsmith-mode
+  :init
+  (defun org--disable-wordsmith-mode ()
+    "Disable wordsmith mode."
+    (wordsmith-mode -1))
   :bind (:map org-mode-map
 		 ("C-c l" . org-store-link)
 		 ("C-c a" . org-agenda)
@@ -118,11 +123,6 @@
 		  (org-use-speed-commands t)
 		  (org-use-sub-superscripts '{})
 		  (org-use-tag-inheritance nil)
-		  :config
-		  (defun org--disable-wordsmith-mode ()
-			  "Disable wordsmith mode."
-			  (wordsmith-mode -1))
-
 		  :hook (org-mode . org--disable-wordsmith-mode))
 
 ;;   :config
@@ -730,11 +730,11 @@
 (use-package khoj
   :after org
   :straight (khoj :type git :host github :repo "khoj-ai/khoj" :files (:defaults "src/interface/emacs/khoj.el"))
+  :secret khoj-openai-api-key
   :bind ("C-c s" . 'khoj)
   :config (setq khoj-org-directories '("~/docs/org-roam" "~/docs/notes")
                 khoj-org-files '("~/docs/todo.org" "~/docs/work.org")
-                khoj-openai-api-key "YOUR_OPENAI_API_KEY" ; required to enable chat)
-
+                khoj-org-agenda-files '("~/docs/todo.org" "~/docs/work.org")))
 
 (use-package latex-unicode-math-mode
   :straight t
@@ -986,7 +986,7 @@
 (eval-after-load "display-line-numbers"
   '(progn
 	 (defcustom display-line-numbers-exempt-modes
-	   '(vterm-mode eshell-mode shell-mode term-mode ansi-term-mode doc-view-mode pdf-view-mode image-mode circe-mode erc-mode compilation-mode org-mode text-mode dired-mode pdf-annot-list-mode image-dired-mode pdf-outline-buffer-mode))
+	   '(vterm-mode eshell-mode shell-mode term-mode ansi-term-mode doc-view-mode pdf-view-mode image-mode circe-mode erc-mode compilation-mode org-mode text-mode dired-mode pdf-annot-list-mode image-dired-mode pdf-outline-buffer-mode occur-mode grep-mode git-rebase-mode magit-mode magit-popup-mode help-mode Info-mode Man-mode)
 	   "Major modes on which to disable line numbers."
 	   :group 'display-line-numbers
 	   :type 'list
@@ -1260,6 +1260,26 @@
 		 ("C-c C-v m" . 'vr/mc-mark)))
 
 (straight-use-package 'visual-regexp-steroids) ;; Extends visual-regexp to support other regexp engines
+
+(use-package yasnippet
+  :straight t
+  :delight
+  :custom (yas-global-mode t)
+  :config
+  (yas-reload-all)
+  ;; :bind (;; Each and every one of these bindings interferes with org-mode bindings.
+  ;;        ;; ("C-c y" . yas-expand)
+  ;;        ;; ("C-c C-y" . yas-insert-snippet)
+  ;; 		 ;; ("C-c C-n" . yas-new-snippet)
+  ;; 		 ;; ("C-c C-v" . yas-visit-snippet-file)
+  ;; 		 ;; ("C-c C-l" . yas-describe-tables)
+  ;; 		 ;; ("C-c C-s" . yas-describe-tables)
+  ;; 		 ;; ("C-c C-d" . yas-reload-all)
+  ;; 		 ;; ("C-c C-r" . yas-reload-all)
+  ;; 		 )
+  )
+
+
 
 (use-package wc-mode
   :straight t
