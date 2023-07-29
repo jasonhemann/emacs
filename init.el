@@ -312,7 +312,6 @@
 ;; global search count mode
 (use-package anzu
   :straight t
-  :delight
   :custom (global-anzu-mode t))
 
 (straight-use-package 'apel) ;; portable emacs extensions; unclear how relevant
@@ -986,7 +985,7 @@
 (eval-after-load "display-line-numbers"
   '(progn
 	 (defcustom display-line-numbers-exempt-modes
-	   '(vterm-mode eshell-mode shell-mode term-mode ansi-term-mode doc-view-mode pdf-view-mode image-mode circe-mode erc-mode compilation-mode org-mode text-mode dired-mode pdf-annot-list-mode image-dired-mode pdf-outline-buffer-mode occur-mode grep-mode git-rebase-mode magit-mode magit-popup-mode help-mode Info-mode Man-mode)
+	   '(vterm-mode eshell-mode shell-mode term-mode ansi-term-mode doc-view-mode pdf-view-mode image-mode circe-mode erc-mode compilation-mode dired-mode pdf-annot-list-mode image-dired-mode pdf-outline-buffer-mode occur-mode grep-mode git-rebase-mode magit-mode magit-popup-mode help-mode Info-mode Man-mode)
 	   "Major modes on which to disable line numbers."
 	   :group 'display-line-numbers
 	   :type 'list
@@ -1223,7 +1222,7 @@
 
 (use-package vterm
   :straight t
-  :bind (("C-c t" . vterm))
+  :bind ;; (("C-c t" . vterm)) Disabling b/c it’ll interfere w/some of my org-mode bindings in places
   :custom (vterm-always-compile-module t))
 
 (use-package eshell-vterm
@@ -1869,7 +1868,12 @@
 	 (add-hook 'before-save-hook 'time-stamp nil t)
 	 (add-hook 'before-save-hook 'delete-trailing-whitespace nil t)))
  '(safe-local-variable-values
-   '((TeX-command-extra-options . "--synctex=1 --shell-escape")
+   '((TeX-command-extra-options . "-shell-escape")
+	 (calc-float-format quote
+						(fix 2))
+	 (org-table-copy-increment)
+	 (visual-line-mode)
+	 (TeX-command-extra-options . "--synctex=1 --shell-escape")
 	 (eval progn
 		   (let
 			   ((tt-root-directory
