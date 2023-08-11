@@ -695,6 +695,7 @@
 ;; (straight-use-package 'idris-mode) ;; We strictly prefer idris2-mode
 (use-package idris2-mode
   :straight (:host github :repo "idris-community/idris2-mode" :files ("*.el" "*.png" "Makefile"))
+  :ensure-system-package idris2
   :config (keymap-unset idris2-mode-map "C-c C-c") ;; default idris2-case-dwim clobbers too much
   :hook (idris2-mode . (lambda ()
 						 (setq smartparens-global-mode nil)
@@ -1764,6 +1765,16 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(TeX-font-list
+   '((2 "{\\bf " "}")
+	 (3 "{\\sc " "}")
+	 (5 "{\\em " "\\/}")
+	 (9 "{\\it " "\\/}")
+	 (18 "{\\rm " "}")
+	 (19 "{\\sl " "\\/}")
+	 (20 "{\\tt " "}")
+	 (4 "" "" t)
+	 (17 "\\enquote{" "}")))
  '(ad-redefinition-action 'accept)
  '(apropos-sort-by-scores t)
  '(auto-save-interval 75)
@@ -1800,6 +1811,8 @@
  '(ls-lisp-dirs-first t)
  '(make-backup-files nil)
  '(ns-alternate-modifier '(:ordinary meta :mouse alt))
+ '(org-agenda-files
+   '("/Users/jhemann/.org/tasks.org" "/Users/jhemann/class/2023/Summer/tfp/tfp-to-do.org") nil nil "Customized with use-package org")
  '(org-attach-method 'lns)
  '(org-trello-current-prefix-keybinding "C-c o" nil nil "Customized with use-package org-trello")
  '(preview-auto-cache-preamble t)
