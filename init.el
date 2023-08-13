@@ -41,6 +41,7 @@
 
 ;; What if we are not online? We ignore that problem here.
 (straight-pull-recipe-repositories)
+;; Should also disable copilot-mode auto if we don’t have that locally available
 
 ;; JBH 4/6/22 disabling because it was seeming slow
 ;; (ruler-mode 1)
@@ -322,7 +323,6 @@
 (defun my-tex-mode-setup ()
   "My customizations for TeX mode."
   (setq ispell-parser 'tex)
-  (setq electric-quote-mode nil)
   (define-key LaTeX-mode-map (kbd "C-c C-k") 'compile)
   (define-key LaTeX-mode-map (kbd "C-c |") 'align-current))
 
@@ -1538,7 +1538,8 @@
 
 ;; See the following for a related issue and workaround. Gets complicated.
 ;; https://github.com/Fuco1/smartparens/issues/854
-(add-hook 'text-mode-hook 'electric-quote-mode)
+;; (add-hook 'text-mode-hook 'electric-quote-mode)
+;; I do not like electric-quote-mode. I will turn it on just when I want it.
 
 ;; Modes someone had enabled that I want to investigate.
 
