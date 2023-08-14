@@ -1284,10 +1284,6 @@
   :straight t
   :bind ("\C-cw" . wc-mode)) ;; Shadowed, need another binding
 
-(use-package w3m
-  :straight t
-   :custom (w3m-use-tab-line nil))
-
 (use-package which-key
   :straight t
   :delight
