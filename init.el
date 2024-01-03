@@ -99,7 +99,6 @@
 
  ;; Then enable org-cdlatex-mode
   :custom (org-agenda-files '("tasks.org"
-							  "/Users/jhemann/class/2023/Summer/tfp/tfp-website-to-do-tasks.org"
 							  "/Users/jhemann/class/2023/Summer/tfp/tfp-to-do.org"))
 		  (org-agenda-start-with-log-mode '(closed))
 		  (org-confirm-babel-evaluate nil)
@@ -116,10 +115,11 @@
 		  (org-time-stamp-custom-formats '("<%m/%d/%y %a>" . "<%a %_B %_d, %H:%M>"))
 		  (org-todo-keywords '((sequence "TODO(t)" "IN-PROGRESS(i)" "WAITING(w)" "|" "DONE(d)" "CANCELED(c)")))
 		  (org-todo-keyword-faces '(("TODO" . "red")
-									("IN-PROGRESS" . "yellow")
+									("IN-PROGRESS" . "dark goldenrod")
 									("WAITING" . "orange")
 									("DONE" . "green")
-									("CANCELED" . "white")))
+									("CANCELED" . "blue")))
+		  (org-fast-tag-selection-include-todo t)
 		  (org-use-speed-commands t)
 		  (org-use-sub-superscripts '{})
 		  (org-use-tag-inheritance nil)
@@ -687,7 +687,11 @@
   :custom (hyperbole-mode))
 
 (global-set-key (kbd "C-x C-b") 'ibuffer)
-(straight-use-package 'all-the-icons-ibuffer)
+(use-package all-the-icons-ibuffer
+  :straight t
+  :delight
+  :if (display-graphic-p)
+  :hook (ibuffer-mode . all-the-icons-ibuffer-mode))
 
 (straight-use-package 'ibuffer-vc) ;; Let Emacs' ibuffer-mode group files by git project etc., and show file state
 
@@ -699,7 +703,8 @@
   :hook (idris2-mode . (lambda ()
 						 (setq smartparens-global-mode nil)
 						 (setq smartparens-mode nil)
-						 (setq smartparens-strict-mode nil)))
+						 (setq smartparens-strict-mode nil)
+						 (setq wc-mode nil)))
   :bind (:map idris2-mode-map
 			  ("C-c c"       . idris2-case-dwim)
 			  ("C-c C-c C-a" . copilot-accept-completion)
@@ -730,7 +735,7 @@
   :after org
   :straight (khoj :type git :host github :repo "khoj-ai/khoj" :files (:defaults "src/interface/emacs/khoj.el"))
   :secret khoj-openai-api-key
-  :bind ("C-c s" . 'khoj)
+  ;; :bind ("C-c s" . 'khoj) Interferes w/idris2-mode
   :config (setq khoj-org-directories '("~/docs/org-roam" "~/docs/notes")
                 khoj-org-files '("~/docs/todo.org" "~/docs/work.org")
                 khoj-org-agenda-files '("~/docs/todo.org" "~/docs/work.org")))
@@ -1086,6 +1091,8 @@
 ;; FYI, also alt scribble-mode at
 ;; https://www.neilvandyke.org/scribble-emacs/scribble.el
 ;;
+;; Moreover, racket now has a hashlang mode.
+;;
 ;; (straight-use-package 'scribble-mode)
 
 (straight-use-package 'reazon)
@@ -1120,6 +1127,7 @@
 (use-package smartparens
   :straight t
   :init ;; https://github.com/Fuco1/smartparens/issues/1088#issuecomment-854714652
+  ;; Also mentioned in racket-mode info pages.
   (require 'smartparens-config)
   :config
   (smartparens-global-mode)
@@ -1260,6 +1268,8 @@
 
 (straight-use-package 'visual-regexp-steroids) ;; Extends visual-regexp to support other regexp engines
 
+;; This apparently conflicts w/org-mode, need to adjust
+;; https://orgmode.org/manual/Conflicts.html
 (use-package yasnippet
   :straight t
   :delight
@@ -1332,14 +1342,18 @@
 (use-package all-the-icons
   :straight t
   :config
-  (ignore-error end-of-file ; I suspect this is not the error I wanted to raise.
-	(all-the-icons-install-fonts t)))
+  :if (display-graphic-p))
+
+  ;; I had had this there to ignore an error but cannot remember why
+  ;; (ignore-error end-of-file ; I suspect this is not the error I wanted to raise.
+  ;; 	(all-the-icons-install-fonts t))
 
 ;; Also, does this need to be graphics-only, like all-the-icons?
 ;; https://github.com/domtronn/all-the-icons.el#installation
 (use-package all-the-icons-dired
   :straight (:host github :repo "wyuenho/all-the-icons-dired")
   :custom (all-the-icons-dired-monochrome nil)
+  :if (display-graphic-p)
   :delight
   :hook (dired-mode . all-the-icons-dired-mode))
 
@@ -1778,6 +1792,7 @@
  '(bib-cite-use-reftex-view-crossref t t)
  '(bibtex-maintain-sorted-entries 'plain)
  '(blink-cursor-mode nil)
+ '(bmkp-last-as-first-bookmark-file "~/.emacs.d/bookmarks")
  '(bookmark-save-flag 0)
  '(calendar-mark-diary-entries-flag t)
  '(calendar-week-start-day 1)
@@ -1792,6 +1807,7 @@
  '(enable-local-eval t)
  '(enable-local-variables t)
  '(find-file-visit-truename t)
+ '(flyspell-lazy-mode t nil nil "Customized with use-package flyspell-lazy")
  '(fringe-mode 2 nil (fringe))
  '(global-auto-revert-non-file-buffers t)
  '(global-display-line-numbers-mode t)
@@ -1877,7 +1893,9 @@
 	 (add-hook 'before-save-hook 'time-stamp nil t)
 	 (add-hook 'before-save-hook 'delete-trailing-whitespace nil t)))
  '(safe-local-variable-values
-   '((TeX-command-extra-options . "-shell-escape")
+   '((idris2-load-packages "prelude" "base" "contrib")
+	 (idris2-load-packages "base" "contrib")
+	 (TeX-command-extra-options . "-shell-escape")
 	 (calc-float-format quote
 						(fix 2))
 	 (org-table-copy-increment)
@@ -2060,7 +2078,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(diary ((t (:foreground "dark red"))))
- '(font-lock-function-name-face ((t (:foreground "#385e6b" :weight bold)))))
+ '(font-lock-function-name-face ((t (:foreground "#385e6b" :weight bold))))
+ '(mode-line ((t (:background "#f0f0f1" :box (:line-width (1 . 1) :color "#383a42") :height 0.6)))))
 
 
 
