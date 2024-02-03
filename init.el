@@ -98,8 +98,7 @@
 		 ("C-c M-<down>" . org-metadown))
 
  ;; Then enable org-cdlatex-mode
-  :custom (org-agenda-files '("tasks.org"
-							  "/Users/jhemann/class/2023/Summer/tfp/tfp-to-do.org"))
+  :custom (org-agenda-files '("tasks.org" "/Users/jhemann/class/2023/Summer/tfp/tfp-to-do.org"))
 		  (org-agenda-start-with-log-mode '(closed))
 		  (org-confirm-babel-evaluate nil)
 		  (org-directory "~/.org")
@@ -273,7 +272,6 @@
 		 ("C-c n i" . org-roam-insert)
 		 ("C-c n I" . org-roam-insert-immediate)))
 
-;; Disabled until I get my .edu copilot mode back.
 (use-package copilot
   :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "copilot.el"))
   :ensure t
@@ -781,11 +779,12 @@
 
 (straight-use-package 'minimap)
 
-;; Currently broken, see https://github.com/countvajhula/mindstream/issues/1
-;;
 (use-package mindstream
-  :straight (mindstream :type git :host github :repo "countvajhula/mindstream")
-  :config (mindstream-initialize))
+  :after racket-mode
+  :straight
+  (mindstream :type git :host github :repo "countvajhula/mindstream")
+  :config
+  (mindstream-initialize))
 
 (use-package multiple-cursors
   :straight t
@@ -1797,6 +1796,7 @@
  '(calendar-mark-diary-entries-flag t)
  '(calendar-week-start-day 1)
  '(column-number-mode t)
+ '(compilation-scroll-output 'first-error)
  '(custom-safe-themes t)
  '(debug-on-error t)
  '(default-input-method "TeX")
@@ -1823,8 +1823,6 @@
  '(ls-lisp-dirs-first t)
  '(make-backup-files nil)
  '(ns-alternate-modifier '(:ordinary meta :mouse alt))
- '(org-agenda-files
-   '("/Users/jhemann/.org/tasks.org" "/Users/jhemann/class/2023/Summer/tfp/tfp-to-do.org") nil nil "Customized with use-package org")
  '(org-attach-method 'lns)
  '(org-trello-current-prefix-keybinding "C-c o" nil nil "Customized with use-package org-trello")
  '(preview-auto-cache-preamble t)
