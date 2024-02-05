@@ -2119,15 +2119,24 @@
 )
 
 (setq-default major-mode 'text-mode)
+
+(defvar my-theme-loaded nil "Flag to indicate if a theme has been loaded.")
 ;; Pick a random theme.
 
-(defvar my-theme-loaded nil)
-
 (unless my-theme-loaded
-  ;; Pick a random theme.
-  (load-theme (nth (cl-random (length (custom-available-themes))) (custom-available-themes)) t)
-  ;; Remember that the theme has been loaded
-  (setq my-theme-loaded t))
+  (let* ((excluded-themes '(light-blue tsdh-dark))
+         (available-themes (cl-remove-if (lambda (theme)
+                                           (member theme excluded-themes))
+                                         (custom-available-themes)))
+         (random-theme (nth (random (length available-themes)) available-themes)))
+    (load-theme random-theme t)
+    (setq my-theme-loaded t)))
+
+(defun describe-current-themes ()
+  "Display the current enabled themes in the modeline."
+  (interactive "")
+  (message "%S" custom-enabled-themes))
+
 
 (fset 'yes-or-no-p 'y-or-n-p)
 
