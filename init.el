@@ -272,9 +272,13 @@
 		 ("C-c n i" . org-roam-insert)
 		 ("C-c n I" . org-roam-insert-immediate)))
 
-(use-package copilot
-  :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "copilot.el"))
-  :ensure t
+
+(straight-use-package 'editorconfig)
+(straight-use-package 'jsonrpc)
+(use-package copilot-mode
+  :straight (:host github :repo "zerolfx/copilot.el" :files ("*.el" "dist"))
+  :after (jsonrpc editorconfig) ;; These two were needed for copilot to work
+  ;; There should be some other way to do this, but I don't know what it is.
   :hook prog-mode
   :bind (:map prog-mode-map
 		 ("C-c C-a" . copilot-accept-completion)
@@ -822,6 +826,7 @@
   :straight t)
 
 (use-package org-inline-pdf
+  :after org-mode
   :straight t
   :hook org-mode)
 
@@ -873,6 +878,7 @@
 ;; Complains about agenda file missing
 ;; Lets you group items in agenda by tags
 (use-package org-super-agenda
+  :after org-mode
   :straight t
   :custom
   (org-super-agenda-groups nil)
