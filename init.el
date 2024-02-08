@@ -62,7 +62,7 @@
 
 ;; So that I can publicly VC my config w/o leaking secret keys &c.
 (straight-use-package
- '(use-package-secret :host github :repo "emacswatcher/use-package-secret" :fork t))
+ '(use-package-secret :host github :repo "emacswatcher/use-package-secret" :fork t :branch "patch-1"))
 
 (use-package emacs
   :delight
@@ -331,16 +331,20 @@
 (use-package auctex
   :straight t
   :custom
-  (TeX-view-program-selection '((output-dvi "open")
-								(output-pdf (choice "PDF Tools" "Skim" "open"))
-								(output-html "open")))
+  (TeX-view-program-selection
+   '((output-dvi "open")
+	 (output-pdf "PDF Tools")
+	 (output-html "open")))
+  (TeX-view-program-list
+      '(("PDF Tools" "TeX-pdf-tools-sync-view")
+        ("Skim" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
   (TeX-auto-TeX-command t)
   (TeX-auto-save t)
   (TeX-auto-untabify t)
   (TeX-engine 'xetex)
   (TeX-master 'dwim)
   (TeX-parse-self t)
-  (TeX-source-correlate-start-server-maybe t)
+  (TeX-source-correlate-start-server t)
   :config
   (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
   :hook (;(LaTeX-mode . turn-on-auto-fill)
@@ -1069,6 +1073,11 @@
 ;; 			   ("s-<left>" . proof-goto-end-of-locked)
 ;; 			   ("s-<end>" . proof-process-buffer))))
 
+(defun racket-insert-prime ()
+  "Insert a Unicode prime character."
+  (interactive)
+  (insert "′"))
+
 (use-package racket-mode
   :straight t
   :ensure-system-package racket
@@ -1076,6 +1085,7 @@
   :hook
   (racket-mode . racket-xp-mode)
   (racket-mode . racket-smart-open-bracket-mode)
+  (racket-mode . (lambda () (define-key racket-mode-map (kbd "C-c C-x C-p") 'racket-insert-prime)))
   (racket-mode . (lambda () (flycheck-mode -1))) ;; disable flycheck in racket b/c Rk✓
   (racket-repl-mode . racket-smart-open-bracket-mode)
   :custom (racket-program "racket")
@@ -2130,7 +2140,7 @@
 ;; Pick a random theme.
 
 (unless my-theme-loaded
-  (let* ((excluded-themes '(light-blue tsdh-dark))
+  (let* ((excluded-themes '(light-blue tsdh-dark modus-vivendi))
          (available-themes (cl-remove-if (lambda (theme)
                                            (member theme excluded-themes))
                                          (custom-available-themes)))
