@@ -697,7 +697,8 @@
   :straight t
   :delight
   :if (display-graphic-p)
-  :hook (ibuffer-mode . all-the-icons-ibuffer-mode))
+  :hook (ibuffer-mode . all-the-icons-ibuffer-mode)
+        (ibuffer-mode . ibuffer-auto-mode))
 
 (straight-use-package 'ibuffer-vc) ;; Let Emacs' ibuffer-mode group files by git project etc., and show file state
 
@@ -713,6 +714,7 @@
 						 (setq wc-mode nil)))
   :bind (:map idris2-mode-map
 			  ("C-c c"       . idris2-case-dwim)
+			  ("C-c C-j"     . idris2-jump-to-def)
 			  ("C-c C-c C-a" . copilot-accept-completion)
 			  ("C-c C-c C-c" . copilot-current-completion)
 			  ("C-c C-c C-n" . copilot-next-completion)
@@ -737,14 +739,14 @@
 
 (straight-use-package 'jump) ;; build functions which contextually jump between files
 
-(use-package khoj
-  :after org
-  :straight (khoj :type git :host github :repo "khoj-ai/khoj" :files (:defaults "src/interface/emacs/khoj.el"))
-  :secret khoj-openai-api-key
-  ;; :bind ("C-c s" . 'khoj) Interferes w/idris2-mode
-  :config (setq khoj-org-directories '("~/docs/org-roam" "~/docs/notes")
-                khoj-org-files '("~/docs/todo.org" "~/docs/work.org")
-                khoj-org-agenda-files '("~/docs/todo.org" "~/docs/work.org")))
+;; (use-package khoj
+;;   :after org
+;;   :straight (khoj :type git :host github :repo "khoj-ai/khoj" :files (:defaults "src/interface/emacs/khoj.el"))
+;;   :secret khoj-openai-api-key
+;;   ;; :bind ("C-c s" . 'khoj) Interferes w/idris2-mode
+;;   :config (setq khoj-org-directories '("~/docs/org-roam" "~/docs/notes")
+;;                 khoj-org-files '("~/docs/todo.org" "~/docs/work.org")
+;;                 khoj-org-agenda-files '("~/docs/todo.org" "~/docs/work.org")))
 
 (use-package latex-unicode-math-mode
   :straight t
@@ -1868,9 +1870,7 @@
 	 (gnu "[%f].")
 	 (t "reconsult(%f).")))
  '(prolog-program-name
-   '(((getenv "EPROLOG")
-	  (eval
-	   (getenv "EPROLOG")))
+   '(((getenv "EPROLOG") (eval (getenv "EPROLOG")))
 	 (eclipse "eclipse")
 	 (mercury nil)
 	 (sicstus "sicstus")
