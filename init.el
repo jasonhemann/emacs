@@ -477,7 +477,11 @@
 (straight-use-package 'company-fuzzy)
 (straight-use-package 'consult) ;; the counsel equivalent for selectrum
 (straight-use-package 'coq-commenter)
-(straight-use-package 'crux) ;; collection of emacs extensions
+
+(use-package crux ;; collection of emacs extensions
+  :straight
+  :custom
+  (global-set-key (kbd "C-c C-n C-s") 'crux-create-scratch-buffer))
 
 (straight-use-package 'dash) ;; A modern list library for Emacs
 
