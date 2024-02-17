@@ -479,9 +479,9 @@
 (straight-use-package 'coq-commenter)
 
 (use-package crux ;; collection of emacs extensions
-  :straight
-  :custom
-  (global-set-key (kbd "C-c C-n C-s") 'crux-create-scratch-buffer))
+  :straight t
+  :demand t
+  :bind (("C-c C-n C-s" . crux-create-scratch-buffer)))
 
 (straight-use-package 'dash) ;; A modern list library for Emacs
 
@@ -2143,6 +2143,7 @@
 (defvar my-theme-loaded nil "Flag to indicate if a theme has been loaded.")
 ;; Pick a random theme.
 
+;; Good themes leuven-dark
 (unless my-theme-loaded
   (let* ((excluded-themes '(light-blue tsdh-dark modus-vivendi))
          (available-themes (cl-remove-if (lambda (theme)
