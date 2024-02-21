@@ -715,7 +715,8 @@
 						 (setq smartparens-global-mode nil)
 						 (setq smartparens-mode nil)
 						 (setq smartparens-strict-mode nil)
-						 (setq wc-mode nil)))
+						 (setq wc-mode nil)
+						 (setq idris2-load-packages '("prelude" "base" "contrib"))))
   :bind (:map idris2-mode-map
 			  ("C-c c"       . idris2-case-dwim)
 			  ("C-c C-j"     . idris2-jump-to-def)
@@ -1227,7 +1228,10 @@
   (wrap-region-global-mode t))
 
 
-(straight-use-package 'sml-mode)
+(use-package sml-mode
+  :straight t
+  :ensure-system-package sml)
+
 (straight-use-package 'sml-modeline)
 (straight-use-package 'smog)
 (straight-use-package 'sourcemap) ;;  Sourmap parser in Emacs Lisp
@@ -1912,7 +1916,6 @@
 	 (add-hook 'before-save-hook 'delete-trailing-whitespace nil t)))
  '(safe-local-variable-values
    '((idris2-load-packages "prelude" "base" "contrib")
-	 (idris2-load-packages "base" "contrib")
 	 (TeX-command-extra-options . "-shell-escape")
 	 (calc-float-format quote
 						(fix 2))
@@ -2145,7 +2148,7 @@
 
 ;; Good themes leuven-dark
 (unless my-theme-loaded
-  (let* ((excluded-themes '(light-blue tsdh-dark modus-vivendi))
+  (let* ((excluded-themes '(light-blue tsdh-dark modus-vivendi wombat))
          (available-themes (cl-remove-if (lambda (theme)
                                            (member theme excluded-themes))
                                          (custom-available-themes)))
