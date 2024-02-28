@@ -525,7 +525,9 @@
    (ebib-bibtex-dialect 'biblatex)) ;; ebib mode, for latex
 
 ;; TODO change from scryer-prolog to configurable
+;; Make scryer-prolog also a configuration setup
 (use-package ediprolog
+  :ensure-system-package (gprolog . gnu-prolog)
   :straight t
   :bind ([f10] . ediprolog-dwim))
 
@@ -2149,7 +2151,7 @@
 
 ;; Good themes leuven-dark
 (unless my-theme-loaded
-  (let* ((excluded-themes '(light-blue tsdh-dark modus-vivendi wombat))
+  (let* ((excluded-themes '(light-blue tsdh-dark modus-vivendi wombat leuven))
          (available-themes (cl-remove-if (lambda (theme)
                                            (member theme excluded-themes))
                                          (custom-available-themes)))
