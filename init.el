@@ -246,9 +246,7 @@
 ;; In order to search for synonyms.
 (use-package www-synonyms
   :straight t
-  :secret thesaurus-api-key
-  :config
-  (setq www-synonyms-key thesaurus-api-key))
+  :secret www-synonyms-key)
 
 (straight-use-package 'emacsql-sqlite-builtin)
 
@@ -530,8 +528,11 @@
 
 ;; TODO change from scryer-prolog to configurable
 ;; Make scryer-prolog also a configuration setup
+;; "pushd ~/Code/scryer-prolog; git pull --force; cargo build --release"
 ;; TODO: where  do custom commands get locally executed?
 ;; So, e.g cargo install such and such for scryer-prolog?
+;; What about npl aka nprolog?
+;; Yap prolog?
 (use-package ediprolog
   :ensure-system-package
     ((gprolog . gnu-prolog)
@@ -2162,7 +2163,7 @@
 (defvar my-theme-loaded nil "Flag to indicate if a theme has been loaded.")
 ;; Pick a random theme.
 
-;; Good themes leuven-dark
+;; Good themes leuven-dark modus-vivendi
 (unless my-theme-loaded
   (let* ((excluded-themes '(light-blue tsdh-dark modus-vivendi wombat leuven))
          (available-themes (cl-remove-if (lambda (theme)
