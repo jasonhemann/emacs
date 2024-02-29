@@ -158,6 +158,7 @@
 
 (use-package agda2-mode
   :straight (:includes (eri annotation))
+  :ensure-system-package agda
   :mode (("\\.agda\\'" . agda2-mode)
 		 ("\\.lagda.md\\'" . agda2-mode)))
 
@@ -445,7 +446,7 @@
 
 (use-package company-fuzzy
   :straight t
-  :hook company-mode.
+  :hook company-mode
   ;; :init (setq company-fuzzy-sorting-backend 'flx
   ;; 			  company-fuzzy-prefix-on-top nil
   ;; 			  company-fuzzy-trigger-symbols '("." "->" "<" "\"" "'" "@"))
@@ -458,9 +459,12 @@
 
 (straight-use-package 'company-coq)
 (straight-use-package 'company-dict)
+
+;; TODO Ensure system package lean
 (straight-use-package 'lean-mode)
 
 (use-package company-lean
+  :after (company lean company-try-hard)
   :straight t
   ;; Trigger completion on Shift-Space
   ;; Was ~company-complete~, but company-try-hard does more
@@ -739,9 +743,10 @@
 
 ;; (straight-use-package 'init-loader) ;; No, b/c el-init is better for split init files
 
-(use-package j-mode
-  :straight t
-  :mode ("\\.ij[rstp]$" . j-mode))
+;; COMMENTED b/c j incorrectly installed right now. needs fixing
+;; (use-package j-mode
+;;  :straight t
+;;  :mode ("\\.ij[rstp]$" . j-mode))
 
 ;; This fork was more up-to-date than the o.g. janet-mode repo.
 (straight-use-package '(janet-mode :fork (:host github :repo "pierre-rouleau/janet-mode")))
