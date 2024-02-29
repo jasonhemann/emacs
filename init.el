@@ -766,6 +766,9 @@
 
 (use-package magit
   :straight t
+  :ensure-system-package
+    ((github . github)
+	 (git . git))
   :bind ("C-x g" . magit-status))
 
 ;; Buggy. This looks like what I want, but when magit-status-mode-hook
