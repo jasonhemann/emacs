@@ -144,7 +144,7 @@
                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
 
 (use-package ob-prolog
-  :after org
+  :after (org ediprolog)
   :straight t
   :demand t
   :config (add-to-list 'org-babel-load-languages '(prolog . t)))
@@ -526,8 +526,12 @@
 
 ;; TODO change from scryer-prolog to configurable
 ;; Make scryer-prolog also a configuration setup
+;; TODO: where  do custom commands get locally executed?
+;; So, e.g cargo install such and such for scryer-prolog?
 (use-package ediprolog
-  :ensure-system-package (gprolog . gnu-prolog)
+  :ensure-system-package
+    ((gprolog . gnu-prolog)
+	 (swipl . swi-prolog))
   :straight t
   :bind ([f10] . ediprolog-dwim))
 
