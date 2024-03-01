@@ -413,10 +413,23 @@
   (cfw:fchar-top-left-corner ?┏)
   (cfw:fchar-top-right-corner ?┓))
 
-(straight-use-package 'calfw-cal)
-(straight-use-package 'calfw-gcal)
-(straight-use-package 'calfw-ical)
-(straight-use-package 'calfw-org)
+(straight-use-package 'calfw-cal) ;; Emacs Diary Schedules
+
+(use-package calfw-org
+  :after (org-mode calfw)
+)
+
+(straight-use-package '(calfw-blocks :after calfw)) ;; Amazing for calendar block views
+
+;; (straight-use-package 'calfw-gcal) Not sure what this does that ical doesnt
+;; maybe interact w/ and *edit* calendar event
+
+(use-package calfw-ical
+  :straight t
+  :after calfw
+  :secret (gcal-open-events gcal-work gcal-michele)
+  :config (cfw:open-ical-calendar gcal-open-events) ;; and the others
+  )
 
 ;; No need for howm-mode; org-mode + roam for me
 ;; (straight-use-package 'calfw-howm)
@@ -1379,7 +1392,7 @@
 
 (use-package zygospore
   :straight t
-  :bind ("C-x 1" . zygospore-toggle-delete-other-windows))
+  :bind ("\C-x1" . zygospore-toggle-delete-other-windows))
 
 (use-package all-the-icons
   :straight t
