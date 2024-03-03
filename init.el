@@ -9,6 +9,9 @@
 
 ;; Need to be set before we load straight.el, to correct a flycheck
 ;; incompatibility.
+(defvar straight-fix-flycheck)
+(defvar use-package-compute-statistics)
+(defvar straight-host-usernames)
 (setq straight-fix-flycheck t
       use-package-compute-statistics t
 ;; Configuration for how straight.el should load.
@@ -31,6 +34,7 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
+(defvar straight-check-for-modifications)
 (setq straight-fix-flycheck t
       straight-check-for-modifications '(check-on-save find-when-checking)
       straight-host-usernames '((gitlab . "jasonhemann")
@@ -398,68 +402,67 @@
 
 (straight-use-package 'buffer-move) ;; used for rotating buffers. buf-move-left
 
-;; https://github.com/kiwanami/emacs-calfw
-;; To use, must configure
-;; TODO when time.
-(use-package calfw
-  :straight t
-  :custom
-  (cfw:fchar-junction ?╋)
-  (cfw:fchar-vertical-line ?┃)
-  (cfw:fchar-horizontal-line ?━)
-  (cfw:fchar-left-junction ?┣)
-  (cfw:fchar-right-junction ?┫)
-  (cfw:fchar-top-junction ?┯)
-  (cfw:fchar-top-left-corner ?┏)
-  (cfw:fchar-top-right-corner ?┓))
+;; ;; To use, must configure and debug
+;; ;; TODO when time.
+;; (use-package calfw
+;;   :straight t
+;;   :custom
+;;   (cfw:fchar-junction ?╋)
+;;   (cfw:fchar-vertical-line ?┃)
+;;   (cfw:fchar-horizontal-line ?━)
+;;   (cfw:fchar-left-junction ?┣)
+;;   (cfw:fchar-right-junction ?┫)
+;;   (cfw:fchar-top-junction ?┯)
+;;   (cfw:fchar-top-left-corner ?┏)
+;;   (cfw:fchar-top-right-corner ?┓))
 
-(defvar calfw-diary-sources nil) ;; Emacs Diary Schedules
-(use-package calfw-cal
-  :straight t
-  :after calfw
-  :config
-  (setq calf-diary-sources (list (cfw:cal-create-source "Orange")))) ; diary source
+;; (defvar calfw-diary-sources nil) ;; Emacs Diary Schedules
+;; (use-package calfw-cal
+;;   :straight t
+;;   :after calfw
+;;   :config
+;;   (setq calf-diary-sources (list (cfw:cal-create-source "Orange")))) ; diary source
 
-(use-package calfw-blocks ;; Amazing for calendar block views
-  :straight t
-  :ensure t
-  :after (calfw calfw-org))
+;; (use-package calfw-blocks ;; Amazing for calendar block views
+;;   :straight t
+;;   :ensure t
+;;   :after (calfw calfw-org))
 
-;; (straight-use-package 'calfw-gcal) Not sure what this does that ical doesnt
-;; maybe interact w/ and *edit* calendar event
+;; ;; (straight-use-package 'calfw-gcal) Not sure what this does that ical doesnt
+;; ;; maybe interact w/ and *edit* calendar event
 
-(defvar calfw-ical-sources nil)
-(use-package calfw-ical
-  :straight t
-  :after calfw
-  :secret (gcal-open-events gcal-work gcal-michele)
-  :config
-  (setq calfw-ical-sources
-	(list
-	  (cfw:ical-create-source "open" gcal-open-events "blue")
-	  (cfw:ical-create-source "work" gcal-work "purple")
-	  ;(cfw:ical-create-source "mRhee" gcal-michele "gold")
-	  ))
-  )
+;; (defvar calfw-ical-sources nil)
+;; (use-package calfw-ical
+;;   :straight t
+;;   :after calfw
+;;   :secret (gcal-open-events gcal-work gcal-michele)
+;;   :config
+;;   (setq calfw-ical-sources
+;; 	(list
+;; 	  (cfw:ical-create-source "open" gcal-open-events "blue")
+;; 	  (cfw:ical-create-source "work" gcal-work "purple")
+;; 	  ;(cfw:ical-create-source "mRhee" gcal-michele "gold")
+;; 	  ))
+;;   )
 
-(defvar calfw-org-sources nil)
-(use-package calfw-org
-  :ensure t
-  :after calfw
-  :config
-  (setq calfw-org-sources (list (cfw:org-create-source "Green"))))
+;; (defvar calfw-org-sources nil)
+;; (use-package calfw-org
+;;   :ensure t
+;;   :after calfw
+;;   :config
+;;   (setq calfw-org-sources (list (cfw:org-create-source "Green"))))
 
-;; No need for howm-mode; org-mode + roam for me
-;; (straight-use-package 'calfw-howm)
+;; ;; No need for howm-mode; org-mode + roam for me
+;; ;; (straight-use-package 'calfw-howm)
 
-(defun cfw:my-open-calendar ()
-  "Display a calfw calendar of my personal calendar."
-  (interactive)
-  (cfw:open-calendar-buffer
-   :contents-sources
-   (append calfw-ical-sources calfw-org-sources calfw-diary-sources)
-   :view 'block-week
-   ))
+;; (defun cfw:my-open-calendar ()
+;;   "Display a calfw calendar of my personal calendar."
+;;   (interactive)
+;;   (cfw:open-calendar-buffer
+;;    :contents-sources
+;;    (append calfw-ical-sources calfw-org-sources calfw-diary-sources)
+;;    :view 'block-week
+;;    ))
 
 (straight-use-package 'cbm) ;; cycle by major mode
 
