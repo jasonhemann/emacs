@@ -413,26 +413,53 @@
   (cfw:fchar-top-left-corner ?┏)
   (cfw:fchar-top-right-corner ?┓))
 
-(straight-use-package 'calfw-cal) ;; Emacs Diary Schedules
+(defvar calfw-diary-sources nil) ;; Emacs Diary Schedules
+(use-package calfw-cal
+  :straight t
+  :after calfw
+  :config
+  (setq calf-diary-sources (list (cfw:cal-create-source "Orange")))) ; diary source
 
-(use-package calfw-org
-  :after (org-mode calfw)
-)
-
-(straight-use-package '(calfw-blocks :after calfw)) ;; Amazing for calendar block views
+(use-package calfw-blocks ;; Amazing for calendar block views
+  :straight t
+  :ensure t
+  :after (calfw calfw-org))
 
 ;; (straight-use-package 'calfw-gcal) Not sure what this does that ical doesnt
 ;; maybe interact w/ and *edit* calendar event
 
+(defvar calfw-ical-sources nil)
 (use-package calfw-ical
   :straight t
   :after calfw
   :secret (gcal-open-events gcal-work gcal-michele)
-  :config (cfw:open-ical-calendar gcal-open-events) ;; and the others
+  :config
+  (setq calfw-ical-sources
+	(list
+	  (cfw:ical-create-source "open" gcal-open-events "blue")
+	  (cfw:ical-create-source "work" gcal-work "purple")
+	  ;(cfw:ical-create-source "mRhee" gcal-michele "gold")
+	  ))
   )
+
+(defvar calfw-org-sources nil)
+(use-package calfw-org
+  :ensure t
+  :after calfw
+  :config
+  (setq calfw-org-sources (list (cfw:org-create-source "Green"))))
 
 ;; No need for howm-mode; org-mode + roam for me
 ;; (straight-use-package 'calfw-howm)
+
+(defun cfw:my-open-calendar ()
+  "Display a calfw calendar of my personal calendar."
+  (interactive)
+  (cfw:open-calendar-buffer
+   :contents-sources
+   (append calfw-ical-sources calfw-org-sources calfw-diary-sources)
+   :view 'block-week
+   ))
 
 (straight-use-package 'cbm) ;; cycle by major mode
 
