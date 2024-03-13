@@ -107,6 +107,7 @@
 		  (org-confirm-babel-evaluate nil)
 		  (org-directory "~/.org")
 		  (org-export-backends '(ascii html icalendar latex odt md org))
+		  (org-export-with-smart-quotes t)
 		  (org-export-allow-bind-keywords t)
 		  (org-fold-catch-invisible-edits 'smart)
 		  (org-list-allow-alphabetical t)
