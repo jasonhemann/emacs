@@ -41,10 +41,11 @@
                                 (github . "jasonhemann")
                                 (bitbucket . "jhemann")))
 
-(require 'straight-x) ;; Adds the straight-x commands to clean up straight install
+(use-package straight-x ;; Adds the straight-x commands to clean up straight install
+  :defer t)
 
 ;; What if we are not online? We ignore that problem here.
-(straight-pull-recipe-repositories)
+;; (straight-pull-recipe-repositories)
 ;; Should also disable copilot-mode auto if we don’t have that locally available
 
 ;; JBH 4/6/22 disabling because it was seeming slow
@@ -80,6 +81,12 @@
   :straight t
   :config (exec-path-from-shell-initialize))
 
+(use-package orderless
+  :straight t
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-overrides '((file (styles basic partial-completion)))))
+
 ;; (org-mode . org-indent-mode) annoying, see emacs-deficiencies
 (use-package org
   :straight t
@@ -93,7 +100,6 @@
 		 ("C-c a" . org-agenda)
 		 ("C-c c" . org-capture)
 		 ("C-c b" . org-switchb)
-		 ("C-c C-x C-e" . org-clock-modify-effort-estimate)
 		 ("C-c C-x C-x" . org-clock-in-last)
 		 ;; Because smartparens shadows these, we rebind them otherwise.
 		 ("M-<up>" . nil)
@@ -190,7 +196,7 @@
 ;; helm-all-mark-rings: A helm browser for mark ring; retrieves last positions in buffers.
 ;; helm-filtered-bookmarks: enhanced browser for bookmarks.
 ;; helm-list-elisp-packages: enhanced browser for elisp package management.
-;; These helm commands I commented because I wanted to try without helm, and try selectrum instead.
+;; These helm commands I commented because I wanted to try without helm, and try vertico instead.
 ;; (straight-use-package 'helm)
 ;; (straight-use-package 'helm-addressbook)
 ;; (straight-use-package 'helm-bibtex)
@@ -522,7 +528,7 @@
   :bind (("C-z" . company-try-hard)))
 
 (straight-use-package 'company-fuzzy)
-(straight-use-package 'consult) ;; the counsel equivalent for selectrum
+(straight-use-package 'consult) ;; the counsel equivalent for vertico
 (straight-use-package 'coq-commenter)
 
 (use-package crux ;; collection of emacs extensions
@@ -781,7 +787,7 @@
 			  ("C-c C-c C-n" . copilot-next-completion)
 			  ("C-c C-c C-p" . copilot-previous-completion)))
 
-;; Not needed, b/c I was using helm. Now I'm using selectrum instead.
+;; Not needed, b/c I was using helm. Now I'm using vertico instead.
 ;; (straight-use-package 'ido-vertical-mode) ;; makes ido-mode display vertically
 (straight-use-package 'iedit) ;; Emacs minor mode and allows you to edit one occurrence of some text in a buffer
 (straight-use-package 'info+) ;; Package that enhances some info menus
@@ -1088,14 +1094,12 @@
   :straight t
   :custom
   (projectile-sort-order 'recently-active)
-  (projectile-completion-system 'selectrum)
+  (projectile-completion-system 'auto)
   (projectile-indexing-method 'hybrid) ; 'alien 'native
   (projectile-enable-caching t)
   (projectile-mode t)
   (projectile-mode-line-prefix " Proj")
   (projectile-switch-project-action #'projectile-dired)
-  ;; (setq projectile-completion-system 'helm)
-  ;; (setq projectile-switch-project-action 'helm-projectile)
 
   :config
   ;; My own version which ensures we use the split-window-sensibly here,
@@ -1183,15 +1187,6 @@
 
 (straight-use-package 's) ;; The long lost Emacs string manipulation library.
 ;; (straight-use-package 'scheme-complete) ;; Unclear if I need it — Asked Alex Shinn
-
-(use-package selectrum
-  :straight t
-  :custom (selectrum-mode t)) ;; To turn on selectrum
-
-(use-package selectrum-prescient
-  :straight t
-  :custom (selectrum-prescient-mode t) ;; to make sorting and filtering more intelligent
-          (prescient-persist-mode t)) ;; For selectrum, save your command history on disk, so the sorting gets more intelligent over time
 
 ;; SMEX was causing a major slowdown w/my config.
 ;;
@@ -1343,7 +1338,31 @@
 ;;   (vhl/define-extension 'undo-tree 'undo-tree-yank 'undo-tree-move)
 ;;   (vhl/install-extension 'undo-tree))
 
-;; vertico ??
+;; Replaces selectrum. Better b/c Prot told me so.
+(use-package vertico
+  :straight t
+  :config (vertico-mode)
+          (file-name-shadow-mode)
+  ;; This works with `file-name-shadow-mode' enabled.  When you are in
+  ;; a sub-directory and use, say, `find-file' to go to your home '~/'
+  ;; or root '/' directory, Vertico will clear the old path to keep
+  ;; only your current input.
+  ;;
+  ;; This needs to be an add-hook b/c I want to add the hook to hide path when I type shadow stuff
+  ;; But I need to have vertico already loaded so I can access the minibuffer inside of which this hook will run
+  (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy) )
+
+
+(use-package marginalia
+  :straight t
+  :config (marginalia-mode))
+
+(use-package savehist
+  :straight t
+  :config (savehist-mode))
+
+
+
 
 (use-package visual-regexp  ;; A regexp/replace command for Emacs with interactive visual feedback
   :straight t
@@ -1673,9 +1692,6 @@
 ;;     htmlize
 ;;     iedit
 ;;     indent-guide
-;;     ivy
-;;     ivy-prescient
-;;     ivy-rich
 ;;     java-snippets
 ;;     json-mode
 ;;     logview
@@ -1939,7 +1955,9 @@
 	 (gnu "[%f].")
 	 (t "reconsult(%f).")))
  '(prolog-program-name
-   '(((getenv "EPROLOG") (eval (getenv "EPROLOG")))
+   '(((getenv "EPROLOG")
+	  (eval
+	   (getenv "EPROLOG")))
 	 (eclipse "eclipse")
 	 (mercury nil)
 	 (sicstus "sicstus")
@@ -1976,7 +1994,15 @@
 	 (add-hook 'before-save-hook 'time-stamp nil t)
 	 (add-hook 'before-save-hook 'delete-trailing-whitespace nil t)))
  '(safe-local-variable-values
-   '((idris2-load-packages "prelude" "base" "contrib")
+   '((flycheck-mode . 0)
+	 (writegood-mode)
+	 (artbollocks-mode)
+	 (flyspell-mode)
+	 (writegood-mode . 0)
+	 (artbollocks-mode . 0)
+	 (flyspell-mode . 0)
+	 (idris2-load-packages "base" "contrib")
+	 (idris2-load-packages "prelude" "base" "contrib")
 	 (TeX-command-extra-options . "-shell-escape")
 	 (calc-float-format quote
 						(fix 2))
@@ -2012,6 +2038,7 @@
  '(tool-bar-mode nil)
  '(trash-directory "~/.Trash")
  '(truncate-lines t)
+ '(use-short-answers t)
  '(vc-follow-symlinks t)
  '(vc-make-backup-files t)
  '(version-control t)
@@ -2223,7 +2250,6 @@
   (message "%S" custom-enabled-themes))
 
 
-(fset 'yes-or-no-p 'y-or-n-p)
 
 ;; default to mononoki, 22pt font
 (set-face-attribute 'default nil
