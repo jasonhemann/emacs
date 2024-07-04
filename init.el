@@ -34,6 +34,14 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
+
+(use-package benchmark-init
+  :straight t
+  :config
+  (benchmark-init/activate)
+  ;; To stop benchmarking after init
+  (add-hook 'after-init-hook 'benchmark-init/deactivate))
+
 (defvar straight-check-for-modifications)
 (setq straight-fix-flycheck t
       straight-check-for-modifications '(check-on-save find-when-checking)
@@ -76,16 +84,22 @@
   ;; (visual-line-mode)
 )
 
-(use-package exec-path-from-shell ;; Make Emacs use the $PATH set up by the user's shell
-  :if (not (eq system-type 'windows-nt))
-  :straight t
-  :config (exec-path-from-shell-initialize))
+;; seems to duplicate the inclusion of my .bash_profile behavior, disabled b/c I don't want to duplicate path
+;;
+;; (use-package exec-path-from-shell ;; Make Emacs use the $PATH set up by the user's shell
+;;   :if (not (eq system-type 'windows-nt))
+;;   :straight t
+;;   :config (exec-path-from-shell-initialize))
+
+;(use-package fontaine) ;; I want to eventually add to be config w/Prot.
+
 
 (use-package orderless
   :straight t
   :custom
+  (completion-category-defaults nil)
   (completion-styles '(orderless basic))
-  (completion-category-overrides '((file (styles basic partial-completion)))))
+  (completion-category-overrides '((file (styles basic partial-completion orderless)))))
 
 ;; (org-mode . org-indent-mode) annoying, see emacs-deficiencies
 (use-package org
@@ -95,6 +109,7 @@
   (defun org--disable-wordsmith-mode ()
     "Disable wordsmith mode."
     (wordsmith-mode -1))
+  :config (setq org-effort-property "EFFORT") ;; This causes EFFORT to look like all the others
   :bind (:map org-mode-map
 		 ("C-c l" . org-store-link)
 		 ("C-c a" . org-agenda)
@@ -115,10 +130,13 @@
 		  (org-export-backends '(ascii html icalendar latex odt md org))
 		  (org-export-with-smart-quotes t)
 		  (org-export-allow-bind-keywords t)
+		  (org-fast-tag-selection-include-todo t)
 		  (org-fold-catch-invisible-edits 'smart)
 		  (org-list-allow-alphabetical t)
 		  (org-log-done 'time)
 		  (org-modules '(org-tempo ol-bbdb ol-bibtex ol-docview ol-doi ol-eww ol-gnus ol-info ol-irc ol-mhe ol-rmail)) ;; ol-w3m outdated
+		  (org-refile-targets '((org-agenda-files . (:maxlevel . 2))
+								(nil . (:maxlevel . 2))))
 		  (org-src-tab-acts-natively t)
 		  (org-support-shift-select t)
 		  (org-tags-column 0)
@@ -130,11 +148,19 @@
 									("SOMEDAY" . "dodger blue")
 									("DONE" . "lime green")
 									("CANCELED" . "purple")))
-		  (org-fast-tag-selection-include-todo t)
 		  (org-use-speed-commands t)
 		  (org-use-sub-superscripts '{})
 		  (org-use-tag-inheritance nil)
 		  :hook (org-mode . org--disable-wordsmith-mode))
+
+(defun my-ignore-delete-windows (&rest args)
+  "Run original function with all ARGS.
+For the scope of this function, make `delet-other-windows' the same as `ignore'."
+  (cl-letf (((symbol-function 'delete-other-windows) 'ignore))
+    (apply args)))
+
+;; (advice-add 'org-fast-todo-selection :around 'my-ignore-delete-windows)
+
 
 ;;   :config
 ;; ORG-CDLATEX-KEYBINDINGS SHADOW ORG-CYCLE
@@ -409,67 +435,85 @@
 
 (straight-use-package 'buffer-move) ;; used for rotating buffers. buf-move-left
 
-;; ;; To use, must configure and debug
-;; ;; TODO when time.
-;; (use-package calfw
-;;   :straight t
-;;   :custom
-;;   (cfw:fchar-junction ?╋)
-;;   (cfw:fchar-vertical-line ?┃)
-;;   (cfw:fchar-horizontal-line ?━)
-;;   (cfw:fchar-left-junction ?┣)
-;;   (cfw:fchar-right-junction ?┫)
-;;   (cfw:fchar-top-junction ?┯)
-;;   (cfw:fchar-top-left-corner ?┏)
-;;   (cfw:fchar-top-right-corner ?┓))
 
-;; (defvar calfw-diary-sources nil) ;; Emacs Diary Schedules
-;; (use-package calfw-cal
-;;   :straight t
-;;   :after calfw
-;;   :config
-;;   (setq calf-diary-sources (list (cfw:cal-create-source "Orange")))) ; diary source
+(global-set-key (kbd "M-/") 'hippie-expand)
+(autoload 'zap-up-to-char "misc"
+  "Kill up to, but not including ARGth occurrence of CHAR." t)
 
-;; (use-package calfw-blocks ;; Amazing for calendar block views
-;;   :straight t
-;;   :ensure t
-;;   :after (calfw calfw-org))
+;; How is this different than https://github.com/emacs-straight/uniquify-files/blob/master/uniquify-files.el
+  (require 'uniquify)
+  (setq uniquify-buffer-name-style 'forward)
+(global-set-key (kbd "M-z") 'zap-up-to-char)
 
-;; ;; (straight-use-package 'calfw-gcal) Not sure what this does that ical doesnt
-;; ;; maybe interact w/ and *edit* calendar event
+(global-set-key (kbd "C-s") 'isearch-forward-regexp)
+(global-set-key (kbd "C-r") 'isearch-backward-regexp)
 
-;; (defvar calfw-ical-sources nil)
-;; (use-package calfw-ical
-;;   :straight t
-;;   :after calfw
-;;   :secret (gcal-open-events gcal-work gcal-michele)
-;;   :config
-;;   (setq calfw-ical-sources
-;; 	(list
-;; 	  (cfw:ical-create-source "open" gcal-open-events "blue")
-;; 	  (cfw:ical-create-source "work" gcal-work "purple")
-;; 	  ;(cfw:ical-create-source "mRhee" gcal-michele "gold")
-;; 	  ))
-;;   )
+(global-set-key (kbd "C-M-s") 'isearch-forward)
+(global-set-key (kbd "C-M-r") 'isearch-backward)
 
-;; (defvar calfw-org-sources nil)
-;; (use-package calfw-org
-;;   :ensure t
-;;   :after calfw
-;;   :config
-;;   (setq calfw-org-sources (list (cfw:org-create-source "Green"))))
 
-;; ;; No need for howm-mode; org-mode + roam for me
-;; ;; (straight-use-package 'calfw-howm)
+;; To use, must configure and debug
+;; TODO when time.
+(use-package calfw
+  :straight t
+  :custom
+  (cfw:fchar-junction ?╋)
+  (cfw:fchar-vertical-line ?┃)
+  (cfw:fchar-horizontal-line ?━)
+  (cfw:fchar-left-junction ?┣)
+  (cfw:fchar-right-junction ?┫)
+  (cfw:fchar-top-junction ?┯)
+  (cfw:fchar-top-left-corner ?┏)
+  (cfw:fchar-top-right-corner ?┓))
 
-;; (defun cfw:my-open-calendar ()
-;;   "Display a calfw calendar of my personal calendar."
-;;   (interactive)
-;;   (cfw:open-calendar-buffer
-;;    :contents-sources
-;;    (append calfw-ical-sources calfw-org-sources calfw-diary-sources)
-;;    :view 'block-week
-;;    ))
+(defvar calfw-diary-sources nil) ;; Emacs Diary Schedules
+(use-package calfw-cal
+  :straight t
+  :after calfw
+  :config
+  (setq calf-diary-sources (list (cfw:cal-create-source "Orange")))) ; diary source
+
+(use-package calfw-blocks ;; Amazing for calendar block views
+  :straight t
+  :ensure t
+  :after (calfw calfw-org))
+
+;; (straight-use-package 'calfw-gcal) Not sure what this does that ical doesnt
+;; maybe interact w/ and *edit* calendar event
+
+(defvar calfw-ical-sources nil)
+(use-package calfw-ical
+  :straight t
+  :after calfw
+  :secret (gcal-open-events gcal-work gcal-michele)
+  :config
+  (setq calfw-ical-sources
+	(list
+	  (cfw:ical-create-source "open" gcal-open-events "blue")
+	  (cfw:ical-create-source "work" gcal-work "purple")
+	  ;(cfw:ical-create-source "mRhee" gcal-michele "gold")
+	  ))
+  )
+
+(defvar calfw-org-sources nil)
+
+(use-package calfw-org
+  :straight (calfw-org :type git :flavor melpa :files ("calfw-org.el" "calfw-org-pkg.el") :host github :repo "kiwanami/emacs-calfw")
+  :after calfw
+  :config
+  (setq calfw-org-sources (list (cfw:org-create-source "Green"))))
+
+;; No need for howm-mode; org-mode + roam for me
+;; (straight-use-package 'calfw-howm)
+
+(defun cfw:my-open-calendar ()
+  "Display a calfw calendar of my personal calendar."
+  (interactive)
+  (cfw:open-calendar-buffer
+   :contents-sources
+   (append calfw-ical-sources calfw-org-sources calfw-diary-sources)
+   :view 'block-week
+   ))
 
 (straight-use-package 'cbm) ;; cycle by major mode
 
@@ -545,9 +589,10 @@
 
 (straight-use-package '(dired-hacks-utils :host github :repo "Fuco1/dired-hacks" :fork t))
 
-(use-package dired-collapse
-  :straight (:host github :repo "Fuco1/dired-hacks" :fork t) ;; This is now correct
-  :hook dired-mode)
+;; Disable dired-collapse, b/c it makes it difficult to	move things around from dired.
+;; (use-package dired-collapse
+;;   :straight (:host github :repo "Fuco1/dired-hacks" :fork t) ;; This is now correct
+;;   :hook dired-mode)
 
 (straight-use-package 'bookmark+)
 
@@ -569,6 +614,9 @@
 
 (straight-use-package 'duplicate-thing) ;; duplicate current line
 (straight-use-package 'easy-jekyll)
+
+(use-package eat
+  :straight t)
 
 (use-package ebib
   :straight t
@@ -897,11 +945,11 @@
 ;; Not using, possibly deprecated in favor of other solutions
 ;; (straight-use-package '(org-dropbox :hook org-mode))
 
-(use-package org-doing
-  :straight t)
+;; Don't want org-doing. An old, one-off
 
-(use-package org-dotemacs
-  :straight t)
+;; Don't want org-dotemacs
+;; I instead want to develop a literate org-mode file that I can disentangle to a .el.
+
 
 (use-package org-inline-pdf
   :after org-mode
@@ -1596,7 +1644,7 @@
 (use-package langtool
   :straight t
   ;; I don't like that I have the same string in two places
-  :ensure-system-package languagetool
+  :ensure-system-package (languagetool . "brew install languagetool --cask")
   :bind (("\C-x4w" . langtool-check)
 		 ("\C-x4W" . langtool-check-done)
 		 ("\C-x4l" . langtool-switch-default-language)
@@ -1624,6 +1672,12 @@
 
 ;; (setq-default TeX-master "master") ; set a master for in the future.
 
+(use-package mb-depth
+  :ensure nil
+  :hook (after-init . minibuffer-depth-indicate-mode)
+  :config
+  (setq read-minibuffer-restore-windows nil) ; Emacs 28
+  (setq enable-recursive-minibuffers t))
 
 
 ;; ※ Suggest to use the reference mark, preceeding, for Reftex.
@@ -1667,7 +1721,6 @@
 ;;     auto-highlight-symbol
 ;;     avy
 ;;     color-theme-modern
-;;     company-prescient
 ;;     company-quickhelp
 ;;     csharp-mode
 ;;     counsel-projectile
@@ -1911,6 +1964,8 @@
  '(enable-local-variables t)
  '(find-file-visit-truename t)
  '(flyspell-lazy-mode t nil nil "Customized with use-package flyspell-lazy")
+ '(frame-inhibit-implied-resize t)
+ '(frame-resize-pixelwise t)
  '(fringe-mode 2 nil (fringe))
  '(global-auto-revert-non-file-buffers t)
  '(global-display-line-numbers-mode t)
@@ -1926,8 +1981,11 @@
  '(ls-lisp-dirs-first t)
  '(make-backup-files nil)
  '(ns-alternate-modifier '(:ordinary meta :mouse alt))
+ '(org-M-RET-may-split-line '((default)))
  '(org-attach-method 'lns)
+ '(org-priority-default 65)
  '(org-trello-current-prefix-keybinding "C-c o" nil nil "Customized with use-package org-trello")
+ '(org-use-fast-todo-selection 'expert)
  '(preview-auto-cache-preamble t)
  '(prolog-compile-string
    '((eclipse "[%f].")
@@ -2241,7 +2299,7 @@
                                            (member theme excluded-themes))
                                          (custom-available-themes)))
          (random-theme (nth (random (length available-themes)) available-themes)))
-    (load-theme random-theme t)
+    (enable-theme random-theme t)
     (setq my-theme-loaded t)))
 
 (defun describe-current-themes ()
