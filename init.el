@@ -77,6 +77,13 @@
 (straight-use-package
  '(use-package-secret :host github :repo "emacswatcher/use-package-secret" :fork t :branch "patch-1"))
 
+
+;; Make sure that we don't bring up a new buffer for a compilation operation.
+(add-to-list
+ 'display-buffer-alist
+ '("\\`\\*Async Shell Command\\*\\'"
+   (display-buffer-no-window)))
+
 (use-package emacs
   :delight
   (auto-revert-mode)
@@ -132,6 +139,7 @@
 		  (org-export-allow-bind-keywords t)
 		  (org-fast-tag-selection-include-todo t)
 		  (org-fold-catch-invisible-edits 'smart)
+		  (org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id)
 		  (org-list-allow-alphabetical t)
 		  (org-log-done 'time)
 		  (org-modules '(org-tempo ol-bbdb ol-bibtex ol-docview ol-doi ol-eww ol-gnus ol-info ol-irc ol-mhe ol-rmail)) ;; ol-w3m outdated
@@ -285,11 +293,11 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
   :straight t
   :secret www-synonyms-key)
 
-(straight-use-package 'emacsql-sqlite-builtin)
+(straight-use-package 'emacsql)
 
 (use-package org-roam
   :demand t
-  :after (emacsql-sqlite-builtin org)
+  :after (emacsql org)
   :config (add-to-list
 		   'display-buffer-alist
 		   '("\\*org-roam\\*"
@@ -534,7 +542,7 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
   :straight t
   :bind (("M-;" . comment-dwim-2)))
 
-(straight-use-package 'company-mode)
+(straight-use-package 'company)
 
 (use-package company-fuzzy
   :straight t
@@ -623,6 +631,17 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
   :bind ("\C-ce" . ebib)
   :custom
    (ebib-bibtex-dialect 'biblatex)) ;; ebib mode, for latex
+
+(use-package ediff
+  :ensure nil
+  :commands (ediff-buffers ediff-files ediff-buffers3 ediff-files3)
+  :init
+  (setq ediff-split-window-function 'split-window-horizontally)
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+  :config
+  (setq ediff-keep-variants nil)
+  (setq ediff-make-buffers-readonly-at-startup nil)
+  (setq ediff-show-clashes-only t))
 
 ;; TODO change from scryer-prolog to configurable
 ;; Make scryer-prolog also a configuration setup
@@ -937,9 +956,10 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 ;;   :straight t
 ;;   :config (org-ac/config-default))
 
-(use-package org-bullets
-  :straight t
-  :hook ((org-mode org-roam-mode) . org-bullets-mode))
+;; Disabled because it once upon a time led to eating 100% CPU to fontify
+;; (use-package org-bullets
+;;   :straight t
+;;   :hook ((org-mode org-roam-mode) . org-bullets-mode))
 
 ;; org-dropbox-mode starts up a daemon to sync org-notes via dropbox.
 ;; Not using, possibly deprecated in favor of other solutions
@@ -1231,6 +1251,15 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 ;; (straight-use-package 'scribble-mode)
 
 (straight-use-package 'reazon)
+
+(use-package recentf
+  :ensure nil ; do not try to install it
+  :hook (after-init . recentf-mode)
+  :custom (recentf-max-saved-items 50)
+  ;; Equiv to
+  ;; :config (setopt recentf-max-saved-items 50)
+  )
+
 (straight-use-package 'refine)
 
 (straight-use-package 's) ;; The long lost Emacs string manipulation library.
@@ -1332,11 +1361,12 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
   (wrap-region-global-mode t))
 
 
-(use-package sml-mode
-  :straight t
-  :ensure-system-package sml)
+;; sml-mode package seems damaged, or installation incorrect
+;; (use-package sml-mode
+;;   :straight t
+;;   :ensure-system-package sml)
+;; (straight-use-package 'sml-modeline)
 
-(straight-use-package 'sml-modeline)
 (straight-use-package 'smog)
 (straight-use-package 'sourcemap) ;;  Sourmap parser in Emacs Lisp
 (straight-use-package 'sx) ;; Stackoverflow mode ;-)
@@ -1356,7 +1386,9 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 (straight-use-package 'tramp)
 (straight-use-package 'treepy) ;; tree-walk functionality like a clojure library implementation
 (straight-use-package 'ts) ;; A bunch of nice utilities for time and date parsing, better than the built-ins
+(straight-use-package 'transpose-frame) ;; Adds those clockwise, counterclockwise for frame adjustments
 
+;; A M-x term replacement; faster, more stable "interactive" or "progressive" apps (like top, htop)
 (use-package vterm
   :straight t
   :bind ;; (("C-c t" . vterm)) Disabling b/c it’ll interfere w/some of my org-mode bindings in places
@@ -1398,7 +1430,7 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
   ;;
   ;; This needs to be an add-hook b/c I want to add the hook to hide path when I type shadow stuff
   ;; But I need to have vertico already loaded so I can access the minibuffer inside of which this hook will run
-  (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy) )
+  (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy))
 
 
 (use-package marginalia
@@ -1429,16 +1461,17 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
   :custom (yas-global-mode t)
   :config
   (yas-reload-all)
-  ;; :bind (;; Each and every one of these bindings interferes with org-mode bindings.
-  ;;        ;; ("C-c y" . yas-expand)
-  ;;        ;; ("C-c C-y" . yas-insert-snippet)
-  ;; 		 ;; ("C-c C-n" . yas-new-snippet)
-  ;; 		 ;; ("C-c C-v" . yas-visit-snippet-file)
-  ;; 		 ;; ("C-c C-l" . yas-describe-tables)
-  ;; 		 ;; ("C-c C-s" . yas-describe-tables)
-  ;; 		 ;; ("C-c C-d" . yas-reload-all)
-  ;; 		 ;; ("C-c C-r" . yas-reload-all)
-  ;; 		 )
+  :bind (:map yas-minor-mode-map ;; This too was interfering with org-mode
+			  ("C-c & C-s" . nil)
+			  ("C-c & C-n" . nil)
+			  ("C-c & C-v" . nil)
+			  ("C-c &" . nil)
+			  ("C-c y y" . yas-expand)
+			  ("C-c y s" . yas-insert-snippet)
+			  ("C-c y n" . yas-new-snippet)
+			  ("C-c y v" . yas-visit-snippet-file)
+			  ("C-c y t" . yas-describe-tables)
+			  ("C-c y r" . yas-reload-all))
   )
 
 
@@ -2052,7 +2085,8 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 	 (add-hook 'before-save-hook 'time-stamp nil t)
 	 (add-hook 'before-save-hook 'delete-trailing-whitespace nil t)))
  '(safe-local-variable-values
-   '((flycheck-mode . 0)
+   '((global-visual-line-mode)
+	 (flycheck-mode . 0)
 	 (writegood-mode)
 	 (artbollocks-mode)
 	 (flyspell-mode)
@@ -2113,7 +2147,7 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
 
 ;; Pre-load Andromeda
-(require 'andromeda-autoloads)
+;; (require 'andromeda-autoloads)
 
 (fset 'make-k-ri
       (lambda (&optional arg)
@@ -2292,14 +2326,14 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 (defvar my-theme-loaded nil "Flag to indicate if a theme has been loaded.")
 ;; Pick a random theme.
 
-;; Good themes leuven-dark modus-vivendi
+;; Good themes: leuven-dark, modus-vivendi, or none.
 (unless my-theme-loaded
   (let* ((excluded-themes '(light-blue tsdh-dark modus-vivendi wombat leuven))
          (available-themes (cl-remove-if (lambda (theme)
                                            (member theme excluded-themes))
                                          (custom-available-themes)))
          (random-theme (nth (random (length available-themes)) available-themes)))
-    (enable-theme random-theme t)
+    (enable-theme random-theme)
     (setq my-theme-loaded t)))
 
 (defun describe-current-themes ()
