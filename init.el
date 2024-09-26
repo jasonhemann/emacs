@@ -2333,7 +2333,7 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
                                            (member theme excluded-themes))
                                          (custom-available-themes)))
          (random-theme (nth (random (length available-themes)) available-themes)))
-    (enable-theme random-theme)
+    (load-theme random-theme)
     (setq my-theme-loaded t)))
 
 (defun describe-current-themes ()
