@@ -56,14 +56,6 @@
 ;; (straight-pull-recipe-repositories)
 ;; Should also disable copilot-mode auto if we don’t have that locally available
 
-;; JBH 4/6/22 disabling because it was seeming slow
-;; (ruler-mode 1)
-
-;; From my package.el days
-;; Don’t need htmlize. I’d only use it w/.org and .md; those are supported elsewhere.
-;; x-dict is emacs attic, so no need.
-;; dictionary is also a emacs 21 era thing, so no need.
-
 (require 'server)
 (unless (server-running-p)
   (server-start))
@@ -960,6 +952,8 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 ;; (use-package org-bullets
 ;;   :straight t
 ;;   :hook ((org-mode org-roam-mode) . org-bullets-mode))
+(straight-use-package 'org-superstar)
+
 
 ;; org-dropbox-mode starts up a daemon to sync org-notes via dropbox.
 ;; Not using, possibly deprecated in favor of other solutions
