@@ -70,25 +70,11 @@
  '(use-package-secret :host github :repo "emacswatcher/use-package-secret" :fork t :branch "patch-1"))
 
 
-;; Make sure that we don't bring up a new buffer for a compilation operation.
-(add-to-list
- 'display-buffer-alist
- '("\\`\\*Async Shell Command\\*\\'"
-   (display-buffer-no-window)))
 
 (use-package emacs
   :delight
   (auto-revert-mode)
-  (auto-fill-function " AF")
-  ;; (visual-line-mode)
-)
-
-;; seems to duplicate the inclusion of my .bash_profile behavior, disabled b/c I don't want to duplicate path
-;;
-;; (use-package exec-path-from-shell ;; Make Emacs use the $PATH set up by the user's shell
-;;   :if (not (eq system-type 'windows-nt))
-;;   :straight t
-;;   :config (exec-path-from-shell-initialize))
+  (auto-fill-function " AF"))
 
 ;(use-package fontaine) ;; I want to eventually add to be config w/Prot.
 
@@ -193,19 +179,28 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 ;; Don’t know where this code came from, possible this should now be
 ;; org-display-remote-inline-images. Still don’t understand the append.
 
-(use-package agda2-mode
-  :straight (:includes (eri annotation))
-  :ensure-system-package agda
-  :mode (("\\.agda\\'" . agda2-mode)
-		 ("\\.lagda.md\\'" . agda2-mode)))
+;; Commenting b/c the agda2-mode seems to come with agda installation
+;; itself w/its own agda
+;;
+;; (use-package agda2-mode
+;;   :straight (:includes (eri annotation))
+;;   :ensure-system-package agda
+;;   :mode (("\\.agda\\'" . agda2-mode)
+;; 		 ("\\.lagda.md\\'" . agda2-mode)
+;; 		 ("\\.lagda\\'" . agda2-mode)))
 
 (straight-use-package '(simple-httpd :includes web-server :files ("*.el")))
+
+(defun jbh/disable-trailing-whitespace ()
+  "Disable trailing whitespace mode. Used for select modes."
+  (setq show-trailing-whitespace nil))
+
+(add-hook 'calendar-mode-hook #'jbh/disable-trailing-whitespace)
+(add-hook 'shell-mode-hook #'jbh/disable-trailing-whitespace)
 
 (use-package impatient-mode ;; replacement for flymd
   :straight t
   :hook markdown-mode)
-
-
 
 (straight-use-package '(faceup :type built-in)) ;; b/c this is newer than the one from straight, lexical binding
 (straight-use-package '(let-alist :type built-in))
@@ -364,7 +359,7 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
   (define-key LaTeX-mode-map (kbd "C-c C-k") 'compile)
   (define-key LaTeX-mode-map (kbd "C-c |") 'align-current))
 
-(setq TeX-source-correlate-method 'synctex)
+
 (use-package auctex
   :straight t
   :custom
@@ -373,8 +368,8 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 	 (output-pdf "PDF Tools")
 	 (output-html "open")))
   (TeX-view-program-list
-      '(("PDF Tools" "TeX-pdf-tools-sync-view")
-        ("Skim" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
+   '(("PDF Tools" "TeX-pdf-tools-sync-view")
+     ("Skim" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
   (TeX-auto-TeX-command t)
   (TeX-auto-save t)
   (TeX-auto-untabify t)
@@ -1215,33 +1210,44 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 (use-package racket-mode
   :straight t
   :ensure-system-package racket
-  :bind (:map racket-mode-map ("C-c r" . racket-run))
+  :bind ( :map racket-mode-map
+		  ("C-c r" . racket-run)
+		  ("C-c C-x C-p" . racket-insert-prime)
+		  :map racket-hash-lang-mode-map
+		  ("C-c r" . racket-run)
+		  ("C-c C-x C-p" . racket-insert-prime))
+
+  :mode (("\\.rkt\\'" . racket-hash-lang-mode)
+		 ("\\.scrbl\\'" . racket-hash-lang-mode)
+		 ("\\.rhm\\'" . racket-hash-lang-mode))
   :hook
-  (racket-mode . racket-xp-mode)
-  (racket-mode . racket-smart-open-bracket-mode)
-  (racket-mode . (lambda () (define-key racket-mode-map (kbd "C-c C-x C-p") 'racket-insert-prime)))
-  (racket-mode . (lambda () (flycheck-mode -1))) ;; disable flycheck in racket b/c Rk✓
+  ((racket-mode racket-hash-lang-mode) . racket-xp-mode)
+  ((racket-mode racket-hash-lang-mode) . racket-smart-open-bracket-mode)
+  ((racket-mode racket-hash-lang-mode) . (lambda ()
+										   (setq global-visual-line-mode nil)
+										   (setq visual-line-mode nil)
+										   (setq truncate-lines t)))
+  ((racket-mode racket-hash-lang-mode) . (lambda () (flycheck-mode -1))) ;; disable flycheck in racket b/c Rk✓
+  (racket-repl-mode . racket-hash-lang-repl-mode)
   (racket-repl-mode . racket-smart-open-bracket-mode)
   :custom (racket-program "racket")
-  (mapc (lambda (pr) (put (car pr) 'racket-indent-function (cdr pr)))
-      '((conde . 0)
-        (fresh . 1)
-        (run . 1)
-        (run* . 1)
-        (run . 2)
-		(letrec . 0)))
+  ;; Commented b/c questionable if it works and racet-hash-lang-mode should have a better way to do it
+  ;; (mapc (lambda (pr) (put (car pr) 'racket-indent-function (cdr pr)))
+  ;;     '((conde . 0)
+  ;;       (fresh . 1)
+  ;;       (run . 1)
+  ;;       (run* . 1)
+  ;;       (run . 2)
+  ;; 		(letrec . 0)))
   :delight (racket-smart-open-bracket-mode)
            (racket-xp-mode " ✗")
 		   (racket-mode " Rkt")
-  :mode ("\\.rkt\\'" . racket-mode))
+		   (racket-hash-lang-mode " Rkt#lang"))
 
 ;; Deprecated, b/c Racket mode w/scribble files is better
-;;
 ;; FYI, also alt scribble-mode at
 ;; https://www.neilvandyke.org/scribble-emacs/scribble.el
-;;
 ;; Moreover, racket now has a hashlang mode.
-;;
 ;; (straight-use-package 'scribble-mode)
 
 (straight-use-package 'reazon)
@@ -1998,6 +2004,7 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
  '(global-display-line-numbers-mode t)
  '(global-visual-line-mode t)
  '(history-length 50)
+ '(idris-interpreter-path "idris2")
  '(indicate-empty-lines t)
  '(inhibit-startup-screen t)
  '(initial-scratch-message nil)
@@ -2315,7 +2322,18 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 
 )
 
+(use-package pet
+  :straight t
+  :config
+  (add-hook 'python-base-mode-hook 'pet-mode -10))
+
 (setq-default major-mode 'text-mode)
+
+(use-package ef-themes
+  :straight t
+  :config
+  (ef-themes-load-random))
+
 
 (defvar my-theme-loaded nil "Flag to indicate if a theme has been loaded.")
 ;; Pick a random theme.
@@ -2364,3 +2382,6 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 (define-key global-map "\C-c\C-c" nil)
 (provide 'init.el)
 ;;; init.el ends here
+
+(load-file (let ((coding-system-for-read 'utf-8))
+                (shell-command-to-string "agda-mode locate")))
