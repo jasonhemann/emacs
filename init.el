@@ -2334,20 +2334,6 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
   :config
   (ef-themes-load-random))
 
-
-(defvar my-theme-loaded nil "Flag to indicate if a theme has been loaded.")
-;; Pick a random theme.
-
-;; Good themes: leuven-dark, modus-vivendi, or none.
-(unless my-theme-loaded
-  (let* ((excluded-themes '(light-blue tsdh-dark modus-vivendi wombat leuven))
-         (available-themes (cl-remove-if (lambda (theme)
-                                           (member theme excluded-themes))
-                                         (custom-available-themes)))
-         (random-theme (nth (random (length available-themes)) available-themes)))
-    (load-theme random-theme)
-    (setq my-theme-loaded t)))
-
 (defun describe-current-themes ()
   "Display the current enabled themes in the modeline."
   (interactive "")
