@@ -76,7 +76,7 @@
   (auto-revert-mode)
   (auto-fill-function " AF"))
 
-;(use-package fontaine) ;; I want to eventually add to be config w/Prot.
+;;(use-package fontaine) ;; I want to eventually add to be consistent w/Prot.
 
 
 (use-package orderless
@@ -179,16 +179,6 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 ;; Don’t know where this code came from, possible this should now be
 ;; org-display-remote-inline-images. Still don’t understand the append.
 
-;; Commenting b/c the agda2-mode seems to come with agda installation
-;; itself w/its own agda
-;;
-;; (use-package agda2-mode
-;;   :straight (:includes (eri annotation))
-;;   :ensure-system-package agda
-;;   :mode (("\\.agda\\'" . agda2-mode)
-;; 		 ("\\.lagda.md\\'" . agda2-mode)
-;; 		 ("\\.lagda\\'" . agda2-mode)))
-
 (straight-use-package '(simple-httpd :includes web-server :files ("*.el")))
 
 (defun jbh/disable-trailing-whitespace ()
@@ -206,62 +196,6 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 (straight-use-package '(let-alist :type built-in))
 (straight-use-package '(which-key :config (which-key-mode)))
 (straight-use-package '(helm :files ("*.el" "emacs-helm.sh" (:exclude "helm-lib.el" "helm-source.el" "helm-multi-match.el" "helm-core.el" "helm-core-pkg.el") "helm-pkg.el")))
-;; These helm commands I commented because they seemed annoying when I used them.
-;; helm-browse-project: handles project files and buffers; defaults to current directory; works with helm-find-files; recommended with helm-ls-git, helm-ls-hg and helm-ls-svn for a better handling of version control files. Each time a project under version control is visited it is added to helm-browse-project-history and can be visted with helm-projects-history.
-;; helm-dabbrev: enhanced dabbrev implementation with helm completion; does not use emacs code.
-;; helm-imenu and helm-imenu-in-all-buffers: provide imenus for current or all buffers.
-;; helm-etags-select: enhanced etags with helm-completion; usable everywhere with helm-find-files.
-;; Grep: launch from any helm file commands; supports back-ends grep, ack-grep, git-grep, ag and custom implementation of pt.
-;; helm-gid: Helm interface for gid from id-utils.
-;; helm-show-kill-ring: A helm browser for kill ring.
-;; helm-all-mark-rings: A helm browser for mark ring; retrieves last positions in buffers.
-;; helm-filtered-bookmarks: enhanced browser for bookmarks.
-;; helm-list-elisp-packages: enhanced browser for elisp package management.
-;; These helm commands I commented because I wanted to try without helm, and try vertico instead.
-;; (straight-use-package 'helm)
-;; (straight-use-package 'helm-addressbook)
-;; (straight-use-package 'helm-bibtex)
-;; (straight-use-package 'helm-chrome)
-;; (straight-use-package 'helm-company)
-;; (straight-use-package 'helm-descbinds)
-;; (straight-use-package 'helm-dictionary)
-;; (straight-use-package 'helm-dirset)
-;; (straight-use-package 'helm-emms)
-;; (straight-use-package 'helm-eww)
-;; (straight-use-package 'helm-firefox)
-;; (straight-use-package 'helm-fuzzy)
-;; (straight-use-package 'helm-google)
-;; (straight-use-package 'helm-idris)
-;; (straight-use-package 'helm-lean)
-;; (straight-use-package 'helm-ls-git)
-;; (straight-use-package 'helm-mu)
-;; (straight-use-package 'helm-shell)
-;; (straight-use-package 'helm-system-packages)
-;; (straight-use-package 'helm-tramp)
-;; (straight-use-package 'helm-wordnet)
-
-;; (helm-mode 1)
-;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
-;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
-;; (global-set-key (kbd "C-c h") 'helm-command-prefix)
-;; (global-unset-key (kbd "C-x c"))
-;; (require 'helm-config)
-
-;; (global-set-key (kbd "C-x b") 'helm-buffers-list) ;; helm-buffers-list: provides enhanced buffers listing.
-;; (global-set-key (kbd "C-h a") 'helm-apropos) ;; enhanced apropos for functions and variables that C-h commands provide.
-;; (global-set-key (kbd "C-c h o") 'helm-occur) ;; helm-occur: enhanced occur for one or more buffers; launch from helm-buffers-list or current-buffer.
-;; (global-set-key (kbd "M-x") 'helm-M-x)
-;; (global-set-key (kbd "C-x C-f") 'helm-find-files) ;; helm-find-files: one command that handles all the files related commands
-;; (global-set-key (kbd "M-y") 'helm-show-kill-ring)
-;; (global-set-key (kbd "C-x r b") 'helm-filtered-bookmarks)
-
-;; (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
-;; (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
-;; (define-key helm-map (kbd "C-z") 'helm-select-action) ; list actions using C-z
-
-;; (when (executable-find "curl")
-;;   (setq helm-google-suggest-use-curl-p t))
-;; (global-set-key (kbd "<f6>") #'org-ref-helm-insert-cite-link)
 
 (straight-use-package '(rg :ensure-system-package rg))
 
@@ -392,24 +326,19 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 (straight-use-package 'auctex-latexmk)
 (straight-use-package 'auto-compile) ;; Automatically compile Emacs Lisp libraries
 
-;; Auto complete is for most things strictly worse than company-mode
-;; (straight-use-package 'auto-complete)
-;; (require 'auto-complete-config)
-;; (ac-mode 1)
-;; (ac-config-default)
-;; '(ac-modes
-;;   '(emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode c-mode cc-mode c++-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode haskell-mode perl-mode cperl-mode python-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode less-css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode racket-mode Racket-mode racket-repl-mode idris-mode idris-repl-mode))
-;; (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
-
-;; (straight-use-package 'ac-math) commented in favor of company-math
-;; (straight-use-package 'auto-complete-auctex)
-
-;; (straight-use-package 'auto-package-update) ;; straight has this feature already
-
-;; No longer needed as of 24.X see electric pair mode
-;; (straight-use-package 'autopair)
 (straight-use-package 'bbdb) ;; Emacs address book
+
+;; Extensible emacs package for importing bib information
 (straight-use-package 'biblio)
+
+(use-package ebib-biblio
+  :straight nil
+  :after (ebib biblio)
+  :bind (:map biblio-selection-mode-map
+	      ("e" . ebib-biblio-selection-import))
+  :demand t)
+
+
 (straight-use-package 'bibtex-completion)
 
 ;; Org-ref
@@ -436,8 +365,8 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
   "Kill up to, but not including ARGth occurrence of CHAR." t)
 
 ;; How is this different than https://github.com/emacs-straight/uniquify-files/blob/master/uniquify-files.el
-  (require 'uniquify)
-  (setq uniquify-buffer-name-style 'forward)
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'forward)
 (global-set-key (kbd "M-z") 'zap-up-to-char)
 
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
@@ -602,7 +531,7 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 (use-package dr-racket-like-unicode
   :straight t
   :hook
-  ((racket-mode racket-repl) . racket-unicode-input-method-enable)) ;;  scribble-mode deprecated
+  ((racket-mode racket-repl racket-hash-lang-mode) . racket-unicode-input-method-enable)) ;;  scribble-mode deprecated
 
 (straight-use-package 'clean-aindent-mode) ;; Emacs extension for simple indent and unindent
 (straight-use-package 'dtrt-indent) ;; A minor mode that guesses the indentation offset originally used for creating source code
@@ -640,7 +569,8 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 (use-package ediprolog
   :ensure-system-package
     ((gprolog . gnu-prolog)
-	 (swipl . swi-prolog))
+	 (swipl . swi-prolog)
+	 )
   :straight t
   :bind ([f10] . ediprolog-dwim))
 
@@ -686,45 +616,46 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 
 (straight-use-package 'expand-region) ;; Increase selected region by semantic units
 (straight-use-package 'f) ;; Modern API for working with files and directories in Emacs
-;; fontawesome is abandonware
 
-(use-package flycheck
-;;  :ensure-system-package proselint
-  :straight t
-  ;; Commented because this way drops important data.
-  ;; :delight " F✓"
-  ;; :config (global-flycheck-mode +1)
-  ;;  Consider as a fix to flycheck-mode, see https://github.com/flycheck/flycheck/issues/153#issuecomment-19450255
-  :custom (flycheck-highlighting-mode 'lines)
-		  (flycheck-check-syntax-automatically '(save idle-change mode-enabled) nil nil "flycheck was a time-hog w/Racket mode, so I disabled newline check & delayed to 4sec")
-		  (flycheck-idle-change-delay 4)
-		  ;; (flyspell-issue-welcome-flag nil)
-		  (global-flycheck-mode t)
-  :config
-	(flycheck-define-checker proselint
-	  "A linter for prose"
-	  :command ("proselint" source-inplace)
-	  :error-patterns
-	  ((warning line-start (file-name) ":" line ":" column ": "
-				(id (one-or-more (not (any " "))))
-				(message (one-or-more not-newline)
-						 (zero-or-more "\n" (any " ") (one-or-more not-newline)))
-				line-end))
-	  :modes (text-mode markdown-mode gfm-mode org-mode))
-	(add-to-list 'flycheck-checkers 'proselint)
-	(global-set-key (kbd "C-S-<f8>") 'flyspell-mode)
-	(global-set-key (kbd "C-M-<f8>") 'flyspell-buffer)
-	(global-set-key (kbd "C-<f8>") 'flyspell-check-previous-highlighted-word)
 
-	(defun flyspell-check-next-highlighted-word ()
-	  "Custom function to spell check next highlighted word."
-	  (interactive)
-	  (flyspell-goto-next-error)
-	  (ispell-word))
+;; Removing the flycheck mode, so that I can install vale.
+;; (use-package flycheck
+;; ;;  :ensure-system-package proselint
+;;   :straight t
+;;   ;; Commented because this way drops important data.
+;;   ;; :delight " F✓"
+;;   ;; :config (global-flycheck-mode +1)
+;;   ;;  Consider as a fix to flycheck-mode, see https://github.com/flycheck/flycheck/issues/153#issuecomment-19450255
+;;   :custom (flycheck-highlighting-mode 'lines)
+;; 		  (flycheck-check-syntax-automatically '(save idle-change mode-enabled) nil nil "flycheck was a time-hog w/Racket mode, so I disabled newline check & delayed to 4sec")
+;; 		  (flycheck-idle-change-delay 4)
+;; 		  ;; (flyspell-issue-welcome-flag nil)
+;; 		  (global-flycheck-mode t)
+;;   :config
+;; 	(flycheck-define-checker proselint
+;; 	  "A linter for prose"
+;; 	  :command ("proselint" source-inplace)
+;; 	  :error-patterns
+;; 	  ((warning line-start (file-name) ":" line ":" column ": "
+;; 				(id (one-or-more (not (any " "))))
+;; 				(message (one-or-more not-newline)
+;; 						 (zero-or-more "\n" (any " ") (one-or-more not-newline)))
+;; 				line-end))
+;; 	  :modes (text-mode markdown-mode gfm-mode org-mode))
+;; 	(add-to-list 'flycheck-checkers 'proselint)
+;; 	(global-set-key (kbd "C-S-<f8>") 'flyspell-mode)
+;; 	(global-set-key (kbd "C-M-<f8>") 'flyspell-buffer)
+;; 	(global-set-key (kbd "C-<f8>") 'flyspell-check-previous-highlighted-word)
 
-   (global-set-key (kbd "M-<f8>") 'flyspell-check-next-highlighted-word)
+;; 	(defun flyspell-check-next-highlighted-word ()
+;; 	  "Custom function to spell check next highlighted word."
+;; 	  (interactive)
+;; 	  (flyspell-goto-next-error)
+;; 	  (ispell-word))
 
-)
+;;    (global-set-key (kbd "M-<f8>") 'flyspell-check-next-highlighted-word)
+
+;; )
 
 (straight-use-package '(flycheck-textlint :type git :host github :repo "kisaragi-hiu/flycheck-textlint"))
 
@@ -737,9 +668,6 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 ;; Another java mode
 (straight-use-package 'meghanada)
 
-;; All eclim abandoned and better use java-lsp.
-;; Skip company-emacs-eclim ac-emacs-eclim too.
-
 ;; Take a look at what he has here
 ;; (load "~/Documents/eliemacs/eliemacs")
 
@@ -751,12 +679,6 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 (add-to-list 'auto-mode-alist '("\\.pl\\'" . prolog-mode))
 
 
-;; No need to use these, as flycheck is better
-;; (straight-use-package 'flylisp) ;; Add highlighting to mismatched parentheses, so you can see the mistake
-;; (straight-use-package 'flymake-easy)
-;; (straight-use-package 'flymake-gradle)
-;; (straight-use-package 'flymake-racket)
-;; (straight-use-package 'flymd) No longer works w/FF >= 68
 
 ;; Intended to make flyspell zippier
 (use-package flyspell-lazy
@@ -771,6 +693,7 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
   :hook (flyspell-mode . flyspell-popup-auto-correct-mode))
 
 (straight-use-package 'fullframe) ;; Advise commands to execute fullscreen, restoring the window setup when exiting.
+
 (straight-use-package 'gh-md)
 
 (straight-use-package 'ghub)
@@ -779,15 +702,8 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 (straight-use-package 'git-timemachine) ;; Walk through git revisions of a file
 
 (straight-use-package 'goto-chg) ;; Goto last change in current buffer. Needed?
-(straight-use-package 'graphql)
 
-;; Themes from packages. I have enough; don't think I need these.
-;; (straight-use-package 'color-theme-modern)
-;; (straight-use-package 'cyberpunk-theme)
-;; (straight-use-package 'gotham-theme)
-;; (straight-use-package 'green-phosphor-theme)
-;; (straight-use-package 'hc-zenburn-theme)
-;; (straight-use-package 'solarized-emacs)
+(straight-use-package 'graphql)
 
 (use-package helpful
   :straight t
@@ -813,6 +729,7 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
   :custom (hyperbole-mode))
 
 (global-set-key (kbd "C-x C-b") 'ibuffer)
+
 (use-package all-the-icons-ibuffer
   :straight t
   :delight
@@ -822,7 +739,7 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 
 (straight-use-package 'ibuffer-vc) ;; Let Emacs' ibuffer-mode group files by git project etc., and show file state
 
-;; (straight-use-package 'idris-mode) ;; We strictly prefer idris2-mode
+
 (use-package idris2-mode
   :straight (:host github :repo "idris-community/idris2-mode" :files ("*.el" "*.png" "Makefile"))
   :ensure-system-package idris2
@@ -935,30 +852,8 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 
 (straight-use-package 'mustache)
 (straight-use-package 'neotree) ;; A emacs tree plugin like NerdTree for Vim.
-;; (straight-use-package 'nlinum) %% with emacs 26 built-in line numbering, not wanted
 
-;; Actually somewhat annoying in practice, at least in the default configuration.
-;; Also IMO, copilot does a better completion job.
-;; (use-package org-ac
-;;   :straight t
-;;   :config (org-ac/config-default))
-
-;; Disabled because it once upon a time led to eating 100% CPU to fontify
-;; (use-package org-bullets
-;;   :straight t
-;;   :hook ((org-mode org-roam-mode) . org-bullets-mode))
 (straight-use-package 'org-superstar)
-
-
-;; org-dropbox-mode starts up a daemon to sync org-notes via dropbox.
-;; Not using, possibly deprecated in favor of other solutions
-;; (straight-use-package '(org-dropbox :hook org-mode))
-
-;; Don't want org-doing. An old, one-off
-
-;; Don't want org-dotemacs
-;; I instead want to develop a literate org-mode file that I can disentangle to a .el.
-
 
 (use-package org-inline-pdf
   :after org-mode
@@ -974,8 +869,9 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 
 ;; org-lms, once we have canvas---worth looking into
 
+;; Write notes on documents "directly" in the PDF but that live in org-mode.
 (use-package org-noter
-  :after (pdf-tools nov djvu)
+  :requires (pdf-tools nov djvu)
   :straight t)
 
 ;; Lets you write queries for org-agenda like views
@@ -1019,17 +915,6 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
   (org-super-agenda-groups nil)
   :hook org-agenda-mode)
 
-;; TODO: org-trello-mode, when I load it, seems to change how the
-;; org-mode files indent and breaks tab-through org-mode behavior.
-;; https://github.com/org-trello/org-trello/issues/418#issuecomment-1462483881
-;;
-;; renatofdds's fork seems to have a fix w/ a PR w/possibly a solution.
-;;
-;; (use-package org-trello
-;;   :straight (:build (:not compile))
-;;   :custom (org-trello-current-prefix-keybinding "C-c o")
-;;   :hook org-mode)
-
 (use-package org2web
   :after org-mode
   :straight t)
@@ -1060,46 +945,6 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 (straight-use-package 'paradox)
 
 
-;; A minor mode for parens pairs; commenting paredit in favor of smartparens
-;; (use-package paredit
-;;   :straight t
-;;   :bind (:map paredit-mode-map
-;; 		 ("{"   . paredit-open-curly)
-;; 		 ("}"   . paredit-close-curly))
-;;   :hook
-;;   ((agda2-mode
-;; 	emacs-lisp-mode
-;; 	eval-expression-minibuffer-setup
-;; 	ielm-mode ;; inferior-emacs-lisp-mode
-;; 	lisp-mode
-;; 	lisp-interaction-mode
-;; 	scheme-mode-hook
-;; 	racket-mode
-;; 	racket-repl-mode
-;; 	idris-mode
-;; 	idris-repl-mode
-;; 	idris-prover-script-mode
-;; 	inferior-scheme-mode) . enable-paredit-mode)
-;;   :config
-;;   ;; terminal emacs seems to use some of these sequences for moving
-;;   ;; around, both directly as in to switch between open windows in the
-;;   ;; terminal application, and also perhaps as parts of a sequences
-;;   ;; when using the GUI window stuff in terminal.
-;;   ;;
-;;   (unless terminal-frame
-;; 	(bind-keys :map paredit-mode-map
-;; 			   ("M-[" . paredit-wrap-square)
-;; 			   ("M-{" . paredit-wrap-curly))))
-
-;; ;; Paredit-everywhere-mode is a liar. It turns on *some* of the
-;; ;; paredit keybindings but not all, and it doesn't let you choose
-;; (use-package paredit-everywhere
-;;   :straight t
-;;   :bind ("{" . 'paredit-open-curly)
-;;   :hook
-;;   (prog-mode . paredit-everywhere-mode))
-
-;; (straight-use-package 'paredit-menu)
 
 (straight-use-package 'parent-mode)
 
@@ -1108,7 +953,7 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 (use-package pdf-tools
   :straight t
   :ensure t
-;;  :after (pdf-annot fullframe)
+;;  :after (fullframe)
   :magic ("%PDF" . pdf-view-mode)
   :config (pdf-tools-install :no-query) ;; if this slows things down try (pdf-loader-install)
   ;; Setup in .bash_profile. Next time I'm on a new machine, I'll try to see what this was checking for and try to auto-install w/brew and add a message to the user instead
@@ -1121,9 +966,11 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 		 ("D"   . 'pdf-annot-delete)
 		 ("C-s" . 'isearch-forward)
          ;; ("m"   . 'mrb/mailfile)
-		 :map pdf-annot-edit-contents-minor-mode-map
-         ("<return>"   . 'pdf-annot-edit-contents-commit)
-         ("<S-return>" .  'newline)))
+		 ;; Commented b/c pdf-annot-edit-contents-minor-mode-map seems to not be available when this runs for the first time.
+		 ;; :map pdf-annot-edit-contents-minor-mode-map
+         ;; ("<return>"   . 'pdf-annot-edit-contents-commit)
+         ;; ("<S-return>" .  'newline)
+))
 
 ;; https://www.emacswiki.org/emacs/LineNumbers#h5o-1
 ;; Plus the eval-after-load to make sure that it happens in the right sequence.
@@ -1176,31 +1023,6 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 ;; http://projectile.readthedocs.io
 ;; ibuffer-projectile. If I like projectile that is.
 
-;; Broken
-;; No coq-mode package
-;; (use-package proof-general
-;;   :defines (coq-mode-map
-;;             proof-prog-name-ask
-;;             proof-follow-mode
-;;             proof-sticky-errors
-;;             proof-splash-seen)
-;;   :straight t
-;;   :mode ("\\.v$" . coq-mode)
-;;   :init (push ".v.d" completion-ignored-extensions)
-;;   :custom
-;;   (proof-prog-name-ask t)
-;;   (proof-follow-mode 'followdown)
-;;   (proof-sticky-errors t)
-;;   (proof-splash-seen t)
-;;   (coq-accept-proof-using-suggestion 'never)
-;;   :config (flycheck-mode 0)
-;;   :bind (:map coq-mode-map
-;; 			  (("s-n" . proof-assert-next-command-interactive)
-;; 			   ("s-<down>" . proof-assert-next-command-interactive)
-;; 			   ("s-<right>" . proof-goto-point)
-;; 			   ("s-<up>" . proof-undo-last-successful-command)
-;; 			   ("s-<left>" . proof-goto-end-of-locked)
-;; 			   ("s-<end>" . proof-process-buffer))))
 
 (defun racket-insert-prime ()
   "Insert a Unicode prime character."
@@ -1213,9 +1035,7 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
   :bind ( :map racket-mode-map
 		  ("C-c r" . racket-run)
 		  ("C-c C-x C-p" . racket-insert-prime)
-		  :map racket-hash-lang-mode-map
-		  ("C-c r" . racket-run)
-		  ("C-c C-x C-p" . racket-insert-prime))
+		  )
 
   :mode (("\\.rkt\\'" . racket-hash-lang-mode)
 		 ("\\.scrbl\\'" . racket-hash-lang-mode)
@@ -1264,16 +1084,6 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 
 (straight-use-package 's) ;; The long lost Emacs string manipulation library.
 ;; (straight-use-package 'scheme-complete) ;; Unclear if I need it — Asked Alex Shinn
-
-;; SMEX was causing a major slowdown w/my config.
-;;
-;; (use-package smex
-;;   :straight t
-;;   :config (smex-initialize) ; Can be omitted. This might cause a (minimal) delay when Smex is auto-initialized on its first run.
-;;   :bind (("M-x" . smex)
-;; 		 ("M-X" . smex-major-mode-commands)
-;; 		 ("C-c C-c M-x" . execute-extended-command)))
-;; This is your old M-x.
 
 (straight-use-package 'semi)
 (straight-use-package 'sh-script) ;; The major mode for editing Unix and GNU/Linux shell script code
@@ -1372,18 +1182,7 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 (straight-use-package 'sx) ;; Stackoverflow mode ;-)
 (straight-use-package 'svg-tag-mode)
 
-;; Sublimity is annoying, the minimap is more annoying than useful.
-;; (use-package sublimity
-;;   :straight t
-;;   :config
-;;   (require 'sublimity-scroll)
-;; ;;   (require 'sublimity-map)
-;; ;;  (require 'sublimity-attractive)
-
-;;   :hook ((prog-mode text-mode) . sublimity-mode))
-
 (straight-use-package 'tabbar)
-(straight-use-package 'tramp)
 (straight-use-package 'treepy) ;; tree-walk functionality like a clojure library implementation
 (straight-use-package 'ts) ;; A bunch of nice utilities for time and date parsing, better than the built-ins
 (straight-use-package 'transpose-frame) ;; Adds those clockwise, counterclockwise for frame adjustments
@@ -1396,9 +1195,8 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 
 (use-package eshell-vterm
   :straight t
-;;  Not clear that I should need these configuration options, b/c dependencies.
-;;  :demand t
-;;  :after eshell
+  :demand t
+  :after vterm
   :custom
   (eshell-vterm-mode t)
   :config
@@ -1409,16 +1207,6 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
   :delight
   :custom (volatile-highlights-mode t))
 
-;; I don't think I like undo-tree. Weird undo structure.
-;; (use-package undo-tree ;; Treat undo history as a tree
-;;   :straight t
-;;   :config
-;;   (global-undo-tree-mode)
-;;   BTW Config section assumes volatile highlights
-;;   (vhl/define-extension 'undo-tree 'undo-tree-yank 'undo-tree-move)
-;;   (vhl/install-extension 'undo-tree))
-
-;; Replaces selectrum. Better b/c Prot told me so.
 (use-package vertico
   :straight t
   :config (vertico-mode)
@@ -1523,7 +1311,7 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 
 (use-package zygospore
   :straight t
-  :bind ("\C-x1" . zygospore-toggle-delete-other-windows))
+  :bind ("\C-x1" . zygospore-toggle-delete-other-windows)) ;; provides undoable C-x 1, better than built-in.
 
 (use-package all-the-icons
   :straight t
@@ -1735,7 +1523,8 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
        '("Cpageref" TeX-arg-ref)))))
 ;; Also not sure what else I needed to do to make subsec: available by default
 
-(add-hook 'text-mode-hook 'flyspell-mode)
+;; Disabling flyspell, flycheck
+;; (add-hook 'text-mode-hook 'flyspell-mode)
 
 ;; See the following for a related issue and workaround. Gets complicated.
 ;; https://github.com/Fuco1/smartparens/issues/854
@@ -2087,7 +1876,6 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 	 (add-hook 'before-save-hook 'delete-trailing-whitespace nil t)))
  '(safe-local-variable-values
    '((global-visual-line-mode)
-	 (flycheck-mode . 0)
 	 (writegood-mode)
 	 (artbollocks-mode)
 	 (flyspell-mode)
@@ -2297,9 +2085,6 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 ;;      )
 ;;    )
 ;; )
-
-;; relies on phantomjs, which is discontinued upstream
-;; (straight-use-package 'ob-browser)
 
 ;; Presumes geiser-mode, at least by default.
 ;; Documentation shows how to add racket-mode
