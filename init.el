@@ -139,6 +139,8 @@
 		  (org-use-tag-inheritance nil)
 		  :hook (org-mode . org--disable-wordsmith-mode))
 
+(straight-use-package 'orgtbl-aggregate)
+
 (defun my-ignore-delete-windows (&rest args)
   "Run original function with all ARGS.
 For the scope of this function, make `delet-other-windows' the same as `ignore'."
