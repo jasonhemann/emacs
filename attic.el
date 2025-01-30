@@ -267,3 +267,5 @@
 ;;  ("C-c _"  . wrap-with-underscores)
 ;;  ("C-c `"  . wrap-with-back-quotes))
 
+;; disabled b/c I don't use tags and todo statuses
+;;(org-fast-tag-selection-include-todo nil)
