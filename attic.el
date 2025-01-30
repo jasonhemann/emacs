@@ -271,6 +271,8 @@
 ;;(org-fast-tag-selection-include-todo nil)
 
 
+All of this is removed because I can use flycheck with vale for all of my linting.
+
 ;; (use-package flymake-proselint
 ;;   :straight t
 ;;   :commands (flymake-show-buffer-diagnostics)
@@ -318,3 +320,24 @@
 ;; )
 
 ;; (straight-use-package '(flycheck-textlint :type git :host github :repo "kisaragi-hiu/flycheck-textlint"))
+
+;; Intended to make flyspell zippier
+;; (use-package flyspell-lazy
+;;   :straight t
+;;   :custom (flyspell-lazy-mode t))
+
+;; (use-package flyspell-popup
+;;   :after flyspell
+;;   :straight (:host github :repo "xuchunyang/flyspell-popup")
+;;   :bind (:map flyspell-mode-map
+;; 		 ("C-;" . flyspell-popup-correct))
+;;   :hook (flyspell-mode . flyspell-popup-auto-correct-mode))
+
+
+;; Disabling flyspell, flycheck
+;; (add-hook 'text-mode-hook 'flyspell-mode)
+
+;; See the following for a related issue and workaround. Gets complicated.
+;; https://github.com/Fuco1/smartparens/issues/854
+;; (add-hook 'text-mode-hook 'electric-quote-mode)
+;; I do not like electric-quote-mode. I will turn it on just when I want it.

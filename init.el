@@ -647,20 +647,6 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 
 (add-to-list 'auto-mode-alist '("\\.pl\\'" . prolog-mode))
 
-
-
-;; Intended to make flyspell zippier
-(use-package flyspell-lazy
-  :straight t
-  :custom (flyspell-lazy-mode t))
-
-(use-package flyspell-popup
-  :after flyspell
-  :straight (:host github :repo "xuchunyang/flyspell-popup")
-  :bind (:map flyspell-mode-map
-		 ("C-;" . flyspell-popup-correct))
-  :hook (flyspell-mode . flyspell-popup-auto-correct-mode))
-
 (straight-use-package 'fullframe) ;; Advise commands to execute fullscreen, restoring the window setup when exiting.
 
 (straight-use-package 'gh-md)
@@ -1018,7 +1004,6 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 										   (show-smartparens-mode -1)
 										   (visual-line-mode -1)
 										   (toggle-truncate-lines -1)))
-  ((racket-mode racket-hash-lang-mode) . (lambda () (flycheck-mode -1))) ;; disable flycheck in racket b/c Rk✓
   (racket-repl-mode . racket-smart-open-bracket-mode)
   (racket-repl-mode . racket-hash-lang-repl-mode)
   :custom (racket-program "racket")
@@ -1472,14 +1457,6 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
        '("cpageref" TeX-arg-ref)
        '("Cpageref" TeX-arg-ref)))))
 ;; Also not sure what else I needed to do to make subsec: available by default
-
-;; Disabling flyspell, flycheck
-;; (add-hook 'text-mode-hook 'flyspell-mode)
-
-;; See the following for a related issue and workaround. Gets complicated.
-;; https://github.com/Fuco1/smartparens/issues/854
-;; (add-hook 'text-mode-hook 'electric-quote-mode)
-;; I do not like electric-quote-mode. I will turn it on just when I want it.
 
 ;; Modes someone had enabled that I want to investigate.
 
