@@ -245,3 +245,25 @@
 
 ;; relies on phantomjs, which is discontinued upstream
 ;; (straight-use-package 'ob-browser)
+
+;; I thought this would be useful for block comments, but I am not sure
+;; if this is what this is supposed to be for.
+;;
+;; EDIT: For things like HTML where you have many paired delimiters.
+;;
+;; EDIT: Disabled b/c interfering w/racket-hash-lang-mode parens and smartparens should be able to do its job
+(use-package wrap-region ;; Emacs minor mode to wrap region with tag or punctuations
+  :straight (:host github :repo "rejeep/wrap-region.el" :fork t :files ("*.el" "out"))
+  :delight
+  :custom
+  (wrap-region-global-mode t))
+
+;; WRAP-REGION PACKAGE SHOULD HELP ME WRITE THESE BETTER
+;;  ("C-c ("  . wrap-with-parens)
+;;  ("C-c ["  . wrap-with-brackets)
+;;  ("C-c {"  . wrap-with-braces)
+;;  ("C-c '"  . wrap-with-single-quotes)
+;;  ("C-c \"" . wrap-with-double-quotes)
+;;  ("C-c _"  . wrap-with-underscores)
+;;  ("C-c `"  . wrap-with-back-quotes))
+

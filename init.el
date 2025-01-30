@@ -747,10 +747,9 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
   :ensure-system-package idris2
   :config (keymap-unset idris2-mode-map "C-c C-c") ;; default idris2-case-dwim clobbers too much
   :hook (idris2-mode . (lambda ()
-						 (setq smartparens-global-mode nil)
-						 (setq smartparens-mode nil)
-						 (setq smartparens-strict-mode nil)
-						 (setq wc-mode nil)
+						 (smartparens-mode -1)
+						 (smartparens-strict-mode -1)
+						 (wc-mode -1)
 						 (setq idris2-load-packages '("prelude" "base" "contrib"))))
   :bind (:map idris2-mode-map
 			  ("C-c c"       . idris2-case-dwim)
@@ -1046,12 +1045,15 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
   ((racket-mode racket-hash-lang-mode) . racket-xp-mode)
   ((racket-mode racket-hash-lang-mode) . racket-smart-open-bracket-mode)
   ((racket-mode racket-hash-lang-mode) . (lambda ()
-										   (setq global-visual-line-mode nil)
-										   (setq visual-line-mode nil)
-										   (setq truncate-lines t)))
+										   (view-mode -1)
+										   (smartparens-mode -1)
+										   (smartparens-strict-mode -1)
+										   (show-smartparens-mode -1)
+										   (visual-line-mode -1)
+										   (toggle-truncate-lines -1)))
   ((racket-mode racket-hash-lang-mode) . (lambda () (flycheck-mode -1))) ;; disable flycheck in racket b/c Rk✓
-  (racket-repl-mode . racket-hash-lang-repl-mode)
   (racket-repl-mode . racket-smart-open-bracket-mode)
+  (racket-repl-mode . racket-hash-lang-repl-mode)
   :custom (racket-program "racket")
   ;; Commented b/c questionable if it works and racet-hash-lang-mode should have a better way to do it
   ;; (mapc (lambda (pr) (put (car pr) 'racket-indent-function (cdr pr)))
@@ -1061,8 +1063,7 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
   ;;       (run* . 1)
   ;;       (run . 2)
   ;; 		(letrec . 0)))
-  :delight (racket-smart-open-bracket-mode)
-           (racket-xp-mode " ✗")
+  :delight (racket-xp-mode " ✗")
 		   (racket-mode " Rkt")
 		   (racket-hash-lang-mode " Rkt#lang"))
 
@@ -1125,15 +1126,6 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 		 ("M-]" . sp-unwrap-sexp)))
 
 
-;; WRAP-REGION PACKAGE SHOULD HELP ME WRITE THESE BETTER
-;;  ("C-c ("  . wrap-with-parens)
-;;  ("C-c ["  . wrap-with-brackets)
-;;  ("C-c {"  . wrap-with-braces)
-;;  ("C-c '"  . wrap-with-single-quotes)
-;;  ("C-c \"" . wrap-with-double-quotes)
-;;  ("C-c _"  . wrap-with-underscores)
-;;  ("C-c `"  . wrap-with-back-quotes))
-
 ;; (defmacro def-pairs (pairs)
 ;;   "Define functions for pairing. PAIRS is an alist of (NAME . STRING)
 ;; conses, where NAME is the function name that will be created and
@@ -1161,17 +1153,6 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 ;;             (single-quote . "'")
 ;;             (double-quote . "\"")
 ;;             (back-quote . "`")))
-
-;; I think this would be useful for block comments, but I am not sure
-;; if this is what this is supposed to be for.
-;;
-;; EDIT: For things like HTML where you have many paired delimiters.
-(use-package wrap-region ;; Emacs minor mode to wrap region with tag or punctuations
-  :straight (:host github :repo "rejeep/wrap-region.el" :fork t :files ("*.el" "out"))
-  :delight
-  :custom
-  (wrap-region-global-mode t))
-
 
 ;; sml-mode package seems damaged, or installation incorrect
 ;; (use-package sml-mode
