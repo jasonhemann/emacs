@@ -620,6 +620,13 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 (straight-use-package 'f) ;; Modern API for working with files and directories in Emacs
 
 
+(use-package flymake-proselint
+  :straight t
+  :commands (flymake-show-buffer-diagnostics)
+  :hook
+  ((text-mode) . flymake-proselint-setup))
+
+
 ;; Removing the flycheck mode, so that I can install vale.
 ;; (use-package flycheck
 ;; ;;  :ensure-system-package proselint
