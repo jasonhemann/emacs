@@ -40,7 +40,8 @@
   :config
   (benchmark-init/activate)
   ;; To stop benchmarking after init
-  (add-hook 'after-init-hook 'benchmark-init/deactivate))
+  :hook
+  (after-init . benchmark-init/deactivate))
 
 (defvar straight-check-for-modifications)
 (setq straight-fix-flycheck t
@@ -620,53 +621,12 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 (straight-use-package 'f) ;; Modern API for working with files and directories in Emacs
 
 
-(use-package flymake-proselint
-  :straight t
+(use-package flymake-vale
+  :straight (:type git :host github :repo "tpeacock19/flymake-vale")
+  :ensure-system-package rg
   :commands (flymake-show-buffer-diagnostics)
   :hook
-  ((text-mode) . flymake-proselint-setup))
-
-
-;; Removing the flycheck mode, so that I can install vale.
-;; (use-package flycheck
-;; ;;  :ensure-system-package proselint
-;;   :straight t
-;;   ;; Commented because this way drops important data.
-;;   ;; :delight " F✓"
-;;   ;; :config (global-flycheck-mode +1)
-;;   ;;  Consider as a fix to flycheck-mode, see https://github.com/flycheck/flycheck/issues/153#issuecomment-19450255
-;;   :custom (flycheck-highlighting-mode 'lines)
-;; 		  (flycheck-check-syntax-automatically '(save idle-change mode-enabled) nil nil "flycheck was a time-hog w/Racket mode, so I disabled newline check & delayed to 4sec")
-;; 		  (flycheck-idle-change-delay 4)
-;; 		  ;; (flyspell-issue-welcome-flag nil)
-;; 		  (global-flycheck-mode t)
-;;   :config
-;; 	(flycheck-define-checker proselint
-;; 	  "A linter for prose"
-;; 	  :command ("proselint" source-inplace)
-;; 	  :error-patterns
-;; 	  ((warning line-start (file-name) ":" line ":" column ": "
-;; 				(id (one-or-more (not (any " "))))
-;; 				(message (one-or-more not-newline)
-;; 						 (zero-or-more "\n" (any " ") (one-or-more not-newline)))
-;; 				line-end))
-;; 	  :modes (text-mode markdown-mode gfm-mode org-mode))
-;; 	(add-to-list 'flycheck-checkers 'proselint)
-;; 	(global-set-key (kbd "C-S-<f8>") 'flyspell-mode)
-;; 	(global-set-key (kbd "C-M-<f8>") 'flyspell-buffer)
-;; 	(global-set-key (kbd "C-<f8>") 'flyspell-check-previous-highlighted-word)
-
-;; 	(defun flyspell-check-next-highlighted-word ()
-;; 	  "Custom function to spell check next highlighted word."
-;; 	  (interactive)
-;; 	  (flyspell-goto-next-error)
-;; 	  (ispell-word))
-
-;;    (global-set-key (kbd "M-<f8>") 'flyspell-check-next-highlighted-word)
-
-;; )
-
-(straight-use-package '(flycheck-textlint :type git :host github :repo "kisaragi-hiu/flycheck-textlint"))
+  ((text-mode latex-mode org-mode markdown-mode message-mode) . flymake-vale-load))
 
 ;; (use-package gradle-mode ;; I should want maven, I think, tbqh
 ;;   :straight t
