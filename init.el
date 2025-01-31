@@ -140,6 +140,8 @@
 		  (org-use-tag-inheritance nil)
 		  :hook (org-mode . org--disable-wordsmith-mode))
 
+(require 'org-inlinetask) ; Comes w/org-mode, lets you actually do nesting.
+
 (straight-use-package 'orgtbl-aggregate)
 
 (defun my-ignore-delete-windows (&rest args)
@@ -620,12 +622,12 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 (straight-use-package 'expand-region) ;; Increase selected region by semantic units
 (straight-use-package 'f) ;; Modern API for working with files and directories in Emacs
 
-
 (use-package flymake-vale
   :straight (:type git :host github :repo "tpeacock19/flymake-vale")
   :ensure-system-package rg
   :commands (flymake-show-buffer-diagnostics)
   :hook
+  (find-file-hook . flymake-vale-maybe-load)
   ((text-mode latex-mode org-mode markdown-mode message-mode) . flymake-vale-load))
 
 ;; (use-package gradle-mode ;; I should want maven, I think, tbqh
@@ -672,7 +674,7 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 
 (use-package highlight-indent-guides
   :straight t
-  :hook prog-mode-hook)
+  :hook prog-mode)
 
 (straight-use-package 'ht)
 ;; https://github.com/coldnew/coldnew-emacs#hydra
@@ -867,7 +869,7 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
   :straight t
   :custom
   (org-super-agenda-groups nil)
-  :hook org-agenda-mode)
+  :hook org-agenda)
 
 (use-package org2web
   :after org-mode
