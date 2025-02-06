@@ -674,7 +674,7 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 
 (use-package highlight-indent-guides
   :straight t
-  :hook prog-mode)
+  :hook (python-common-mode idris2-mode))
 
 (straight-use-package 'ht)
 ;; https://github.com/coldnew/coldnew-emacs#hydra
@@ -1857,6 +1857,8 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
  '(warning-suppress-types '((comp)))
  '(window-combination-resize t))
 
+(custom-set-faces)
+
 ;; Add opam emacs directory to the load-path This whole substring
 ;; thing just strips the newline. Seems weird way to do it. Check 's'
 ;; package for possibly better function?
@@ -1990,16 +1992,6 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 ;; 		  (with-selected-frame frame
 ;; 		    (set-font-faces))))
 ;;   (set-font-faces))
-
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(diary ((t (:foreground "dark red"))))
- '(font-lock-function-name-face ((t (:foreground "#385e6b" :weight bold))))
- '(mode-line ((t (:background "#f0f0f1" :box (:line-width (1 . 1) :color "#383a42") :height 0.6)))))
-
 
 
 (require 'org-protocol)
