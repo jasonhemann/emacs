@@ -622,6 +622,15 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 (straight-use-package 'expand-region) ;; Increase selected region by semantic units
 (straight-use-package 'f) ;; Modern API for working with files and directories in Emacs
 
+(use-package flymake
+  :custom
+  (flymake-start-on-flymake-mode t)
+  (flymake-start-on-save-buffer t)
+  :bind (:map flymake-mode-map
+			  ("M-n" . flymake-goto-next-error)
+			  ("M-p" . flymake-goto-prev-error))
+  :hook (text-mode))
+
 (use-package flymake-vale
   :straight (:type git :host github :repo "tpeacock19/flymake-vale")
   :ensure-system-package rg
