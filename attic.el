@@ -341,3 +341,15 @@ All of this is removed because I can use flycheck with vale for all of my lintin
 ;; https://github.com/Fuco1/smartparens/issues/854
 ;; (add-hook 'text-mode-hook 'electric-quote-mode)
 ;; I do not like electric-quote-mode. I will turn it on just when I want it.
+
+;; Commented b/c I already have writegood built-in w/vale w/flymake-vale
+;; (use-package writegood-mode
+;;   :after artbollocks-mode
+;;   :straight t
+;;   :delight " 💯"
+;;   :hook text-mode
+;;   ;; Because I want these added to the artbollocks-mode-map, not the global map.
+;;   ;; Note we demand artbollocks-mode, so this should be safe.
+;;   :bind (:map artbollocks-mode-keymap
+;; 		 ("C-c M-a 2 g" . writegood-grade-level)
+;; 		 ("C-c M-a 2 e" . writegood-reading-ease)))

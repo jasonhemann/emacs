@@ -633,7 +633,7 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 
 (use-package flymake-vale
   :straight (:type git :host github :repo "tpeacock19/flymake-vale")
-  :ensure-system-package rg
+  :ensure-system-package vale
   :commands (flymake-show-buffer-diagnostics)
   :hook
   (find-file-hook . flymake-vale-maybe-load)
@@ -1231,19 +1231,6 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
   :delight " ✒"
   :straight t
   :hook text-mode)
-
-;; ⮐
-
-(use-package writegood-mode
-  :after artbollocks-mode
-  :straight t
-  :delight " 💯"
-  :hook text-mode
-  ;; Because I want these added to the artbollocks-mode-map, not the global map.
-  ;; Note we demand artbollocks-mode, so this should be safe.
-  :bind (:map artbollocks-mode-keymap
-		 ("C-c M-a 2 g" . writegood-grade-level)
-		 ("C-c M-a 2 e" . writegood-reading-ease)))
 
 (use-package ws-butler ;; Unobtrusively trim extraneous white-space *ONLY* in lines edited.
   :straight t
