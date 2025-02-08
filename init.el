@@ -338,11 +338,11 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 
 (use-package ebib-biblio
   :straight nil
+  :functions ebib--update-buffers
   :after (ebib biblio)
   :bind (:map biblio-selection-mode-map
 	      ("e" . ebib-biblio-selection-import))
   :demand t)
-
 
 (straight-use-package 'bibtex-completion)
 
@@ -501,6 +501,7 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
   :bind (("C-z" . company-try-hard)))
 
 (straight-use-package 'company-fuzzy)
+
 (straight-use-package 'consult) ;; the counsel equivalent for vertico
 (straight-use-package 'coq-commenter)
 
@@ -511,17 +512,9 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 
 (straight-use-package 'dash) ;; A modern list library for Emacs
 
-;; Package dash-functional is obsolete; use dash 2.18.0 instead
-;; (straight-use-package 'dash-functional)
-
 (straight-use-package 'dirvish)
 
 (straight-use-package '(dired-hacks-utils :host github :repo "Fuco1/dired-hacks" :fork t))
-
-;; Disable dired-collapse, b/c it makes it difficult to	move things around from dired.
-;; (use-package dired-collapse
-;;   :straight (:host github :repo "Fuco1/dired-hacks" :fork t) ;; This is now correct
-;;   :hook dired-mode)
 
 (straight-use-package 'bookmark+)
 
@@ -1722,9 +1715,9 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
  '(indicate-empty-lines t)
  '(inhibit-startup-screen t)
  '(initial-scratch-message nil)
- '(ispell-highlight-face 'highlight)
- '(ispell-highlight-p t)
- '(ispell-program-name "aspell")
+ '(ispell-highlight-face 'highlight t)
+ '(ispell-highlight-p t t)
+ '(ispell-program-name "aspell" t)
  '(load-home-init-file t t)
  '(ls-lisp-dirs-first t)
  '(make-backup-files nil)
@@ -1853,7 +1846,12 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
  '(warning-suppress-types '((comp)))
  '(window-combination-resize t))
 
-(custom-set-faces)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
 
 ;; Add opam emacs directory to the load-path This whole substring
 ;; thing just strips the newline. Seems weird way to do it. Check 's'

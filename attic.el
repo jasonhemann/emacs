@@ -353,3 +353,12 @@ All of this is removed because I can use flycheck with vale for all of my lintin
 ;;   :bind (:map artbollocks-mode-keymap
 ;; 		 ("C-c M-a 2 g" . writegood-grade-level)
 ;; 		 ("C-c M-a 2 e" . writegood-reading-ease)))
+
+
+;; Package dash-functional is obsolete; use dash 2.18.0 instead
+;; (straight-use-package 'dash-functional)
+
+;; Disable dired-collapse, b/c it makes it difficult to	move things around from dired.
+;; (use-package dired-collapse
+;;   :straight (:host github :repo "Fuco1/dired-hacks" :fork t) ;; This is now correct
+;;   :hook dired-mode)
