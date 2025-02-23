@@ -66,12 +66,6 @@
 (straight-use-package '(use-package :custom (use-package-compute-statistics t)))
 (straight-use-package 'use-package-ensure-system-package)
 
-;; So that I can publicly VC my config w/o leaking secret keys &c.
-(straight-use-package
- '(use-package-secret :host github :repo "emacswatcher/use-package-secret" :fork t :branch "patch-1"))
-
-
-
 (use-package emacs
   :delight
   (auto-revert-mode)
@@ -96,6 +90,7 @@
     "Disable wordsmith mode."
     (wordsmith-mode -1))
   :config (setq org-effort-property "EFFORT") ;; This causes EFFORT to look like all the others
+          (require 'org-inlinetask) ; Comes w/org-mode, lets you actually do nesting.
   :bind (:map org-mode-map
 		 ("C-c l" . org-store-link)
 		 ("C-c a" . org-agenda)
@@ -139,8 +134,6 @@
 		  (org-use-sub-superscripts '{})
 		  (org-use-tag-inheritance nil)
 		  :hook (org-mode . org--disable-wordsmith-mode))
-
-(require 'org-inlinetask) ; Comes w/org-mode, lets you actually do nesting.
 
 (straight-use-package 'orgtbl-aggregate)
 
@@ -214,11 +207,6 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 (use-package aweshell
   :straight (:host github :repo "manateelazycat/aweshell" :files ("*.el" "out")))
 
-;; In order to search for synonyms.
-(use-package www-synonyms
-  :straight t
-  :secret www-synonyms-key)
-
 (straight-use-package 'emacsql)
 
 (use-package org-roam
@@ -259,18 +247,18 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 
 
 (use-package org-roam-ui
-	:straight (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out"))
-	;; I don't know when I need an ~:after~ flag
-	:after org-roam
-	:delight (org-roam-ui-mode "ORUI")
-	(org-roam-ui-follow-mode " F-")
-	;; Cannot use hook here, b/c need to catch possible error.
-	;; :hook (after-init . org-roam-ui-mode)
-	:custom
-	(org-roam-ui-sync-theme t)
-	(org-roam-ui-follow t)
-	(org-roam-ui-update-on-save t)
-	(org-roam-ui-open-on-start t))
+  :straight (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out"))
+  ;; I don't know when I need an ~:after~ flag
+  :after org-roam
+  :delight (org-roam-ui-mode "ORUI")
+  (org-roam-ui-follow-mode " F-")
+  ;; Cannot use hook here, b/c need to catch possible error.
+  ;; :hook (after-init . org-roam-ui-mode)
+  :custom
+  (org-roam-ui-sync-theme t)
+  (org-roam-ui-follow t)
+  (org-roam-ui-update-on-save t)
+  (org-roam-ui-open-on-start t))
 
 (straight-use-package 'academic-phrases)
 
@@ -380,70 +368,6 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 (global-set-key (kbd "C-M-s") 'isearch-forward)
 (global-set-key (kbd "C-M-r") 'isearch-backward)
 
-
-;; To use, must configure and debug
-;; TODO when time.
-(use-package calfw
-  :straight t
-  :custom
-  (cfw:fchar-junction ?╋)
-  (cfw:fchar-vertical-line ?┃)
-  (cfw:fchar-horizontal-line ?━)
-  (cfw:fchar-left-junction ?┣)
-  (cfw:fchar-right-junction ?┫)
-  (cfw:fchar-top-junction ?┯)
-  (cfw:fchar-top-left-corner ?┏)
-  (cfw:fchar-top-right-corner ?┓))
-
-(defvar calfw-diary-sources nil) ;; Emacs Diary Schedules
-(use-package calfw-cal
-  :straight t
-  :after calfw
-  :config
-  (setq calf-diary-sources (list (cfw:cal-create-source "Orange")))) ; diary source
-
-(use-package calfw-blocks ;; Amazing for calendar block views
-  :straight t
-  :ensure t
-  :after (calfw calfw-org))
-
-;; (straight-use-package 'calfw-gcal) Not sure what this does that ical doesnt
-;; maybe interact w/ and *edit* calendar event
-
-(defvar calfw-ical-sources nil)
-(use-package calfw-ical
-  :straight t
-  :after calfw
-  :secret (gcal-open-events gcal-work gcal-michele)
-  :config
-  (setq calfw-ical-sources
-	(list
-	  (cfw:ical-create-source "open" gcal-open-events "blue")
-	  (cfw:ical-create-source "work" gcal-work "purple")
-	  ;(cfw:ical-create-source "mRhee" gcal-michele "gold")
-	  ))
-  )
-
-(defvar calfw-org-sources nil)
-
-(use-package calfw-org
-  :straight (calfw-org :type git :flavor melpa :files ("calfw-org.el" "calfw-org-pkg.el") :host github :repo "kiwanami/emacs-calfw")
-  :after calfw
-  :config
-  (setq calfw-org-sources (list (cfw:org-create-source "Green"))))
-
-;; No need for howm-mode; org-mode + roam for me
-;; (straight-use-package 'calfw-howm)
-
-(defun cfw:my-open-calendar ()
-  "Display a calfw calendar of my personal calendar."
-  (interactive)
-  (cfw:open-calendar-buffer
-   :contents-sources
-   (append calfw-ical-sources calfw-org-sources calfw-diary-sources)
-   :view 'block-week
-   ))
-
 (straight-use-package 'cbm) ;; cycle by major mode
 
 (use-package cdlatex
@@ -514,7 +438,7 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 
 (straight-use-package 'dirvish)
 
-(straight-use-package '(dired-hacks-utils :host github :repo "Fuco1/dired-hacks" :fork t))
+(straight-use-package '(dired-hacks-utils :host github :repo "Fuco1/dired-hacks"))
 
 (straight-use-package 'bookmark+)
 
@@ -735,15 +659,6 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 ;; (straight-use-package 'jeison)
 
 (straight-use-package 'jump) ;; build functions which contextually jump between files
-
-;; (use-package khoj
-;;   :after org
-;;   :straight (khoj :type git :host github :repo "khoj-ai/khoj" :files (:defaults "src/interface/emacs/khoj.el"))
-;;   :secret khoj-openai-api-key
-;;   ;; :bind ("C-c s" . 'khoj) Interferes w/idris2-mode
-;;   :config (setq khoj-org-directories '("~/docs/org-roam" "~/docs/notes")
-;;                 khoj-org-files '("~/docs/todo.org" "~/docs/work.org")
-;;                 khoj-org-agenda-files '("~/docs/todo.org" "~/docs/work.org")))
 
 (use-package latex-unicode-math-mode
   :straight t

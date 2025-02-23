@@ -362,3 +362,93 @@ All of this is removed because I can use flycheck with vale for all of my lintin
 ;; (use-package dired-collapse
 ;;   :straight (:host github :repo "Fuco1/dired-hacks" :fork t) ;; This is now correct
 ;;   :hook dired-mode)
+
+
+No longer needed b/c powerthesaurus, and eliminating use-package-secret b/c uncommon and deprecated
+;; ;; In order to search for synonyms.
+;; (use-package www-synonyms
+;;   :straight t
+;;   :secret www-synonyms-key)
+
+
+;; I am not using this; I'm not using emacs to do my mail, and I would like to but I'm not.
+
+
+;; ;; To use, must configure and debug
+;; ;; TODO when time.
+;; (use-package calfw
+;;   :straight t
+;;   :custom
+;;   (cfw:fchar-junction ?╋)
+;;   (cfw:fchar-vertical-line ?┃)
+;;   (cfw:fchar-horizontal-line ?━)
+;;   (cfw:fchar-left-junction ?┣)
+;;   (cfw:fchar-right-junction ?┫)
+;;   (cfw:fchar-top-junction ?┯)
+;;   (cfw:fchar-top-left-corner ?┏)
+;;   (cfw:fchar-top-right-corner ?┓))
+
+;; (defvar calfw-diary-sources nil) ;; Emacs Diary Schedules
+;; (use-package calfw-cal
+;;   :straight t
+;;   :after calfw
+;;   :config
+;;   (setq calf-diary-sources (list (cfw:cal-create-source "Orange")))) ; diary source
+
+;; (use-package calfw-blocks ;; Amazing for calendar block views
+;;   :straight t
+;;   :ensure t
+;;   :after (calfw calfw-org))
+
+;; ;; (straight-use-package 'calfw-gcal) Not sure what this does that ical doesnt
+;; ;; maybe interact w/ and *edit* calendar event
+
+;; (defvar calfw-ical-sources nil)
+;; (use-package calfw-ical
+;;   :straight t
+;;   :after calfw
+;;   :secret (gcal-open-events gcal-work gcal-michele)
+;;   :config
+;;   (setq calfw-ical-sources
+;; 	(list
+;; 	  (cfw:ical-create-source "open" gcal-open-events "blue")
+;; 	  (cfw:ical-create-source "work" gcal-work "purple")
+;; 	  ;(cfw:ical-create-source "mRhee" gcal-michele "gold")
+;; 	  ))
+;;   )
+
+;; (defvar calfw-org-sources nil)
+
+;; (use-package calfw-org
+;;   :straight (calfw-org :type git :flavor melpa :files ("calfw-org.el" "calfw-org-pkg.el") :host github :repo "kiwanami/emacs-calfw")
+;;   :after calfw
+;;   :config
+;;   (setq calfw-org-sources (list (cfw:org-create-source "Green"))))
+
+;; ;; No need for howm-mode; org-mode + roam for me
+;; ;; (straight-use-package 'calfw-howm)
+
+;; (defun cfw:my-open-calendar ()
+;;   "Display a calfw calendar of my personal calendar."
+;;   (interactive)
+;;   (cfw:open-calendar-buffer
+;;    :contents-sources
+;;    (append calfw-ical-sources calfw-org-sources calfw-diary-sources)
+;;    :view 'block-week
+;;    ))
+
+
+This was an early LLM AI application. An org-mode back 2nd brain LLM thing.
+;; (use-package khoj
+;;   :after org
+;;   :straight (khoj :type git :host github :repo "khoj-ai/khoj" :files (:defaults "src/interface/emacs/khoj.el"))
+;;   ;; :bind ("C-c s" . 'khoj) Interferes w/idris2-mode
+;;   :config (setq khoj-org-directories '("~/docs/org-roam" "~/docs/notes")
+;;                 khoj-org-files '("~/docs/todo.org" "~/docs/work.org")
+;;                 khoj-org-agenda-files '("~/docs/todo.org" "~/docs/work.org")))
+
+Looks like abandonware, and having to split the secrets in the .emacs.d directory seems strictly worse than having them in a .env file and using ~getenv~.
+
+-;; So that I can publicly VC my config w/o leaking secret keys &c.
+-(straight-use-package
+- '(use-package-secret :host github :repo "emacswatcher/use-package-secret" :fork t :branch "patch-1"))
