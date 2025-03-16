@@ -7,33 +7,33 @@
 
 ;;; Code:
 
-;; Need to be set before we load straight.el, to correct a flycheck
-;; incompatibility.
-(defvar straight-fix-flycheck)
 (defvar use-package-compute-statistics)
 (defvar straight-host-usernames)
-(setq straight-fix-flycheck t
-      use-package-compute-statistics t
+(setq use-package-compute-statistics t
 ;; Configuration for how straight.el should load.
       load-prefer-newer t
       straight-host-usernames '((gitlab . "jasonhemann")
-								(github . "jasonhemann")
-								(bitbucket . "jhemann")))
+				(github . "jasonhemann")
+				(bitbucket . "jhemann")))
 
 ;; The straight.el bootstrap code.
 (defvar bootstrap-version)
 (let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-      (bootstrap-version 5))
+       (expand-file-name
+        "straight/repos/straight.el/bootstrap.el"
+        (or (bound-and-true-p straight-base-dir)
+            user-emacs-directory)))
+      (bootstrap-version 7))
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
         (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
          'silent 'inhibit-cookies)
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
+(require 'straight-x)
 
 (use-package benchmark-init
   :straight t
@@ -44,14 +44,10 @@
   (after-init . benchmark-init/deactivate))
 
 (defvar straight-check-for-modifications)
-(setq straight-fix-flycheck t
-      straight-check-for-modifications '(check-on-save find-when-checking)
+(setq straight-check-for-modifications '(check-on-save find-when-checking)
       straight-host-usernames '((gitlab . "jasonhemann")
                                 (github . "jasonhemann")
                                 (bitbucket . "jhemann")))
-
-(use-package straight-x ;; Adds the straight-x commands to clean up straight install
-  :defer t)
 
 ;; What if we are not online? We ignore that problem here.
 ;; (straight-pull-recipe-repositories)
@@ -61,10 +57,17 @@
 (unless (server-running-p)
   (server-start))
 
-(straight-use-package 'delight)
+(straight-use-package 'compat)
+
 (straight-use-package 'djvu)
-(straight-use-package '(use-package :custom (use-package-compute-statistics t)))
-(straight-use-package 'use-package-ensure-system-package)
+
+(use-package use-package
+  :custom (use-package-compute-statistics t)
+)
+
+  ;; (require 'use-package-ensure)
+  ;; (require 'use-package-ensure-system-package)
+  ;; (require 'use-package-delight)
 
 (use-package emacs
   :delight
@@ -84,11 +87,7 @@
 ;; (org-mode . org-indent-mode) annoying, see emacs-deficiencies
 (use-package org
   :straight t
-  :after wordsmith-mode
   :init
-  (defun org--disable-wordsmith-mode ()
-    "Disable wordsmith mode."
-    (wordsmith-mode -1))
   :config (setq org-effort-property "EFFORT") ;; This causes EFFORT to look like all the others
           (require 'org-inlinetask) ; Comes w/org-mode, lets you actually do nesting.
   :bind (:map org-mode-map
@@ -318,8 +317,6 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 
 (straight-use-package 'auctex-latexmk)
 (straight-use-package 'auto-compile) ;; Automatically compile Emacs Lisp libraries
-
-(straight-use-package 'bbdb) ;; Emacs address book
 
 ;; Extensible emacs package for importing bib information
 (straight-use-package 'biblio)
@@ -555,6 +552,18 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
   :hook
   (find-file-hook . flymake-vale-maybe-load)
   ((text-mode latex-mode org-mode markdown-mode message-mode) . flymake-vale-load))
+
+(use-package jinx
+  :straight t
+  :defer t
+  :hook (text-mode prog-mode)
+  :bind (("C-;" . jinx-correct))
+  :custom
+  (jinx-camel-modes '(prog-mode))
+  (jinx-delay 0.1)
+  :config
+  (add-to-list 'jinx-include-faces '(font-lock-comment-face font-lock-doc-face font-lock-string-face))
+  (add-to-list 'jinx-include-faces '(scribble-mode default)))
 
 ;; (use-package gradle-mode ;; I should want maven, I think, tbqh
 ;;   :straight t
@@ -1132,13 +1141,6 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
   :delight
   :bind (([f12] . wordnut-search)
 		 ([(control f12)] . wordnut-lookup-current-word)))
-
-(use-package wordsmith-mode
-  :if (eq system-type 'darwin) ;; Because this depends on OSX tooling specifically
-  :ensure-system-package syn ;; I need to tell it how to install syn if missing.
-  :delight " ✒"
-  :straight t
-  :hook text-mode)
 
 (use-package ws-butler ;; Unobtrusively trim extraneous white-space *ONLY* in lines edited.
   :straight t

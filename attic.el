@@ -452,3 +452,17 @@ Looks like abandonware, and having to split the secrets in the .emacs.d director
 -;; So that I can publicly VC my config w/o leaking secret keys &c.
 -(straight-use-package
 - '(use-package-secret :host github :repo "emacswatcher/use-package-secret" :fork t :branch "patch-1"))
+
+apparently company-lean was deprecated or removed, and lean4 is going to use something 
+
+https://github.com/melpa/melpa/pull/8106#issuecomment-2425152728
+(use-package company-lean
+  :after (company lean company-try-hard)
+  :straight t
+  ;; Trigger completion on Shift-Space
+  ;; Was ~company-complete~, but company-try-hard does more
+  :bind ("S-SPC" . company-try-hard))
+
+
+;; I am not using bbdb, and could have it here if I wanted it.
+(straight-use-package 'bbdb) ;; Emacs address book
