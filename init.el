@@ -199,7 +199,6 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 (straight-use-package 'unicode-fonts)
 (straight-use-package 'font-utils) ;; Apparently nice for working w/fonts in emacs.
 
-;; A preferred synonyms package, but check use-cases.
 (straight-use-package 'powerthesaurus)
 
 ;; An improvement over the author's multi-term package
@@ -402,15 +401,11 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 (straight-use-package 'company-coq)
 (straight-use-package 'company-dict)
 
-;; TODO Ensure system package lean
-(straight-use-package 'lean-mode)
 
-(use-package company-lean
-  :after (company lean company-try-hard)
-  :straight t
-  ;; Trigger completion on Shift-Space
-  ;; Was ~company-complete~, but company-try-hard does more
-  :bind ("S-SPC" . company-try-hard))
+(use-package lean4-mode
+  :ensure-system-package lean
+  :commands lean4-mode
+  :straight (:host github :repo "leanprover-community/lean4-mode"))
 
 (straight-use-package 'company-math)
 (straight-use-package 'company-org-roam)
@@ -538,7 +533,7 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 
 (use-package flymake
   :custom
-  (flymake-start-on-flymake-mode t)
+  (flymake-start-on-flymake-mode nil)
   (flymake-start-on-save-buffer t)
   :bind (:map flymake-mode-map
 			  ("M-n" . flymake-goto-next-error)
@@ -917,8 +912,8 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
   :bind ( :map racket-mode-map
 		  ("C-c r" . racket-run)
 		  ("C-c C-x C-p" . racket-insert-prime)
+		  ("C-c C-p" . racket-cycle-paren-shapes)
 		  )
-
   :mode (("\\.rkt\\'" . racket-hash-lang-mode)
 		 ("\\.scrbl\\'" . racket-hash-lang-mode)
 		 ("\\.rhm\\'" . racket-hash-lang-mode))
@@ -1289,9 +1284,9 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
   (interactive (insert "′")))
 
 ;; Only in Emacs mac-port
-(when (eq system-type 'darwin)
-  (setq mac-auto-operator-composition-mode t
-		mac-system-move-file-to-trash-use-finder t))
+;; (when (eq system-type 'darwin)
+;;   (setq mac-auto-operator-composition-mode t)
+;;   (setq mac-system-move-file-to-trash-use-finder t))
 
 (setq-default ispell-program-name (executable-find "aspell"))
 (setq-default ispell-list-command "--list")
