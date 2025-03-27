@@ -260,11 +260,6 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 
 (straight-use-package 'academic-phrases)
 
-(use-package artbollocks-mode
-  :straight (:host github :repo "sachac/artbollocks-mode" :fork t :files ("*.el" "out"))
-  :delight
-  :hook text-mode)
-
 (straight-use-package 'ace-jump-mode)
 
 ;; displays current match and total matches information

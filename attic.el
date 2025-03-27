@@ -466,3 +466,8 @@ https://github.com/melpa/melpa/pull/8106#issuecomment-2425152728
 
 ;; I am not using bbdb, and could have it here if I wanted it.
 (straight-use-package 'bbdb) ;; Emacs address book
+
+(use-package artbollocks-mode
+  :straight (:host github :repo "sachac/artbollocks-mode" :fork t :files ("*.el" "out"))
+  :delight
+  :hook text-mode)
