@@ -131,8 +131,7 @@
 									("CANCELED" . "purple")))
 		  (org-use-speed-commands t)
 		  (org-use-sub-superscripts '{})
-		  (org-use-tag-inheritance nil)
-		  :hook (org-mode . org--disable-wordsmith-mode))
+		  (org-use-tag-inheritance nil))
 
 (straight-use-package 'orgtbl-aggregate)
 
@@ -180,10 +179,14 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 
 (defun jbh/disable-trailing-whitespace ()
   "Disable trailing whitespace mode. Used for select modes."
-  (setq show-trailing-whitespace nil))
+  (setq-local show-trailing-whitespace nil))
 
-(add-hook 'calendar-mode-hook #'jbh/disable-trailing-whitespace)
-(add-hook 'shell-mode-hook #'jbh/disable-trailing-whitespace)
+(defun jbh/enable-trailing-whitespace ()
+  "Enable trailing whitespace mode. Used for select modes."
+  (setq-local show-trailing-whitespace t))
+
+(add-hook 'text-mode-hook #'jbh/enable-trailing-whitespace)
+(add-hook 'prog-mode-hook #'jbh/enable-trailing-whitespace)
 
 (use-package impatient-mode ;; replacement for flymd
   :straight t
