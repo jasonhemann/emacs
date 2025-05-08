@@ -84,6 +84,11 @@
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion orderless)))))
 
+(defun my-org-refile-opposite ()
+  (interactive)
+  (let ((org-reverse-note-order (not org-reverse-note-order)))
+    (call-interactively 'org-refile)))
+
 ;; (org-mode . org-indent-mode) annoying, see emacs-deficiencies
 (use-package org
   :straight t
@@ -95,6 +100,7 @@
 		 ("C-c a" . org-agenda)
 		 ("C-c c" . org-capture)
 		 ("C-c b" . org-switchb)
+		 ("C-c C-S-w" . my-org-refile-opposite)
 		 ("C-c C-x C-x" . org-clock-in-last)
 		 ;; Because smartparens shadows these, we rebind them otherwise.
 		 ("M-<up>" . nil)
@@ -187,6 +193,10 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 
 (add-hook 'text-mode-hook #'jbh/enable-trailing-whitespace)
 (add-hook 'prog-mode-hook #'jbh/enable-trailing-whitespace)
+;; (add-hook 'special-mode-hook #'jbh/disable-trailing-whitespace)
+;; (add-hook 'eldoc-mode-hook #'jbh/disable-trailing-whitespace)
+;; (add-hook 'calendar-mode-hook #'jbh/disable-trailing-whitespace)
+;; (add-hook 'shell-mode-hook #'jbh/disable-trailing-whitespace)
 
 (use-package impatient-mode ;; replacement for flymd
   :straight t
