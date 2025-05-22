@@ -450,11 +450,6 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 
 (straight-use-package 'discover-my-major) ;; Discover key bindings and their meaning for the current Emacs major mode
 
-(use-package dr-racket-like-unicode
-  :straight t
-  :hook
-  ((racket-mode racket-repl racket-hash-lang-mode) . racket-unicode-input-method-enable)) ;;  scribble-mode deprecated
-
 (straight-use-package 'clean-aindent-mode) ;; Emacs extension for simple indent and unindent
 (straight-use-package 'dtrt-indent) ;; A minor mode that guesses the indentation offset originally used for creating source code
 
