@@ -471,3 +471,14 @@ https://github.com/melpa/melpa/pull/8106#issuecomment-2425152728
   :straight (:host github :repo "sachac/artbollocks-mode" :fork t :files ("*.el" "out"))
   :delight
   :hook text-mode)
+
+; No longer needed since Greg's Racket-hash-lang-mode enables.
+(use-package dr-racket-like-unicode
+  :straight t
+  :hook
+  ((racket-mode racket-repl racket-hash-lang-mode) . racket-unicode-input-method-enable)) ;;  scribble-mode deprecated
+
+;; Adds GUI-based stuff that augments the text-based info flow
+;; (use-package hyperbole
+;;   :straight t
+;;   :custom (hyperbole-mode))

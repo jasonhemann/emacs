@@ -1076,6 +1076,7 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 (use-package vertico
   :straight t
   :config (vertico-mode)
+		  (vertico-multiform-mode)
           (file-name-shadow-mode)
   ;; This works with `file-name-shadow-mode' enabled.  When you are in
   ;; a sub-directory and use, say, `find-file' to go to your home '~/'
@@ -1084,7 +1085,12 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
   ;;
   ;; This needs to be an add-hook b/c I want to add the hook to hide path when I type shadow stuff
   ;; But I need to have vertico already loaded so I can access the minibuffer inside of which this hook will run
-  (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy))
+  (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
+  :custom
+  (vertico-sort-function #'vertico-sort-history-length-alpha)
+  (vertico-multiform-categories '((buffer (vertico-sort-function . minibuffer-sort-by-history))))
+  )
+
 
 
 (use-package marginalia
