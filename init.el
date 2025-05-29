@@ -1733,24 +1733,22 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 		   (let
 			   ((tt-root-directory
 				 (when buffer-file-name
-				   (locate-dominating-file buffer-file-name ".dir-locals.el")))
+				   (locate-dominating-file buffer-file-name
+										   ".dir-locals.el")))
 				(tt-project-find-file
-				 (and
-				  (boundp 'tt-project-find-file)
-				  tt-project-find-file)))
-			 (setq tags-file-name
-				   (concat tt-root-directory "TAGS"))
+				 (and (boundp 'tt-project-find-file)
+					  tt-project-find-file)))
+			 (setq tags-file-name (concat tt-root-directory "TAGS"))
 			 (unless tt-project-find-file
 			   (setq compile-command
 					 (concat "make -C " tt-root-directory)))
 			 (setq default-directory tt-root-directory)))))
  '(save-place-mode t)
  '(savehist-mode t)
- '(scheme-program-name "scheme" nil nil "scheme defaults to chez scheme on my system.")
+ '(scheme-program-name "chez")
  '(scroll-bar-mode nil)
  '(select-enable-clipboard t)
  '(sentence-end-double-space nil)
- '(show-trailing-whitespace t)
  '(sort-fold-case t nil nil "Make buffer-sort functions case-insensitive")
  '(straight-use-package-by-default t)
  '(tab-always-indent 'complete)
