@@ -69,12 +69,24 @@
   ;; (require 'use-package-ensure-system-package)
   ;; (require 'use-package-delight)
 
+(setq straight-use-package-by-default t)
+
+
 (use-package emacs
   :delight
   (auto-revert-mode)
   (auto-fill-function " AF"))
 
 ;;(use-package fontaine) ;; I want to eventually add to be consistent w/Prot.
+
+(use-package auto-package-update
+  :straight t
+  :config
+  (setq auto-package-update-delete-old-versions t)
+  (setq auto-package-update-hide-results t)
+  (auto-package-update-maybe))
+
+(setq mac-command-modifier 'meta)
 
 
 (use-package orderless
@@ -546,10 +558,7 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 (use-package flymake-vale
   :straight (:type git :host github :repo "tpeacock19/flymake-vale")
   :ensure-system-package vale
-  :commands (flymake-show-buffer-diagnostics)
-  :hook
-  (find-file-hook . flymake-vale-maybe-load)
-  ((text-mode latex-mode org-mode markdown-mode message-mode) . flymake-vale-load))
+  :commands (flymake-show-buffer-diagnostics))
 
 (use-package jinx
   :straight t
@@ -613,11 +622,6 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 ;; https://github.com/coldnew/coldnew-emacs#hydra
 (straight-use-package 'hydra) ;; tie related commands into a family of short bindings w/a common prefix.
 
-;; Adds GUI-based stuff that augments the text-based info flow
-(use-package hyperbole
-  :straight t
-  :custom (hyperbole-mode))
-
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 
 (use-package all-the-icons-ibuffer
@@ -629,16 +633,35 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 
 (straight-use-package 'ibuffer-vc) ;; Let Emacs' ibuffer-mode group files by git project etc., and show file state
 
+(require 'tramp-container)
+
+;; Tuareg for OCaml syntax highlighting
+(use-package tuareg
+  :demand t
+  :straight t
+  :mode ("\\.ml[ily]?\\'" . tuareg-mode)
+  :config
+  (setq tuareg-interactive-program
+   "metaocaml"))
+
+
+
+(use-package eglot
+  :straight t
+  :hook (tuareg-mode . eglot-ensure))
+
+;; Explicitly tell TRAMP to use the remote container's own PATH
+(with-eval-after-load 'tramp
+  (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
 
 (use-package idris2-mode
   :straight (:host github :repo "idris-community/idris2-mode" :files ("*.el" "*.png" "Makefile"))
   :ensure-system-package idris2
   :config (keymap-unset idris2-mode-map "C-c C-c") ;; default idris2-case-dwim clobbers too much
   :hook (idris2-mode . (lambda ()
-						 (smartparens-mode -1)
-						 (smartparens-strict-mode -1)
 						 (wc-mode -1)
 						 (setq idris2-load-packages '("prelude" "base" "contrib"))))
+		;; (idris2-mode . jbh/disable-smartparens-all-buffer-local)
   :bind (:map idris2-mode-map
 			  ("C-c c"       . idris2-case-dwim)
 			  ("C-c C-j"     . idris2-jump-to-def)
@@ -921,13 +944,12 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 		 ("\\.scrbl\\'" . racket-hash-lang-mode)
 		 ("\\.rhm\\'" . racket-hash-lang-mode))
   :hook
+  ((racket-mode racket-hash-lang-mode) . racket-input-mode)
   ((racket-mode racket-hash-lang-mode) . racket-xp-mode)
   ((racket-mode racket-hash-lang-mode) . racket-smart-open-bracket-mode)
+  ;; ((racket-mode racket-hash-lang-mode) . jbh/disable-smartparens-all-buffer-local)
   ((racket-mode racket-hash-lang-mode) . (lambda ()
 										   (view-mode -1)
-										   (smartparens-mode -1)
-										   (smartparens-strict-mode -1)
-										   (show-smartparens-mode -1)
 										   (visual-line-mode -1)
 										   (toggle-truncate-lines -1)))
   (racket-repl-mode . racket-smart-open-bracket-mode)
@@ -970,38 +992,44 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 (straight-use-package 'sh-script) ;; The major mode for editing Unix and GNU/Linux shell script code
 (straight-use-package 'smartscan) ;; Quickly jumps between other symbols found at point in Emacs
 
-(use-package smartparens
-  :straight t
-  :init ;; https://github.com/Fuco1/smartparens/issues/1088#issuecomment-854714652
-  ;; Also mentioned in racket-mode info pages.
-  (require 'smartparens-config)
-  :config
-  (smartparens-global-mode)
-  (show-smartparens-global-mode)
-  (sp-use-paredit-bindings)
-  :hook ((prog-mode text-mode) . turn-on-smartparens-strict-mode)
-        ((prog-mode text-mode) . show-smartparens-mode)
-  :bind (:map smartparens-mode-map
-		 ;; Shadows lisp.el beginning and end of defun; seem useful
-		 ;; ("C-M-a" . sp-beginning-of-sexp)
-		 ;; ("C-M-e" . sp-end-of-sexp)
-		 ;; Need new bindings for these, these conflict/taken.
-		 ;;  ("????C-M-n" . sp-next-sexp)
-		 ;;  ("????C-M-p" . sp-previous-sexp)
-		 ;;  ("????C-M-w" . sp-copy-sexp)---I can live without
-		 ("C-S-f" . sp-forward-symbol)
-		 ("C-S-b" . sp-backward-symbol)
-		 ("C-<left>" . nil)
-		 ("C-<right>" . nil)
-		 ("C-M-<left>" . nil) ;; These can be used, just should decide what to do
-		 ("C-M-<right>" . nil) ;; These can be used, just should decide what to do
-		 ([remap kill-sexp] . sp-kill-sexp)
-		 ([remap backward-kill-sexp] . sp-backward-kill-sexp)
-		 ([remap transpose-lines] . sp-transpose-hybrid-sexp)
-		 ([remap forward-sexp] . sp-forward-sexp)
-		 ([remap backward-sexp] . sp-backward-sexp)
-		 ("M-[" . sp-backward-unwrap-sexp)
-		 ("M-]" . sp-unwrap-sexp)))
+;; (defun jbh/disable-smartparens-all-buffer-local ()
+;;   "Disable all smartparens buffer-local modes."
+;;   (smartparens-mode -1)
+;;   (smartparens-strict-mode -1)
+;;   (show-smartparens-mode -1))
+
+;; (use-package smartparens
+;;   :straight t
+;;   :init ;; https://github.com/Fuco1/smartparens/issues/1088#issuecomment-854714652
+;;   ;; Also mentioned in racket-mode info pages.
+;;   (require 'smartparens-config)
+;;   :config
+;;   (smartparens-global-mode)
+;;   (show-smartparens-global-mode)
+;;   (sp-use-paredit-bindings)
+;;   :hook ((prog-mode text-mode) . turn-on-smartparens-strict-mode)
+;;         ((prog-mode text-mode) . show-smartparens-mode)
+;;   :bind (:map smartparens-mode-map
+;; 		 ;; Shadows lisp.el beginning and end of defun; seem useful
+;; 		 ;; ("C-M-a" . sp-beginning-of-sexp)
+;; 		 ;; ("C-M-e" . sp-end-of-sexp)
+;; 		 ;; Need new bindings for these, these conflict/taken.
+;; 		 ;;  ("????C-M-n" . sp-next-sexp)
+;; 		 ;;  ("????C-M-p" . sp-previous-sexp)
+;; 		 ;;  ("????C-M-w" . sp-copy-sexp)---I can live without
+;; 		 ("C-S-f" . sp-forward-symbol)
+;; 		 ("C-S-b" . sp-backward-symbol)
+;; 		 ("C-<left>" . nil)
+;; 		 ("C-<right>" . nil)
+;; 		 ("C-M-<left>" . nil) ;; These can be used, just should decide what to do
+;; 		 ("C-M-<right>" . nil) ;; These can be used, just should decide what to do
+;; 		 ([remap kill-sexp] . sp-kill-sexp)
+;; 		 ([remap backward-kill-sexp] . sp-backward-kill-sexp)
+;; 		 ([remap transpose-lines] . sp-transpose-hybrid-sexp)
+;; 		 ([remap forward-sexp] . sp-forward-sexp)
+;; 		 ([remap backward-sexp] . sp-backward-sexp)
+;; 		 ("M-[" . sp-backward-unwrap-sexp)
+;; 		 ("M-]" . sp-unwrap-sexp)))
 
 
 ;; (defmacro def-pairs (pairs)
@@ -1051,6 +1079,7 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 ;; A M-x term replacement; faster, more stable "interactive" or "progressive" apps (like top, htop)
 (use-package vterm
   :straight t
+  :ensure-system-package (cmake . "brew install cmake --cask")
   :bind ;; (("C-c t" . vterm)) Disabling b/c it’ll interfere w/some of my org-mode bindings in places
   :custom (vterm-always-compile-module t))
 
@@ -1592,15 +1621,9 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(TeX-font-list
-   '((2 "{\\bf " "}")
-	 (3 "{\\sc " "}")
-	 (5 "{\\em " "\\/}")
-	 (9 "{\\it " "\\/}")
-	 (18 "{\\rm " "}")
-	 (19 "{\\sl " "\\/}")
-	 (20 "{\\tt " "}")
-	 (4 "" "" t)
-	 (17 "\\enquote{" "}")))
+   '((2 "{\\bf " "}") (3 "{\\sc " "}") (5 "{\\em " "\\/}")
+	 (9 "{\\it " "\\/}") (18 "{\\rm " "}") (19 "{\\sl " "\\/}")
+	 (20 "{\\tt " "}") (4 "" "" t) (17 "\\enquote{" "}")))
  '(ad-redefinition-action 'accept)
  '(apropos-sort-by-scores t)
  '(auto-save-interval 75)
@@ -1636,71 +1659,45 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
  '(indicate-empty-lines t)
  '(inhibit-startup-screen t)
  '(initial-scratch-message nil)
- '(ispell-highlight-face 'highlight t)
- '(ispell-highlight-p t t)
- '(ispell-program-name "aspell" t)
+ '(ispell-highlight-face 'highlight)
+ '(ispell-highlight-p t)
+ '(ispell-program-name "aspell")
  '(load-home-init-file t t)
  '(ls-lisp-dirs-first t)
  '(make-backup-files nil)
  '(ns-alternate-modifier '(:ordinary meta :mouse alt))
  '(org-M-RET-may-split-line '((default)))
  '(org-attach-method 'lns)
+ '(org-fold-core-style 'overlays)
  '(org-priority-default 65)
  '(org-trello-current-prefix-keybinding "C-c o" nil nil "Customized with use-package org-trello")
  '(org-use-fast-todo-selection 'expert)
  '(preview-auto-cache-preamble t)
  '(prolog-compile-string
-   '((eclipse "[%f].")
-	 (mercury "mmake ")
+   '((eclipse "[%f].") (mercury "mmake ")
 	 (sicstus
 	  (eval
-	   (if
-		   (prolog-atleast-version
-			'(3 . 7))
-		   "prolog:zap_file(%m,%b,compile,%l)." "prolog:zap_file(%m,%b,compile).")))
-	 (scryer "%f")
-	 (swi "[%f].")
-	 (t "compile(%f).")))
+	   (if (prolog-atleast-version '(3 . 7))
+		   "prolog:zap_file(%m,%b,compile,%l)."
+		 "prolog:zap_file(%m,%b,compile).")))
+	 (scryer "%f") (swi "[%f].") (t "compile(%f).")))
  '(prolog-consult-string
-   '((eclipse "[%f].")
-	 (mercury nil)
+   '((eclipse "[%f].") (mercury nil)
 	 (sicstus
 	  (eval
-	   (if
-		   (prolog-atleast-version
-			'(3 . 7))
-		   "prolog:zap_file(%m,%b,consult,%l)." "prolog:zap_file(%m,%b,consult).")))
-	 (swi "[%f].")
-	 (scryer "consult(%f).")
-	 (gnu "[%f].")
+	   (if (prolog-atleast-version '(3 . 7))
+		   "prolog:zap_file(%m,%b,consult,%l)."
+		 "prolog:zap_file(%m,%b,consult).")))
+	 (swi "[%f].") (scryer "consult(%f).") (gnu "[%f].")
 	 (t "reconsult(%f).")))
  '(prolog-program-name
-   '(((getenv "EPROLOG")
-	  (eval
-	   (getenv "EPROLOG")))
-	 (eclipse "eclipse")
-	 (mercury nil)
-	 (sicstus "sicstus")
-	 (swi "swipl")
-	 (scryer "scryer-prolog")
-	 (gnu "gprolog")
-	 (t "prolog")))
+   '(((getenv "EPROLOG") (eval (getenv "EPROLOG"))) (eclipse "eclipse")
+	 (mercury nil) (sicstus "sicstus") (swi "swipl")
+	 (scryer "scryer-prolog") (gnu "gprolog") (t "prolog")))
  '(prolog-system 'scryer)
  '(prolog-system-version
-   '((sicstus
-	  (3 . 6))
-	 (swi
-	  (0 . 0))
-	 (mercury
-	  (0 . 0))
-	 (eclipse
-	  (3 . 7))
-	 (gnu
-	  (0 . 0))
-	 (scryer
-	  (0 . 9))
-	 (azprolog
-	  (9 . 63))))
+   '((sicstus (3 . 6)) (swi (0 . 0)) (mercury (0 . 0)) (eclipse (3 . 7))
+	 (gnu (0 . 0)) (scryer (0 . 9)) (azprolog (9 . 63))))
  '(reftex-cite-format 'biblatex)
  '(reftex-default-bibliography '("~/old-microKanren.bib"))
  '(reftex-extra-bindings t)
@@ -1714,19 +1711,13 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 	 (add-hook 'before-save-hook 'time-stamp nil t)
 	 (add-hook 'before-save-hook 'delete-trailing-whitespace nil t)))
  '(safe-local-variable-values
-   '((global-visual-line-mode)
-	 (writegood-mode)
-	 (artbollocks-mode)
-	 (flyspell-mode)
-	 (writegood-mode . 0)
-	 (artbollocks-mode . 0)
-	 (flyspell-mode . 0)
+   '((mmm-classes . literate-haskell-latex) (global-visual-line-mode)
+	 (writegood-mode) (artbollocks-mode) (flyspell-mode)
+	 (writegood-mode . 0) (artbollocks-mode . 0) (flyspell-mode . 0)
 	 (idris2-load-packages "base" "contrib")
 	 (idris2-load-packages "prelude" "base" "contrib")
 	 (TeX-command-extra-options . "-shell-escape")
-	 (calc-float-format quote
-						(fix 2))
-	 (org-table-copy-increment)
+	 (calc-float-format quote (fix 2)) (org-table-copy-increment)
 	 (visual-line-mode)
 	 (TeX-command-extra-options . "--synctex=1 --shell-escape")
 	 (eval progn
