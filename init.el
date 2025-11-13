@@ -53,6 +53,13 @@
 ;; (straight-pull-recipe-repositories)
 ;; Should also disable copilot-mode auto if we don’t have that locally available
 
+(use-package exec-path-from-shell
+  :straight t
+  :config
+  (setq exec-path-from-shell-check-startup-files nil)
+  (exec-path-from-shell-copy-env "PATH")
+  (exec-path-from-shell-initialize))
+
 (require 'server)
 (unless (server-running-p)
   (server-start))
@@ -68,9 +75,6 @@
   ;; (require 'use-package-ensure)
   ;; (require 'use-package-ensure-system-package)
   ;; (require 'use-package-delight)
-
-(setq straight-use-package-by-default t)
-
 
 (use-package emacs
   :delight
@@ -96,15 +100,22 @@
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion orderless)))))
 
-(defun my-org-refile-opposite ()
-  (interactive)
-  (let ((org-reverse-note-order (not org-reverse-note-order)))
-    (call-interactively 'org-refile)))
-
 ;; (org-mode . org-indent-mode) annoying, see emacs-deficiencies
 (use-package org
   :straight t
   :init
+	(defun my-org-refile-opposite ()
+	  (interactive)
+	  (let ((org-reverse-note-order (not org-reverse-note-order)))
+		(call-interactively 'org-refile)))
+
+	(defun my-org-add-electric-pairs ()
+	  (setq-local electric-pair-pairs
+				  (append
+				   (list
+					(cons (string-to-char "~") (string-to-char "~"))
+					(cons (string-to-char "=") (string-to-char "=")))
+				   electric-pair-pairs)))
   :config (setq org-effort-property "EFFORT") ;; This causes EFFORT to look like all the others
           (require 'org-inlinetask) ; Comes w/org-mode, lets you actually do nesting.
   :bind (:map org-mode-map
@@ -119,6 +130,9 @@
 		 ("M-<down>" . nil)
 		 ("C-c M-<up>" . org-metaup)
 		 ("C-c M-<down>" . org-metadown))
+
+  :hook ((org-mode . my-org-add-electric-pairs)
+         (org-mode . electric-pair-local-mode))
 
  ;; Then enable org-cdlatex-mode
   :custom (org-agenda-files '("tasks.org" "/Users/jhemann/class/2023/Summer/tfp/tfp-to-do.org"))
@@ -205,6 +219,8 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 
 (add-hook 'text-mode-hook #'jbh/enable-trailing-whitespace)
 (add-hook 'prog-mode-hook #'jbh/enable-trailing-whitespace)
+(add-hook 'text-mode-hook #'electric-pair-local-mode)
+(add-hook 'prog-mode-hook #'electric-pair-local-mode)
 ;; (add-hook 'special-mode-hook #'jbh/disable-trailing-whitespace)
 ;; (add-hook 'eldoc-mode-hook #'jbh/disable-trailing-whitespace)
 ;; (add-hook 'calendar-mode-hook #'jbh/disable-trailing-whitespace)
@@ -460,6 +476,10 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 
 ;; (straight-use-package 'discover) ;; discover more of Emacs. Sadly, moribund
 
+(use-package difftastic
+  :straight t
+  :ensure-system-package (difft . difftastic))
+
 (straight-use-package 'discover-my-major) ;; Discover key bindings and their meaning for the current Emacs major mode
 
 (straight-use-package 'clean-aindent-mode) ;; Emacs extension for simple indent and unindent
@@ -553,7 +573,7 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
   :bind (:map flymake-mode-map
 			  ("M-n" . flymake-goto-next-error)
 			  ("M-p" . flymake-goto-prev-error))
-  :hook (text-mode))
+  :hook text-mode)
 
 (use-package flymake-vale
   :straight (:type git :host github :repo "tpeacock19/flymake-vale")
@@ -637,14 +657,9 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 
 ;; Tuareg for OCaml syntax highlighting
 (use-package tuareg
-  :demand t
+  :init (setq tuareg-interactive-program "metaocaml")
   :straight t
-  :mode ("\\.ml[ily]?\\'" . tuareg-mode)
-  :config
-  (setq tuareg-interactive-program
-   "metaocaml"))
-
-
+  :mode ("\\.ml[ily]?\\'" . tuareg-mode))
 
 (use-package eglot
   :straight t
@@ -1099,6 +1114,7 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 
 (use-package vertico
   :straight t
+  :demand t
   :config (vertico-mode)
 		  (vertico-multiform-mode)
           (file-name-shadow-mode)
@@ -1109,9 +1125,9 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
   ;;
   ;; This needs to be an add-hook b/c I want to add the hook to hide path when I type shadow stuff
   ;; But I need to have vertico already loaded so I can access the minibuffer inside of which this hook will run
-  (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
+  :hook (rfn-eshadow-update-overlay . vertico-directory-tidy)
   :custom
-  (vertico-sort-function #'vertico-sort-history-length-alpha)
+  (vertico-sort-function #'vertico-sort-history-alpha)
   (vertico-multiform-categories '((buffer (vertico-sort-function . minibuffer-sort-by-history))))
   )
 
@@ -1659,9 +1675,9 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
  '(indicate-empty-lines t)
  '(inhibit-startup-screen t)
  '(initial-scratch-message nil)
- '(ispell-highlight-face 'highlight)
- '(ispell-highlight-p t)
- '(ispell-program-name "aspell")
+ '(ispell-highlight-face 'highlight t)
+ '(ispell-highlight-p t t)
+ '(ispell-program-name "aspell" t)
  '(load-home-init-file t t)
  '(ls-lisp-dirs-first t)
  '(make-backup-files nil)
