@@ -195,7 +195,7 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
 
 (use-package ob-prolog
-  :after (org ediprolog)
+  :after org
   :straight t
   :demand t
   :config (add-to-list 'org-babel-load-languages '(prolog . t)))
@@ -508,19 +508,35 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
   (setq ediff-make-buffers-readonly-at-startup nil)
   (setq ediff-show-clashes-only t))
 
-;; TODO change from scryer-prolog to configurable
-;; Make scryer-prolog also a configuration setup
-;; "pushd ~/Code/scryer-prolog; git pull --force; cargo build --release"
-;; TODO: where  do custom commands get locally executed?
-;; So, e.g cargo install such and such for scryer-prolog?
-;; What about npl aka nprolog?
-;; Yap prolog?
-(use-package ediprolog
+;; Prolog: keep Scryer explicit; do not depend on a bare `prolog` executable.
+(defconst jbh-scryer-prolog-system 'scryer-prolog)
+(defconst jbh-scryer-prolog-program
+  (expand-file-name (substitute-in-file-name "$HOME/.cargo/bin/scryer-prolog")))
+
+(use-package prolog
+  :ensure nil
   :ensure-system-package
-    ((gprolog . gnu-prolog)
-	 (swipl . swi-prolog)
-	 )
+  (scryer-prolog . "\"$HOME/.cargo/bin/cargo\" install --path \"$HOME/Builds/scryer-prolog\" --locked --force")
+  :mode ("\\.pl\\'" . prolog-mode)
+  :init
+  (add-to-list 'exec-path (file-name-directory jbh-scryer-prolog-program))
+  :config
+  ;; Stock prolog-mode has no Scryer profile, but its per-system alists
+  ;; are extensible. Use the same symbol as the executable basename.
+  (setq-default prolog-system jbh-scryer-prolog-system)
+  (add-to-list 'prolog-system-version `(,jbh-scryer-prolog-system (0 . 10)))
+  (add-to-list 'prolog-program-name `(,jbh-scryer-prolog-system
+                                      (eval jbh-scryer-prolog-program)))
+  (add-to-list 'prolog-program-switches `(,jbh-scryer-prolog-system nil))
+  (add-to-list 'prolog-consult-string `(,jbh-scryer-prolog-system "[%f]."))
+  (add-to-list 'prolog-compile-string `(,jbh-scryer-prolog-system "[%f]."))
+  (add-to-list 'prolog-prompt-regexp `(,jbh-scryer-prolog-system "^\\?- ")))
+
+(use-package ediprolog
   :straight t
+  :init
+  (setq ediprolog-system jbh-scryer-prolog-system
+        ediprolog-program jbh-scryer-prolog-program)
   :bind ([f10] . ediprolog-dwim))
 
 (straight-use-package 'edit-indirect)
@@ -609,8 +625,6 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 (add-to-list 'auto-mode-alist '("\\.lgt\\'" . logtalk-mode))
 (add-to-list 'auto-mode-alist '("\\.logtalk\\'" . logtalk-mode))
 
-(add-to-list 'auto-mode-alist '("\\.pl\\'" . prolog-mode))
-
 (straight-use-package 'fullframe) ;; Advise commands to execute fullscreen, restoring the window setup when exiting.
 
 (straight-use-package 'gh-md)
@@ -623,6 +637,8 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 (straight-use-package 'goto-chg) ;; Goto last change in current buffer. Needed?
 
 (straight-use-package 'graphql)
+
+(straight-use-package 'haskell-mode)
 
 (use-package helpful
   :straight t
@@ -663,7 +679,9 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 
 (use-package eglot
   :straight t
-  :hook (tuareg-mode . eglot-ensure))
+  :hook ((haskell-mode tuareg-mode) . eglot-ensure)
+  :config
+   (add-to-list 'eglot-server-programs '(haskell-mode . ("haskell-language-server-wrapper" "--lsp"))))
 
 ;; Explicitly tell TRAMP to use the remote container's own PATH
 (with-eval-after-load 'tramp
@@ -1675,9 +1693,9 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
  '(indicate-empty-lines t)
  '(inhibit-startup-screen t)
  '(initial-scratch-message nil)
- '(ispell-highlight-face 'highlight t)
- '(ispell-highlight-p t t)
- '(ispell-program-name "aspell" t)
+ '(ispell-highlight-face 'highlight)
+ '(ispell-highlight-p t)
+ '(ispell-program-name "aspell")
  '(load-home-init-file t t)
  '(ls-lisp-dirs-first t)
  '(make-backup-files nil)
@@ -1689,31 +1707,6 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
  '(org-trello-current-prefix-keybinding "C-c o" nil nil "Customized with use-package org-trello")
  '(org-use-fast-todo-selection 'expert)
  '(preview-auto-cache-preamble t)
- '(prolog-compile-string
-   '((eclipse "[%f].") (mercury "mmake ")
-	 (sicstus
-	  (eval
-	   (if (prolog-atleast-version '(3 . 7))
-		   "prolog:zap_file(%m,%b,compile,%l)."
-		 "prolog:zap_file(%m,%b,compile).")))
-	 (scryer "%f") (swi "[%f].") (t "compile(%f).")))
- '(prolog-consult-string
-   '((eclipse "[%f].") (mercury nil)
-	 (sicstus
-	  (eval
-	   (if (prolog-atleast-version '(3 . 7))
-		   "prolog:zap_file(%m,%b,consult,%l)."
-		 "prolog:zap_file(%m,%b,consult).")))
-	 (swi "[%f].") (scryer "consult(%f).") (gnu "[%f].")
-	 (t "reconsult(%f).")))
- '(prolog-program-name
-   '(((getenv "EPROLOG") (eval (getenv "EPROLOG"))) (eclipse "eclipse")
-	 (mercury nil) (sicstus "sicstus") (swi "swipl")
-	 (scryer "scryer-prolog") (gnu "gprolog") (t "prolog")))
- '(prolog-system 'scryer)
- '(prolog-system-version
-   '((sicstus (3 . 6)) (swi (0 . 0)) (mercury (0 . 0)) (eclipse (3 . 7))
-	 (gnu (0 . 0)) (scryer (0 . 9)) (azprolog (9 . 63))))
  '(reftex-cite-format 'biblatex)
  '(reftex-default-bibliography '("~/old-microKanren.bib"))
  '(reftex-extra-bindings t)
@@ -1727,10 +1720,10 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 	 (add-hook 'before-save-hook 'time-stamp nil t)
 	 (add-hook 'before-save-hook 'delete-trailing-whitespace nil t)))
  '(safe-local-variable-values
-   '((mmm-classes . literate-haskell-latex) (global-visual-line-mode)
-	 (writegood-mode) (artbollocks-mode) (flyspell-mode)
-	 (writegood-mode . 0) (artbollocks-mode . 0) (flyspell-mode . 0)
-	 (idris2-load-packages "base" "contrib")
+   '((line-move-visual) (mmm-classes . literate-haskell-latex)
+	 (global-visual-line-mode) (writegood-mode) (artbollocks-mode)
+	 (flyspell-mode) (writegood-mode . 0) (artbollocks-mode . 0)
+	 (flyspell-mode . 0) (idris2-load-packages "base" "contrib")
 	 (idris2-load-packages "prelude" "base" "contrib")
 	 (TeX-command-extra-options . "-shell-escape")
 	 (calc-float-format quote (fix 2)) (org-table-copy-increment)
