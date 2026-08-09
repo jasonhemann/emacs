@@ -987,7 +987,9 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 										   (toggle-truncate-lines -1)))
   (racket-repl-mode . racket-smart-open-bracket-mode)
   (racket-repl-mode . racket-hash-lang-repl-mode)
-  :custom (racket-program "racket")
+  :custom
+  (racket-program "racket")
+  (racket-memory-limit 8192)
   ;; Commented b/c questionable if it works and racet-hash-lang-mode should have a better way to do it
   ;; (mapc (lambda (pr) (put (car pr) 'racket-indent-function (cdr pr)))
   ;;     '((conde . 0)
