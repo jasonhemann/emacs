@@ -890,11 +890,11 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
   :straight t
   :ensure t
 ;;  :after (fullframe)
-  :magic ("%PDF" . pdf-view-mode)
-  :config (pdf-tools-install :no-query) ;; if this slows things down try (pdf-loader-install)
+  :defer t
+  :init
+  (pdf-loader-install t)
   ;; Setup in .bash_profile. Next time I'm on a new machine, I'll try to see what this was checking for and try to auto-install w/brew and add a message to the user instead
   ;; (setenv "PKG_CONFIG_PATH" (concat (getenv "PKG_CONFIG_PATH") ":/opt/homebrew/Cellar/poppler/23.01.0/lib/pkgconfig:/opt/homebrew/lib/pkgconfig:/opt/X11/lib/pkgconfig/:/opt/homebrew/Cellar/poppler/23.01.0/lib/pkgconfig:/opt/X11/share/pkgconfig"))
-  (pdf-tools-install)
   :custom (pdf-tools-handle-upgrades t)
   :bind (:map pdf-view-mode-map
 		 ("h"   . 'pdf-annot-add-highlight-markup-annotation)
