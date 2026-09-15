@@ -1132,12 +1132,31 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
   :delight
   :custom (volatile-highlights-mode t))
 
+(defun jh-vertico-exit (&optional arg)
+  "Accept a home-directory tilde as ~/ in file prompts on RET.
+Honor Emacs filename substitution for an initial directory before ~.
+With prefix ARG or any other input, use normal Vertico exit behavior."
+  (interactive "P")
+  (if (and (not arg)
+           (minibufferp)
+           minibuffer-completing-file-name
+           (let ((input (minibuffer-contents-no-properties)))
+             (and (or (equal input "~") (string-suffix-p "/~" input))
+                  (equal (ignore-errors (substitute-in-file-name input))
+                         "~"))))
+      (progn
+        (delete-minibuffer-contents)
+        (insert "~/")
+        (vertico-exit t))
+    (vertico-exit arg)))
+
 (use-package vertico
   :straight t
   :demand t
   :config (vertico-mode)
 		  (vertico-multiform-mode)
           (file-name-shadow-mode)
+          (keymap-set vertico-map "RET" #'jh-vertico-exit)
   ;; This works with `file-name-shadow-mode' enabled.  When you are in
   ;; a sub-directory and use, say, `find-file' to go to your home '~/'
   ;; or root '/' directory, Vertico will clear the old path to keep
