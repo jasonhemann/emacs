@@ -55,9 +55,9 @@
 
 (use-package exec-path-from-shell
   :straight t
+  :custom
+  (exec-path-from-shell-variables '("PATH" "MANPATH" "HOMEBREW_PREFIX"))
   :config
-  (setq exec-path-from-shell-check-startup-files nil)
-  (exec-path-from-shell-copy-env "PATH")
   (exec-path-from-shell-initialize))
 
 (require 'server)
@@ -516,7 +516,7 @@ For the scope of this function, make `delet-other-windows' the same as `ignore'.
 (use-package prolog
   :ensure nil
   :ensure-system-package
-  (scryer-prolog . "\"$HOME/.cargo/bin/cargo\" install --path \"$HOME/Builds/scryer-prolog\" --locked --force")
+  (scryer-prolog . "\"$HOMEBREW_PREFIX/opt/rustup/bin/cargo\" install --path \"$HOME/Builds/scryer-prolog\" --locked --force")
   :mode ("\\.pl\\'" . prolog-mode)
   :init
   (add-to-list 'exec-path (file-name-directory jbh-scryer-prolog-program))
